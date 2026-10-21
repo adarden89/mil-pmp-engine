@@ -10,9 +10,10 @@ export interface AccessEmailInput {
 }
 
 const PRODUCT_START: Record<ProductId, { label: string; path: string }> = {
-  base_tool: { label: "Open the AI Translation Studio", path: "/translate" },
+  base_tool: { label: "Open the AI Translation Studio", path: "/dashboard/translator" },
   cool_fast_track: { label: `Build your ${NAVY_COOL.formNumber} prep packet`, path: "/funding#opnav-1500-57" },
   exam_vault: { label: "Start the Study Vault", path: "/vault" },
+  expert_review: { label: "Prepare your materials for review", path: "/dashboard/verification" },
 };
 
 const WARNING =

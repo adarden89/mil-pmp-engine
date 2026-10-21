@@ -1,7 +1,10 @@
 /**
  * Third-party facts that change over time. Kept in one place with an as-of date
  * so they can be re-verified before each release. Sources: pmi.org, Navy COOL,
- * OPNAVINST 1540.56C, NAVADMIN 136/26.
+ * OPNAVINST 1540.56C, NAVADMIN 136/26, and the July 2026 PMP Examination
+ * Content Outline. The 2026 eligibility tiers and 10-year window come from
+ * training-provider summaries of PMI's July 2026 handbook; pmi.org could not
+ * be fetched to confirm the primary wording.
  */
 
 export const FACTS_AS_OF = "October 2026";
@@ -14,8 +17,23 @@ export const EXAM_FEES = {
 
 export const EDUCATION_HOURS = { CAPM: 23, PMP: 35 } as const;
 
-/** Months of project leadership in the last 8 years, by education. */
-export const PMP_EXPERIENCE_MONTHS = { secondary: 60, fourYearDegree: 36, gacDegree: 24 } as const;
+/** Months of project leadership inside the lookback window, by education (July 2026 rules). */
+export const PMP_EXPERIENCE_MONTHS = { secondary: 60, associate: 48, fourYearDegree: 36, gacDegree: 24 } as const;
+
+/** PMI counts PMP experience earned in the 10 years before the application date (was 8). */
+export const PMP_EXPERIENCE_WINDOW_YEARS = 10;
+
+/** PMP exam domains under the Examination Content Outline in effect from 9 July 2026. */
+export const PMP_ECO_2026 = {
+  effectiveDate: "2026-07-09",
+  domains: [
+    { id: "people", label: "People", weight: 33 },
+    { id: "process", label: "Process", weight: 41 },
+    { id: "business_environment", label: "Business Environment", weight: 26 },
+  ],
+} as const;
+
+export type PmpDomainId = (typeof PMP_ECO_2026)["domains"][number]["id"];
 
 export const NAVY_COOL = {
   portalUrl: "https://www.cool.osd.mil/usn/",

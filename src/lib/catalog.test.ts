@@ -2,10 +2,17 @@ import { describe, expect, it } from "vitest";
 import { cartTotalCents, isProductId, PRODUCTS, validateCart } from "./catalog";
 
 describe("catalog", () => {
-  it("prices the three tiers as specified", () => {
+  it("prices the three tiers and the review service as specified", () => {
     expect(PRODUCTS.base_tool.priceCents).toBe(2499);
     expect(PRODUCTS.cool_fast_track.priceCents).toBe(999);
     expect(PRODUCTS.exam_vault.priceCents).toBe(1999);
+    expect(PRODUCTS.expert_review.priceCents).toBe(29900);
+  });
+
+  it("produces the three advertised order totals", () => {
+    expect(cartTotalCents(["base_tool"])).toBe(2499);
+    expect(cartTotalCents(["base_tool", "cool_fast_track"])).toBe(3498);
+    expect(cartTotalCents(["base_tool", "cool_fast_track", "exam_vault"])).toBe(5497);
   });
 
   it("totals a cart without double counting duplicates", () => {
@@ -34,6 +41,12 @@ describe("validateCart", () => {
   it("rejects products the buyer already owns", () => {
     const result = validateCart(["base_tool"], ["base_tool"]);
     expect(result.ok).toBe(false);
+  });
+
+  it("sells the expert review only when services are enabled, and only to base owners", () => {
+    expect(validateCart(["expert_review"], ["base_tool"]).ok).toBe(false);
+    expect(validateCart(["expert_review"], ["base_tool"], { servicesEnabled: true }).ok).toBe(true);
+    expect(validateCart(["expert_review"], [], { servicesEnabled: true }).ok).toBe(false);
   });
 
   it("accepts base plus add-ons in one cart", () => {

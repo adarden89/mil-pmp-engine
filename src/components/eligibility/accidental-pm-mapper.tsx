@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input, Label } from "@/components/ui/form-controls";
 import { SectionHeading } from "@/components/ui/primitives";
-import { coverageFor, MILITARY_DUTIES, totalMapperMonths, type MapperSelection } from "@/lib/accidental-pm";
+import { coverageFor, dutiesFor, MILITARY_DUTIES, totalMapperMonths, type MapperSelection } from "@/lib/accidental-pm";
 import { PROCESS_GROUP_LABELS, type ProcessGroupKey } from "@/lib/translation-schema";
 import { cn } from "@/lib/utils";
 import { planStore, usePlan } from "./plan-store";
@@ -20,6 +20,8 @@ export function AccidentalPmMapper() {
   const selected = new Set(selections.map((item) => item.dutyId));
   const coverage = coverageFor(selections);
   const total = totalMapperMonths(selections);
+  const branch = plan.input?.branch ?? null;
+  const duties = dutiesFor(branch);
 
   function toggle(dutyId: string) {
     const next: MapperSelection[] = selected.has(dutyId)
@@ -42,20 +44,23 @@ export function AccidentalPmMapper() {
       />
 
       <div className="mt-8 flex flex-wrap gap-2" role="group" aria-label="Military duties">
-        {MILITARY_DUTIES.map((duty) => (
+        {duties.map((duty) => (
           <button
             key={duty.id}
             type="button"
             onClick={() => toggle(duty.id)}
             aria-pressed={selected.has(duty.id)}
             className={cn(
-              "rounded-full border px-3.5 py-1.5 text-sm transition-colors",
+              "min-h-10 rounded-full border px-3.5 py-1.5 text-sm transition-colors",
               selected.has(duty.id)
                 ? "border-primary bg-primary/15 text-foreground"
                 : "border-border text-muted-foreground hover:border-border-strong hover:text-foreground",
             )}
           >
             {duty.label}
+            {branch && duty.branches?.includes(branch) ? (
+              <span className="ml-1.5 text-[10px] font-medium tracking-wide text-primary uppercase">Your branch</span>
+            ) : null}
           </button>
         ))}
       </div>
@@ -146,7 +151,7 @@ export function AccidentalPmMapper() {
                         id={`months-${duty.id}`}
                         type="number"
                         min={0}
-                        max={96}
+                        max={120}
                         inputMode="numeric"
                         className="h-8 w-20 font-mono"
                         value={months}

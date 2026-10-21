@@ -1,5 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { analyzeAuditDensity, countQuantifiers, findJargon } from "./audit-density";
+import {
+  analyzeAuditDensity,
+  auditSourceFor,
+  countQuantifiers,
+  extractFigures,
+  findJargon,
+  findUnsupportedFigures,
+} from "./audit-density";
 import type { TranslationResult } from "./translation-schema";
 
 function words(count: number, word = "delivered"): string {
@@ -85,5 +92,55 @@ describe("sample translation", () => {
     expect(report.wordCount).toBeGreaterThanOrEqual(200);
     expect(report.wordCount).toBeLessThanOrEqual(500);
     expect(report.grade).toBe("audit_ready");
+  });
+});
+
+describe("figure fidelity", () => {
+  const source = {
+    text: "- Managed $2.1M avionics supply chain inventory for three squadrons\n- Cut backorders 37% in 9 months; led team of 12",
+  };
+
+  it("matches scaled and spelled-out figures", () => {
+    expect(extractFigures("$2.1 million")[0].values).toEqual([2.1, 2100000]);
+    expect(
+      findUnsupportedFigures("I managed a $2.1 million inventory for 3 squadrons and cut backorders 37%.", source),
+    ).toEqual([]);
+  });
+
+  it("flags figures the member never wrote", () => {
+    const unsupported = findUnsupportedFigures(
+      "I led 12 technicians, saved $450,000, and improved readiness 18%.",
+      source,
+    );
+    expect(unsupported).toEqual(["450,000", "18"]);
+  });
+
+  it("ignores calendar years and small list counts", () => {
+    expect(findUnsupportedFigures("In 2024 I ran 2 phases of work.", source)).toEqual([]);
+  });
+
+  it("allows the project length derived from the dates and the team size", () => {
+    const derived = auditSourceFor({
+      branch: "army",
+      rateOrMos: "11B",
+      billet: "Platoon Sergeant",
+      projectTitle: "Range operations",
+      startMonth: "2024-01",
+      endMonth: "2024-06",
+      teamSize: 40,
+      rawBullets: "Planned and executed 3 range operations for 120 soldiers with zero safety incidents.",
+    });
+    expect(
+      findUnsupportedFigures("Over 6 months I led 40 personnel through 3 range operations for 120 soldiers.", derived),
+    ).toEqual([]);
+  });
+
+  it("adds a fidelity check to the report only when the source is known", () => {
+    const result = makeResult({ outcome: "Delivered early." });
+    expect(analyzeAuditDensity(result).checks.some((check) => check.id === "fidelity")).toBe(false);
+    const report = analyzeAuditDensity(result, { text: "Migrated 220 workstations with a 14-person team." });
+    const fidelity = report.checks.find((check) => check.id === "fidelity");
+    expect(fidelity?.status).toBe("fail");
+    expect(report.unsupportedFigures).toContain("$180,000".replace("$", ""));
   });
 });

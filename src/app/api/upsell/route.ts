@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { chargeUpsell, type UpsellResult } from "@/lib/billing";
-import { ADDON_IDS, PRODUCT_IDS, PRODUCTS } from "@/lib/catalog";
+import { ADDON_IDS, PRODUCT_IDS, PRODUCTS, SERVICE_IDS } from "@/lib/catalog";
+import { serverEnv } from "@/lib/env";
 import { getEntitlements } from "@/lib/entitlements";
 import { HttpError, parseJsonBody, toErrorResponse } from "@/lib/http";
 import { checkoutLimiter } from "@/lib/rate-limit";
@@ -22,7 +23,8 @@ export async function POST(request: Request) {
     }
 
     const { productId } = await parseJsonBody(request, upsellRequestSchema);
-    if (!ADDON_IDS.includes(productId)) {
+    const sellableService = SERVICE_IDS.includes(productId) && serverEnv().EXPERT_REVIEW_ENABLED;
+    if (!ADDON_IDS.includes(productId) && !sellableService) {
       throw new HttpError(400, "not_an_addon", "Only add-ons can be purchased in one click.");
     }
 

@@ -23,6 +23,8 @@ const serverEnvSchema = z.object({
   SUPABASE_SECRET_KEY: optionalString,
   STRIPE_SECRET_KEY: optionalString,
   STRIPE_WEBHOOK_SECRET: optionalString,
+  /** Public key for Stripe.js (Elements checkout modal). Exposed to the browser via next.config.ts. */
+  STRIPE_PUBLISHABLE_KEY: optionalString,
   ANTHROPIC_API_KEY: optionalString,
   ANTHROPIC_MODEL: z.preprocess(emptyToUndefined, z.string().trim().min(1).default("claude-opus-5-5")),
   TRANSLATION_LIMIT_PER_30_DAYS: z.preprocess(emptyToUndefined, z.coerce.number().int().positive().default(40)),
@@ -43,6 +45,10 @@ const serverEnvSchema = z.object({
   TIKTOK_PIXEL_ID: optionalString,
   TIKTOK_EVENTS_API_ACCESS_TOKEN: optionalString,
   TIKTOK_TEST_EVENT_CODE: optionalString,
+  /** Sell the $299 human expert review. Leave unset until a reviewer is staffed to fulfill it. */
+  EXPERT_REVIEW_ENABLED: z.preprocess(emptyToUndefined, z.stringbool().default(false)),
+  /** Where new expert review orders are sent for a human to pick up. */
+  EXPERT_REVIEW_INBOX: z.preprocess(emptyToUndefined, z.email().optional()),
   /** opt-out: share unless the visitor opts out or sends GPC (US model). opt-in: share only after consent. */
   TRACKING_CONSENT_MODE: z.preprocess(emptyToUndefined, z.enum(["opt-out", "opt-in"]).default("opt-out")),
 });
@@ -96,6 +102,8 @@ export function integrationStatus() {
       env.SUPABASE_SECRET_KEY,
     ),
     stripe: Boolean(env.STRIPE_SECRET_KEY && env.STRIPE_WEBHOOK_SECRET),
+    stripeElements: Boolean(env.STRIPE_SECRET_KEY && env.STRIPE_PUBLISHABLE_KEY),
+    expertReview: env.EXPERT_REVIEW_ENABLED && Boolean(env.EXPERT_REVIEW_INBOX),
     anthropic: Boolean(env.ANTHROPIC_API_KEY),
     email: Boolean(env.RESEND_API_KEY && env.RESEND_FROM_EMAIL),
     metaConversions: Boolean(env.META_PIXEL_ID && env.META_CAPI_ACCESS_TOKEN),

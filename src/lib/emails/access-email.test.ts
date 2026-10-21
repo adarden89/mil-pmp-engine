@@ -14,7 +14,7 @@ describe("renderAccessEmail", () => {
 
   it("includes the sign-in link, each product's starting point, and the COOL warning", () => {
     expect(email.html).toContain("token_hash=abc&amp;type=magiclink");
-    expect(email.text).toContain("https://miltopmp.example/translate");
+    expect(email.text).toContain("https://miltopmp.example/dashboard/translator");
     expect(email.text).toContain("https://miltopmp.example/funding#opnav-1500-57");
     expect(email.text).toContain("Do NOT pay out of pocket");
   });

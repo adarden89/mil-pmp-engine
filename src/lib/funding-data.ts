@@ -5,6 +5,8 @@
  * Durations are typical ranges, not guarantees.
  */
 
+import type { Branch } from "./translation-schema";
+
 export const FUNDING_PROGRAM_IDS = ["navy", "army", "air_force", "marine_corps", "coast_guard"] as const;
 export type FundingProgramId = (typeof FUNDING_PROGRAM_IDS)[number];
 
@@ -26,9 +28,20 @@ export interface FundingProgram {
   portalName: string;
   officialUrl: string;
   portalUrl: string;
+  /** Prepaid programs pay the vendor; reimbursement programs pay you back after an approved authorization. */
+  paymentModel: "prepaid" | "reimbursement";
+  paymentNote: string;
   eligibilityHighlights: string[];
   steps: FundingStep[];
   watchOuts: string[];
+}
+
+export const FUNDING_WARNING =
+  "CRITICAL: Do NOT schedule or pay for the exam before you receive your service's approved voucher or funding authorization. No COOL program reimburses expenses taken on before approval.";
+
+/** Space Force Guardians use the Air Force program. */
+export function fundingProgramFor(branch: Branch): FundingProgramId {
+  return branch === "space_force" ? "air_force" : branch;
 }
 
 const PMI_APPLICATION_STEP: FundingStep = {
@@ -62,6 +75,8 @@ export const FUNDING_PROGRAMS: Record<FundingProgramId, FundingProgram> = {
     portalName: "OPNAV 1500/57 (Certification & License Funding Request)",
     officialUrl: "https://www.cool.osd.mil/usn/",
     portalUrl: "https://www.cool.osd.mil/usn/",
+    paymentModel: "prepaid",
+    paymentNote: "Navy COOL pays the credentialing body directly. You never pay the exam fee yourself.",
     eligibilityHighlights: [
       "Credential is mapped to your rating, designator, collateral duty, or out-of-rate assignment",
       "Passed your most recent advancement exam and physical fitness assessment (or have a waiver)",
@@ -138,14 +153,17 @@ export const FUNDING_PROGRAMS: Record<FundingProgramId, FundingProgram> = {
     id: "army",
     name: "Army Credentialing Assistance",
     shortName: "Army CA",
-    portalName: "ArmyIgnitED",
+    portalName: "ArmyIgnitED Credentialing Assistance (CA)",
     officialUrl: "https://www.cool.osd.mil/army/",
     portalUrl: "https://www.armyignited.army.mil/",
+    paymentModel: "prepaid",
+    paymentNote: "Army CA pays the vendor through ArmyIgnitED. You never pay the exam fee yourself.",
     eligibilityHighlights: [
-      "Credential appears on Army COOL",
-      "Completed the CA prerequisites in ArmyIgnitED (counseling and required briefings)",
-      "Supervisor approval of the request",
-      "Within your annual TA/CA funding ceiling",
+      "CAPM or PMP appears on Army COOL",
+      "First-time CA users: complete MILGEARS, then CA 101 with the CA Virtual Counseling Cell, before requesting a CA goal",
+      "Request at least 45 days before the exam or course start date, and no more than 90 days ahead",
+      "The request must include the exam. Training-only requests are not funded",
+      "Funding depends on fiscal-year availability and the current per-year limits",
     ],
     steps: [
       {
@@ -154,26 +172,26 @@ export const FUNDING_PROGRAMS: Record<FundingProgramId, FundingProgram> = {
         owner: "You",
         typicalDuration: "15 minutes",
         detail:
-          "Confirm CAPM or PMP is listed and note any training courses Army CA can also fund toward your education hours.",
+          "Confirm CAPM or PMP is listed and note any training CA can fund toward your 23 or 35 education hours, since the exam has to be part of the same request.",
         documents: ["Army COOL credential page"],
       },
       {
         id: "army-counsel",
-        title: "Complete CA prerequisites in ArmyIgnitED",
+        title: "MILGEARS, CA 101, and your CA goal",
         owner: "Education Office",
         typicalDuration: "1 to 7 days",
         detail:
-          "Finish the required counseling and briefings with your Army Education Center before the request button unlocks.",
-        documents: ["Education counseling record"],
+          "First-time users complete a MILGEARS profile, then CA 101 with the CA Virtual Counseling Cell. That unlocks a CA goal in ArmyIgnitED for the credential.",
+        documents: ["MILGEARS profile", "CA 101 completion"],
       },
       PMI_APPLICATION_STEP,
       {
         id: "army-request",
         title: "Submit the CA request in ArmyIgnitED",
         owner: "You",
-        typicalDuration: "Submit well before your exam date",
+        typicalDuration: "45 to 90 days before the start date",
         detail:
-          "Request the exam (and any training) in ArmyIgnitED. Requests need lead time before the start date, so do not schedule the exam first.",
+          "Request the exam (plus any training) at least 45 days before the start date and no more than 90 days ahead. Pick an exam date first, but do not book or pay for it.",
         documents: ["Vendor quote or exam fee", "PMI eligibility details"],
       },
       {
@@ -195,22 +213,26 @@ export const FUNDING_PROGRAMS: Record<FundingProgramId, FundingProgram> = {
       },
     ],
     watchOuts: [
-      "CA and Tuition Assistance share an annual ceiling. Confirm your remaining balance first.",
-      "Starting an exam before approval usually means you pay out of pocket.",
+      "The 45-day lead time is the most common reason requests bounce. Count back from your exam date.",
+      "Per-year CA limits and the number of credentials you can fund per year have changed between fiscal years. Confirm the current rules on Army COOL.",
+      "Starting an exam before approval means you pay out of pocket.",
     ],
   },
   air_force: {
     id: "air_force",
-    name: "Air Force COOL",
+    name: "Air Force COOL (Air Force and Space Force)",
     shortName: "AF COOL",
     portalName: "Air Force Virtual Education Center (AFVEC)",
     officialUrl: "https://www.cool.osd.mil/usaf/",
     portalUrl: "https://afvec.us.af.mil/",
+    paymentModel: "prepaid",
+    paymentNote: "AF COOL pays the vendor against your approved funding request. You never pay the exam fee yourself.",
     eligibilityHighlights: [
-      "Credential is listed on AF COOL for your AFSC or an approved category",
-      "Supervisor and education office approval",
-      "Within the program's funding limits",
-      "Space Force Guardians: confirm the current process with your education office",
+      "Enlisted Airmen and Guardians (officers: confirm eligibility with your education office)",
+      "Active duty: 5-skill level in your primary AFSC, no UIF or control roster, current fitness assessment",
+      "An approved credentialing goal in AFVEC with supervisor approval",
+      "Lifetime cap of $4,500 per member",
+      "The credential must be completed while you are on active duty",
     ],
     steps: [
       {
@@ -218,49 +240,67 @@ export const FUNDING_PROGRAMS: Record<FundingProgramId, FundingProgram> = {
         title: "Check AF COOL for your AFSC",
         owner: "You",
         typicalDuration: "15 minutes",
-        detail: "Confirm CAPM or PMP is fundable for your AFSC or category and note the funding limit.",
+        detail:
+          "Confirm CAPM or PMP is fundable for your AFSC or category and note how much of your $4,500 lifetime cap is left.",
         documents: ["AF COOL credential page"],
       },
       PMI_APPLICATION_STEP,
       {
-        id: "af-request",
-        title: "Submit the AF COOL application in AFVEC",
+        id: "af-goal",
+        title: "Create your credentialing goal in AFVEC",
         owner: "You",
-        typicalDuration: "20 minutes to submit",
-        detail: "Apply in AFVEC for exam funding. Attach your PMI eligibility details and the exam fee.",
-        documents: ["PMI eligibility details", "Exam fee amount"],
+        typicalDuration: "20 minutes",
+        detail: "Set up the CAPM or PMP goal in AFVEC and upload the supporting documents it asks for.",
+        documents: ["PMI eligibility details", "Supporting documents AFVEC requests"],
       },
       {
-        id: "af-approve",
-        title: "Supervisor and education office approval",
-        owner: "Education Office",
-        typicalDuration: "Several days to 2 weeks",
-        detail: "Your supervisor endorses and the education office approves funding.",
-        documents: ["Approval notification"],
+        id: "af-supervisor",
+        title: "Supervisor approves the goal",
+        owner: "Command",
+        typicalDuration: "Several days",
+        detail: "Your supervisor approves the goal in AFVEC. Funding requests unlock after approval.",
+        documents: ["Goal approval"],
+      },
+      {
+        id: "af-funding",
+        title: "Submit one funding request per item",
+        owner: "You",
+        typicalDuration: "Processed first in, first out",
+        detail:
+          "Create a separate funding request for each item (the exam, and books if you want them), each matching the price quote you uploaded.",
+        documents: ["Price quote for each item"],
       },
       SCHEDULE_STEP,
       {
         id: "af-report",
-        title: "Report your result in AFVEC",
+        title: "Report your result within 120 days",
         owner: "You",
-        typicalDuration: "Within the reporting window",
-        detail: "Upload your result to close the funding record.",
+        typicalDuration: "Within 120 days of the exam",
+        detail: "Submit your score report or certificate to the AF COOL office to close the funding record.",
         documents: ["Exam score report or certificate"],
       },
     ],
-    watchOuts: ["AF COOL has had lifetime funding limits. Confirm the current limit before choosing paid prep."],
+    watchOuts: [
+      "If you fail the exam, you repay the cost. Book the exam only when your practice scores are consistently passing.",
+      "Results not submitted within 120 days of the test can be recouped.",
+      "There is no separate Space Force program: Guardians use AF COOL.",
+    ],
   },
   marine_corps: {
     id: "marine_corps",
     name: "Marine Corps COOL",
-    shortName: "USMC COOL",
-    portalName: "Marine Corps COOL",
+    shortName: "MC COOL",
+    portalName: "Marine Corps COOL pre-paid voucher request",
     officialUrl: "https://www.cool.osd.mil/usmc/",
     portalUrl: "https://www.cool.osd.mil/usmc/",
+    paymentModel: "prepaid",
+    paymentNote: "Marine Corps COOL issues a pre-paid voucher. It never reimburses an exam fee you paid yourself.",
     eligibilityHighlights: [
-      "Credential is related to your MOS or approved for leadership and professional development",
-      "Command and education office approval",
-      "Within current funding limits",
+      "Enlisted Marines (officers: confirm eligibility with your education office)",
+      "Six months or more left on your enlistment when the voucher is issued",
+      "An approved voucher before you start, schedule, or pay for anything",
+      "Exam taken within 60 days of the voucher being funded",
+      "Marines do not use the Navy's OPNAV 1500/57",
     ],
     steps: [
       {
@@ -269,62 +309,136 @@ export const FUNDING_PROGRAMS: Record<FundingProgramId, FundingProgram> = {
         owner: "You",
         typicalDuration: "15 minutes",
         detail: "Find CAPM or PMP and confirm it is fundable for your MOS or category.",
-        documents: ["USMC COOL credential page"],
+        documents: ["MC COOL credential page"],
       },
       PMI_APPLICATION_STEP,
       {
+        id: "usmc-provider",
+        title: "Confirm the exam provider accepts the voucher",
+        owner: "You",
+        typicalDuration: "1 day",
+        detail: "Check with PMI's exam provider that you can test with an MC COOL voucher in the next 60 days.",
+        documents: ["Target exam window"],
+      },
+      {
         id: "usmc-request",
-        title: "Submit the voucher request",
+        title: "Submit the MC COOL voucher request form",
         owner: "You",
         typicalDuration: "20 minutes",
-        detail: "Submit the request through Marine Corps COOL with your PMI eligibility details.",
-        documents: ["PMI eligibility details"],
+        detail:
+          "Download the current voucher request form from Marine Corps COOL, fill it in, and send it to the Credentials Program Office at the address printed on the form.",
+        documents: ["MC COOL voucher request form", "PMI eligibility details"],
       },
       {
         id: "usmc-approve",
-        title: "Command and education office approval",
-        owner: "Command",
-        typicalDuration: "Several days to 2 weeks",
-        detail: "Your command endorses and the program funds the exam.",
-        documents: ["Approval notification"],
+        title: "Credentials Program Office approves the voucher",
+        owner: "COOL Office",
+        typicalDuration: "Varies, first come, first served",
+        detail: "Do not schedule until the approved voucher arrives. Funding is first come, first served.",
+        documents: ["Approved voucher"],
       },
-      SCHEDULE_STEP,
+      { ...SCHEDULE_STEP, typicalDuration: "Within 60 days of funding" },
+      {
+        id: "usmc-report",
+        title: "Report your result, pass or fail",
+        owner: "You",
+        typicalDuration: "Right after the exam",
+        detail: "Send your result to the MC COOL mailbox, your supervisor, and your Local Approving Official.",
+        documents: ["Exam score report or certificate"],
+      },
     ],
-    watchOuts: ["Confirm current rules with your Education Center. USMC COOL guidance changes by fiscal year."],
+    watchOuts: [
+      "The voucher covers exam, recertification, and maintenance fees only, not training or study materials.",
+      "Report your result even if you fail. Unreported results block future funding.",
+    ],
   },
   coast_guard: {
     id: "coast_guard",
-    name: "Coast Guard COOL",
-    shortName: "USCG COOL",
-    portalName: "Coast Guard COOL",
+    name: "Coast Guard Credentialing Assistance",
+    shortName: "CG COOL",
+    portalName: "MyCG Ed (ETQC Credentialing Assistance Authorization)",
     officialUrl: "https://www.cool.osd.mil/uscg/",
-    portalUrl: "https://www.cool.osd.mil/uscg/",
+    portalUrl:
+      "https://forcecom.uscg.mil/Our-Organization/FORCECOM-UNITS/ETQC/Coast-Guard-Credentialing-Online-COOL/-Steps-to-Apply",
+    paymentModel: "reimbursement",
+    paymentNote:
+      "Coast Guard Credentialing Assistance reimburses you. Pay the fee only after ETQC issues your CA Authorization, then claim it back with your receipt and an OF-1164 within 30 days.",
     eligibilityHighlights: [
-      "Credential is mapped to your rating or approved category",
-      "Command endorsement",
-      "Within current funding limits",
+      "At least 6 months left on your service obligation",
+      "Not marked Not Recommended on your most recent evaluation",
+      "Apply in MyCG Ed at least 14 days before the exam or any fee (the program recommends 30)",
+      "Up to $4,500 per fiscal year, first come, first served",
+      "One application per year, so include every fee for the credential",
     ],
     steps: [
       {
         id: "uscg-cool",
-        title: "Confirm the mapping on Coast Guard COOL",
+        title: "Confirm the credential on CG COOL",
         owner: "You",
         typicalDuration: "15 minutes",
-        detail: "Find CAPM or PMP and confirm it is fundable for your rating.",
-        documents: ["USCG COOL credential page"],
+        detail: "Find CAPM or PMP on Coast Guard COOL and note every fee you will need in the one application.",
+        documents: ["CG COOL credential page"],
       },
       PMI_APPLICATION_STEP,
       {
-        id: "uscg-request",
-        title: "Submit the funding request",
+        id: "uscg-apply",
+        title: "Apply for Credentialing Assistance in MyCG Ed",
         owner: "You",
-        typicalDuration: "20 minutes",
-        detail: "Submit through Coast Guard COOL with your command's endorsement.",
-        documents: ["PMI eligibility details", "Command endorsement"],
+        typicalDuration: "30 days before the exam",
+        detail:
+          "Submit the application with every fee for the credential at least 14 days, ideally 30, before the exam.",
+        documents: ["PMI eligibility details", "Fee amounts"],
       },
-      SCHEDULE_STEP,
+      {
+        id: "uscg-eso",
+        title: "Education Services Officer approval",
+        owner: "Education Office",
+        typicalDuration: "Several days",
+        detail: "Your ESO approves the application for your command.",
+        documents: ["ESO approval"],
+      },
+      {
+        id: "uscg-authorization",
+        title: "ETQC issues your CA Authorization",
+        owner: "COOL Office",
+        typicalDuration: "Varies",
+        detail: "ETQC reviews the application and issues the Credentialing Assistance Authorization in MyCG Ed.",
+        documents: ["CA Authorization"],
+      },
+      {
+        id: "uscg-pay",
+        title: "Pay and schedule, only after authorization",
+        owner: "You",
+        typicalDuration: "Within the authorized window",
+        detail:
+          "With the CA Authorization in hand, pay PMI and book the exam. Keep the receipt: you need it for reimbursement.",
+        documents: ["Payment receipt"],
+      },
+      {
+        id: "uscg-reimburse",
+        title: "Claim reimbursement within 30 days",
+        owner: "You",
+        typicalDuration: "Within 30 days of paying",
+        detail:
+          "Upload the receipt and an electronically endorsed OF-1164 (printed from your authorized application) to MyCG Ed.",
+        documents: ["Receipt", "OF-1164"],
+      },
+      {
+        id: "uscg-report",
+        title: "Report your result",
+        owner: "You",
+        typicalDuration: "Within 90 days of authorization",
+        detail:
+          "Report pass or fail within 90 days of the authorization, and upload the credential within 30 days of earning it.",
+        documents: ["Exam score report", "Credential copy"],
+      },
     ],
-    watchOuts: ["Confirm current rules with your Education Services Officer."],
+    watchOuts: [
+      "Paying before the CA Authorization is issued means the fee is not reimbursed.",
+      "Miss the 30-day OF-1164 deadline and you lose the reimbursement.",
+      "If you fail after being reimbursed, you cannot request CA for the same credential the next fiscal year.",
+      "The published guidance (COMDTINST 1540.10) dates from 2022. Confirm current limits with ETQC.",
+    ],
   },
 };
 

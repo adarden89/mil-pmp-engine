@@ -103,6 +103,12 @@ export function FundingEngine({
               <p className="mt-1 text-sm text-muted-foreground">
                 Requests are submitted in <span className="text-fg">{program.portalName}</span>
               </p>
+              <p className="mt-3 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+                <Badge variant={program.paymentModel === "reimbursement" ? "warning" : "success"}>
+                  {program.paymentModel === "reimbursement" ? "Reimbursement" : "Program pays the fee"}
+                </Badge>
+                <span className="max-w-xl">{program.paymentNote}</span>
+              </p>
             </div>
             <div className="w-full sm:w-48">
               <div className="flex justify-between text-xs text-muted-foreground">

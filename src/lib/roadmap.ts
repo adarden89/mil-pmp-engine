@@ -88,7 +88,7 @@ export function buildRoadmap(result: EligibilityResult, branch: Branch): Roadmap
         },
         {
           id: "found-experience-log",
-          title: path === "PMP" ? "List every project you led in the last 8 years" : "Start a project log today",
+          title: path === "PMP" ? "List every project you led in the last 10 years" : "Start a project log today",
           detail:
             path === "PMP"
               ? "Dates, objective, your role, outcome, and a verifier for each. Use the Accidental PM Mapper to spot projects hiding in your duties."

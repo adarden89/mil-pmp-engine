@@ -3,7 +3,7 @@ import { z } from "zod";
 import { createCheckoutSession } from "@/lib/billing";
 import { cartTotalCents, PRODUCT_IDS, PRODUCTS, validateCart, type ProductId } from "@/lib/catalog";
 import { getEntitlements } from "@/lib/entitlements";
-import { siteUrl } from "@/lib/env";
+import { serverEnv, siteUrl } from "@/lib/env";
 import { clientIp, HttpError, parseJsonBody, toErrorResponse } from "@/lib/http";
 import { checkoutLimiter } from "@/lib/rate-limit";
 import { supabasePublicConfig } from "@/lib/supabase/config";
@@ -38,7 +38,7 @@ export async function POST(request: Request) {
 
     const { productIds } = await parseJsonBody(request, checkoutRequestSchema);
     const owned: ProductId[] = user && supabase ? await getEntitlements(supabase, user.id) : [];
-    const cart = validateCart(productIds, owned);
+    const cart = validateCart(productIds, owned, { servicesEnabled: serverEnv().EXPERT_REVIEW_ENABLED });
     if (!cart.ok) throw new HttpError(409, "invalid_cart", cart.reason);
 
     const checkout = await createCheckoutSession(user, cart.products);

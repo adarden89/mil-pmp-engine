@@ -5,6 +5,8 @@
  */
 
 import type { ProductId } from "@/lib/catalog";
+import type { RankBand } from "@/lib/eligibility";
+import type { Branch } from "@/lib/translation-schema";
 
 type Timestamp = string;
 
@@ -168,6 +170,34 @@ export interface Database {
         };
         Relationships: [];
       };
+      saved_translations: {
+        Row: {
+          id: string;
+          user_id: string;
+          branch: Branch;
+          project_title: string;
+          civilian_project_title: string;
+          start_month: string;
+          end_month: string;
+          input: Json;
+          translation: Json;
+          created_at: Timestamp;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          branch: Branch;
+          project_title: string;
+          civilian_project_title: string;
+          start_month: string;
+          end_month: string;
+          input: Json;
+          translation: Json;
+          created_at?: Timestamp;
+        };
+        Update: never;
+        Relationships: [];
+      };
       member_plans: {
         Row: {
           user_id: string;
@@ -203,6 +233,9 @@ export interface Database {
           user_agent: string | null;
           event_source_url: string | null;
           consent: ConsentState;
+          branch: Branch | null;
+          paygrade_group: RankBand | null;
+          landing_path: string | null;
           created_at: Timestamp;
         };
         Insert: {
@@ -216,6 +249,9 @@ export interface Database {
           user_agent?: string | null;
           event_source_url?: string | null;
           consent?: ConsentState;
+          branch?: Branch | null;
+          paygrade_group?: RankBand | null;
+          landing_path?: string | null;
           created_at?: Timestamp;
         };
         Update: { user_id?: string | null };

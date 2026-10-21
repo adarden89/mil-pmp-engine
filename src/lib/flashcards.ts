@@ -1,15 +1,32 @@
 /**
  * Flashcard deck for members starting from zero.
  *
- * Categories: PM Fundamentals, Agile / Scrum, Predictive / Waterfall, Hybrid,
- * and Business Analysis. Four of these are the CAPM exam's domains (weights
- * below); Hybrid covers the tailoring the PMP tests heavily. Cards that map to
- * a PMP domain (People, Process, Business Environment) carry that tag too.
+ * Two groups of categories:
+ * - CAPM foundations: PM Fundamentals, Agile / Scrum, Predictive / Waterfall,
+ *   Hybrid, and Business Analysis. Four of these are the CAPM exam's domains
+ *   (weights below); Hybrid covers the tailoring the PMP tests heavily.
+ * - PMP 2026 Business Environment: strategy and governance, value realization,
+ *   AI in project delivery, and sustainability. The July 2026 PMP content
+ *   outline raised Business Environment from 8% to 26% of the exam.
+ * Cards that map to a PMP domain (People, Process, Business Environment) carry
+ * that tag too.
  *
  * Cards in FREE_SAMPLE are public; the rest unlock with the Study Vault.
  */
 
-export const CATEGORIES = ["fundamentals", "agile", "predictive", "hybrid", "business_analysis"] as const;
+import { PMP_ECO_2026, type PmpDomainId } from "./pmi-facts";
+
+export const CATEGORIES = [
+  "fundamentals",
+  "agile",
+  "predictive",
+  "hybrid",
+  "business_analysis",
+  "strategy_governance",
+  "value_realization",
+  "ai_delivery",
+  "sustainability",
+] as const;
 export type Category = (typeof CATEGORIES)[number];
 
 export const CATEGORY_LABELS: Record<Category, string> = {
@@ -18,7 +35,19 @@ export const CATEGORY_LABELS: Record<Category, string> = {
   predictive: "Predictive / Waterfall",
   hybrid: "Hybrid",
   business_analysis: "Business Analysis",
+  strategy_governance: "Strategy & Governance",
+  value_realization: "Value Realization",
+  ai_delivery: "AI in Project Delivery",
+  sustainability: "Sustainability",
 };
+
+export const CATEGORY_GROUPS: readonly { label: string; categories: readonly Category[] }[] = [
+  { label: "CAPM foundations", categories: ["fundamentals", "agile", "predictive", "hybrid", "business_analysis"] },
+  {
+    label: "PMP 2026: Business Environment",
+    categories: ["strategy_governance", "value_realization", "ai_delivery", "sustainability"],
+  },
+];
 
 /** CAPM exam content outline weights. Hybrid is not a separate CAPM domain. */
 export const CAPM_WEIGHT: Partial<Record<Category, number>> = {
@@ -28,8 +57,13 @@ export const CAPM_WEIGHT: Partial<Record<Category, number>> = {
   business_analysis: 27,
 };
 
-export const DOMAINS = ["people", "process", "business_environment"] as const;
-export type Domain = (typeof DOMAINS)[number];
+export const DOMAINS = PMP_ECO_2026.domains.map((domain) => domain.id);
+export type Domain = PmpDomainId;
+
+/** Share of the PMP exam per domain, July 2026 content outline. */
+export const PMP_DOMAIN_WEIGHT = Object.fromEntries(
+  PMP_ECO_2026.domains.map((domain) => [domain.id, domain.weight]),
+) as Record<Domain, number>;
 
 export const DOMAIN_LABELS: Record<Domain, string> = {
   people: "People",
@@ -273,35 +307,35 @@ const CORE_CARDS: readonly CardSeed[] = [
   {
     id: "be-benefits-plan",
     domain: "business_environment",
-    category: "hybrid",
+    category: "value_realization",
     front: "What does a benefits management plan describe?",
     back: "How and when the project's benefits will be delivered and measured, tying the work to business value.",
   },
   {
     id: "be-regulation",
     domain: "business_environment",
-    category: "hybrid",
+    category: "strategy_governance",
     front: "A new regulation affects your project mid-execution. What do you do first?",
     back: "Assess the impact on scope, schedule, cost, and compliance, engage the compliance or legal function, and process any change through governance.",
   },
   {
     id: "be-business-case",
     domain: "business_environment",
-    category: "predictive",
+    category: "value_realization",
     front: "What does the business case justify?",
     back: "Why the project is worth the investment: the business need, the options considered, and the expected benefits. It is used to authorize the project and is revisited to confirm it is still worth doing.",
   },
   {
     id: "be-org-change",
     domain: "business_environment",
-    category: "hybrid",
+    category: "strategy_governance",
     front: "Your deliverable changes how another department works. What must you plan for?",
     back: "Organizational change management: stakeholder readiness, training, communication, and transition support so the change is actually adopted.",
   },
   {
     id: "be-governance",
     domain: "business_environment",
-    category: "hybrid",
+    category: "strategy_governance",
     front: "What is project governance?",
     back: "The framework of roles, decision rights, escalation paths, and oversight that guides the project and keeps it aligned with organizational strategy.",
     fieldNote: "The chain of command and approval authorities for the project.",
@@ -309,21 +343,21 @@ const CORE_CARDS: readonly CardSeed[] = [
   {
     id: "be-pestle",
     domain: "business_environment",
-    category: "predictive",
+    category: "strategy_governance",
     front: "What is a PESTLE analysis used for?",
     back: "Scanning Political, Economic, Social, Technological, Legal, and Environmental factors that could affect the project or its benefits.",
   },
   {
     id: "be-value-delivery",
     domain: "business_environment",
-    category: "agile",
+    category: "value_realization",
     front: "In an agile environment, when is value actually delivered?",
     back: "When working increments are accepted and put to use by the business. Outcomes matter more than outputs.",
   },
   {
     id: "be-program-portfolio",
     domain: "business_environment",
-    category: "predictive",
+    category: "strategy_governance",
     front: "How does a program differ from a portfolio?",
     back: "A program groups related projects to gain benefits not available individually. A portfolio groups projects, programs, and operations to meet strategic objectives, and they need not be related.",
   },
@@ -609,6 +643,160 @@ const BEGINNER_CARDS: readonly CardSeed[] = [
   },
 ];
 
+const ECO_2026_CARDS: readonly CardSeed[] = [
+  // Strategy & Governance
+  {
+    id: "be-escalation-thresholds",
+    category: "strategy_governance",
+    domain: "business_environment",
+    front: "What are escalation thresholds in project governance, and why set them in advance?",
+    back: "Agreed tolerance limits (for example, cost or schedule variance) beyond which the project manager must escalate to the sponsor or steering committee. Setting them early means decisions go to the right authority quickly instead of being argued case by case.",
+    fieldNote:
+      "Like a commander's critical information requirements: everyone knows in advance what gets reported up, and when.",
+  },
+  {
+    id: "be-strategy-shift",
+    category: "strategy_governance",
+    domain: "business_environment",
+    front:
+      "Mid-project, leadership changes the organization's strategic priorities. What should the project manager do?",
+    back: "Reassess whether the project still supports the new strategy and its business case, raise the question with the sponsor through governance, and adjust scope, priority, or continuation through formal change control. Do not keep executing a plan that no longer serves the organization.",
+  },
+  {
+    id: "be-compliance-tracking",
+    category: "strategy_governance",
+    domain: "business_environment",
+    front: "How should compliance requirements (safety, security, legal, regulatory) be handled in a project?",
+    back: "Identify them early, record them as requirements with owners, build the controls into the plan, and verify compliance before acceptance. Changes in regulations go through impact analysis and change control.",
+    fieldNote: "The same discipline as a safety or security inspection checklist built into the plan from day one.",
+  },
+  // Value Realization
+  {
+    id: "be-val-output-outcome",
+    category: "value_realization",
+    domain: "business_environment",
+    front: "What is the difference between an output, an outcome, and a benefit?",
+    back: "An output is the deliverable (a new system). An outcome is the change that results from using it (faster processing). A benefit is the measurable gain the organization realizes (hours or dollars saved). Projects produce outputs; value comes from outcomes and benefits.",
+  },
+  {
+    id: "be-val-benefit-owner",
+    category: "value_realization",
+    domain: "business_environment",
+    front: "Who usually owns realizing the benefits after the project closes?",
+    back: "A benefit owner in the business or operations (often designated by the sponsor), not the project manager. Many benefits appear only after handover, so ownership and measurement must be planned before closing.",
+  },
+  {
+    id: "be-val-npv",
+    category: "value_realization",
+    domain: "business_environment",
+    front: "Two projects compete for funding. One has a higher net present value (NPV). Which does NPV favor, and why?",
+    back: "The higher NPV. NPV discounts future cash flows to today's value, so a higher positive NPV means more value created after accounting for the time value of money. A negative NPV destroys value.",
+  },
+  {
+    id: "be-val-measure-early",
+    category: "value_realization",
+    domain: "business_environment",
+    front: "Why measure value during the project instead of only at the end?",
+    back: "Early measurement tests the assumptions in the business case, lets the team reprioritize toward the highest-value work, and exposes a project that will not deliver its benefits while there is still time to change course.",
+  },
+  // AI in Project Delivery
+  {
+    id: "ai-accountability",
+    category: "ai_delivery",
+    domain: "business_environment",
+    front: "A project manager acts on an AI tool's recommendation and it turns out wrong. Who is accountable?",
+    back: "The project manager (and the human decision-makers), not the tool. AI can inform and draft, but people keep accountability for decisions and must apply judgment to what it produces.",
+  },
+  {
+    id: "ai-data-handling",
+    category: "ai_delivery",
+    domain: "business_environment",
+    front: "What must you check before entering project data into an AI tool?",
+    back: "Whether the tool is approved by your organization and whether the data may leave your control: confidentiality, privacy, intellectual property, contractual and regulatory limits. Sensitive data goes only into tools approved for it.",
+    fieldNote: "The same rule as never putting CUI or classified material on an unapproved system.",
+  },
+  {
+    id: "ai-hallucination",
+    category: "ai_delivery",
+    domain: "process",
+    front: "What is an AI hallucination, and how do you control the risk on a project?",
+    back: "A confident but false output, such as an invented figure or source. Control it by treating AI output as a draft, verifying facts against source records, requiring human review before anything is published or decided, and logging the risk.",
+  },
+  {
+    id: "ai-good-uses",
+    category: "ai_delivery",
+    domain: "process",
+    front: "Name project tasks where AI assistance is a good fit.",
+    back: "Drafting status reports and meeting summaries, analyzing schedule or cost data for trends, generating first-pass risk lists, and searching lessons-learned repositories. The project manager reviews and owns every result.",
+  },
+  {
+    id: "ai-bias",
+    category: "ai_delivery",
+    domain: "business_environment",
+    front: "What is algorithmic bias, and why should a project manager care?",
+    back: "Systematic skew in AI output caused by unrepresentative training data or design. It can produce unfair or inaccurate results, creating ethical, legal, and reputational risk. Mitigate with human oversight, testing outputs across groups, and clear escalation when results look wrong.",
+  },
+  {
+    id: "ai-adoption",
+    category: "ai_delivery",
+    domain: "people",
+    front: "How should a project manager introduce a new AI tool to the team?",
+    back: "As an organizational change: start with a pilot, set usage guidelines, train people, address concerns about jobs and quality openly, and measure whether the tool actually delivers the expected benefit.",
+  },
+  {
+    id: "ai-predictive-analytics",
+    category: "ai_delivery",
+    domain: "process",
+    front: "How can predictive analytics help with project control?",
+    back: "By using historical and current data to forecast likely delays, overruns, or risks earlier than manual review would, giving the team time to act. Forecasts are inputs to decisions, not decisions.",
+  },
+  // Sustainability
+  {
+    id: "sus-triple-bottom-line",
+    category: "sustainability",
+    domain: "business_environment",
+    front: "What is the triple bottom line?",
+    back: "Evaluating results on three dimensions: people (social), planet (environmental), and profit or prosperity (economic), rather than on financial results alone.",
+  },
+  {
+    id: "sus-procurement",
+    category: "sustainability",
+    domain: "business_environment",
+    front: "What is sustainable procurement?",
+    back: "Selecting suppliers and materials using environmental and social criteria alongside price, such as energy use, waste, labor practices, and total cost of ownership over the life of the product.",
+  },
+  {
+    id: "sus-life-cycle",
+    category: "sustainability",
+    domain: "business_environment",
+    front: "What does life-cycle thinking add to project planning?",
+    back: "It considers the impacts of the deliverable from design and construction through operation and disposal, not just during the project. A cheaper build can cost more over its life.",
+    fieldNote: "Think of equipment that is cheap to field but expensive to maintain and dispose of.",
+  },
+  {
+    id: "sus-esg",
+    category: "sustainability",
+    domain: "business_environment",
+    front: "What does ESG stand for, and why does it matter to projects?",
+    back: "Environmental, Social, and Governance: factors investors, regulators, and customers use to evaluate an organization. Projects that ignore them can create compliance, reputational, and funding risk.",
+  },
+  {
+    id: "sus-requirements",
+    category: "sustainability",
+    domain: "process",
+    front: "How do you make sustainability goals part of the project rather than an afterthought?",
+    back: "Turn them into measurable requirements and acceptance criteria (for example, a waste-diversion or energy target), assign owners, track them like any other requirement, and report on them at closing.",
+  },
+  {
+    id: "sus-environmental-compliance",
+    category: "sustainability",
+    domain: "business_environment",
+    front: "Your project generates hazardous waste. Where does this belong in the plan?",
+    back: "In the compliance and risk plans: identify the regulations, plan proper handling and disposal with responsible owners, budget for it, and verify compliance before closing.",
+    fieldNote: "The civilian side of HAZMAT handling and environmental compliance on base.",
+  },
+];
+
 const FREE_SAMPLE = new Set([
   "f-what-is-project",
   "f-triple-constraint",
@@ -620,9 +808,17 @@ const FREE_SAMPLE = new Set([
   "pr-hybrid-tailoring",
   "ba-requirement",
   "ba-elicitation",
+  "be-governance",
+  "be-escalation-thresholds",
+  "be-val-output-outcome",
+  "be-benefits-plan",
+  "ai-accountability",
+  "ai-data-handling",
+  "sus-triple-bottom-line",
+  "sus-procurement",
 ]);
 
-export const FLASHCARDS: readonly Flashcard[] = [...BEGINNER_CARDS, ...CORE_CARDS].map((card) => ({
+export const FLASHCARDS: readonly Flashcard[] = [...BEGINNER_CARDS, ...CORE_CARDS, ...ECO_2026_CARDS].map((card) => ({
   ...card,
   free: FREE_SAMPLE.has(card.id),
 }));

@@ -7,7 +7,8 @@
  * what the project inside it looks like.
  */
 
-import type { ProcessGroupKey } from "./translation-schema";
+import { PMP_EXPERIENCE_WINDOW_YEARS } from "./pmi-facts";
+import type { Branch, ProcessGroupKey } from "./translation-schema";
 
 export interface MilitaryDuty {
   id: string;
@@ -18,11 +19,14 @@ export interface MilitaryDuty {
   projectFraming: string;
   processGroups: Record<ProcessGroupKey, string[]>;
   pmiTerms: string[];
+  /** Branches where this duty is typical. Omitted when it is common to every branch. */
+  branches?: readonly Branch[];
 }
 
 export const MILITARY_DUTIES: readonly MilitaryDuty[] = [
   {
     id: "ftx-planning",
+    branches: ["army", "marine_corps"],
     label: "Field exercise (FTX) planning",
     examples: "FTX, CPX, unit training exercise",
     isProject: true,
@@ -78,6 +82,7 @@ export const MILITARY_DUTIES: readonly MilitaryDuty[] = [
   },
   {
     id: "range-safety",
+    branches: ["army", "marine_corps"],
     label: "Range day or range safety officer",
     examples: "Qualification range, live-fire event",
     isProject: true,
@@ -139,6 +144,7 @@ export const MILITARY_DUTIES: readonly MilitaryDuty[] = [
   },
   {
     id: "motor-pool",
+    branches: ["army", "marine_corps"],
     label: "Motor pool or maintenance management",
     examples: "PMCS, services, maintenance scheduling",
     isProject: false,
@@ -155,6 +161,7 @@ export const MILITARY_DUTIES: readonly MilitaryDuty[] = [
   },
   {
     id: "watchbill",
+    branches: ["navy", "coast_guard"],
     label: "Watchbill or duty roster management",
     examples: "Watchbill, duty roster, staffing schedules",
     isProject: false,
@@ -185,11 +192,51 @@ export const MILITARY_DUTIES: readonly MilitaryDuty[] = [
     },
     pmiTerms: ["Scope", "Quality control", "Reconciliation"],
   },
+  {
+    id: "readiness-exercise",
+    branches: ["air_force", "space_force"],
+    label: "Readiness exercise or generation event",
+    examples: "Wing readiness exercise, Agile Combat Employment exercise, mobility or generation exercise",
+    isProject: true,
+    projectFraming:
+      "A single readiness exercise has a start date, a scenario, an objective, and a graded result, so it is a project. Day-to-day readiness reporting is operations.",
+    processGroups: {
+      initiating: ["Defined exercise objectives and success criteria with leadership"],
+      planning: ["Built the exercise timeline, scenario plan, and resource requirements"],
+      executing: ["Led the exercise control team and coordinated participating units"],
+      monitoringControlling: ["Tracked timelines and readiness measures against the objectives"],
+      closing: ["Delivered the out-brief and tracked corrective actions to closure"],
+    },
+    pmiTerms: ["Success criteria", "Stakeholder engagement", "Lessons learned"],
+  },
+  {
+    id: "sar-program",
+    branches: ["coast_guard"],
+    label: "Search and rescue (SAR) exercise or program",
+    examples: "SAREX planning, boat crew qualification program, SAR readiness push",
+    isProject: false,
+    projectFraming:
+      "Standing SAR duty and individual cases are operations, and PMI will not count them. Planning a SAR exercise or standing up a qualification program, with a start and finish, is a project.",
+    processGroups: {
+      initiating: ["Defined the exercise or program goals with the command and partner agencies"],
+      planning: ["Planned scenarios, crews, assets, and the safety plan"],
+      executing: ["Led crews and coordinated with partner agencies"],
+      monitoringControlling: ["Tracked qualification progress and exercise timelines"],
+      closing: ["Ran the debrief and documented lessons learned"],
+    },
+    pmiTerms: ["Stakeholder engagement", "Risk management", "Lessons learned"],
+  },
 ];
 
 export interface MapperSelection {
   dutyId: string;
   months: number;
+}
+
+/** Duties typical for the member's branch first, then those common to every branch, then the rest. */
+export function dutiesFor(branch: Branch | null): MilitaryDuty[] {
+  const rank = (duty: MilitaryDuty) => (!duty.branches ? 1 : branch && duty.branches.includes(branch) ? 0 : 2);
+  return [...MILITARY_DUTIES].sort((a, b) => rank(a) - rank(b));
 }
 
 export function coverageFor(selections: readonly MapperSelection[]): Record<ProcessGroupKey, number> {
@@ -211,10 +258,13 @@ export function coverageFor(selections: readonly MapperSelection[]): Record<Proc
 }
 
 /**
- * Sum of months entered, capped at PMI's eight-year window. Overlapping months
+ * Sum of months entered, capped at PMI's 10-year window. Overlapping months
  * count once with PMI, so the UI tells members to enter non-overlapping time.
  */
-export function totalMapperMonths(selections: readonly MapperSelection[], windowMonths = 96): number {
+export function totalMapperMonths(
+  selections: readonly MapperSelection[],
+  windowMonths = PMP_EXPERIENCE_WINDOW_YEARS * 12,
+): number {
   const total = selections.reduce((sum, selection) => sum + Math.max(0, Math.floor(selection.months)), 0);
   return Math.min(total, windowMonths);
 }

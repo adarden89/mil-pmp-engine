@@ -9,7 +9,7 @@
  * deceptive. The pricing page anchors on real exam fees instead (pmi-facts.ts).
  */
 
-export const PRODUCT_IDS = ["base_tool", "cool_fast_track", "exam_vault"] as const;
+export const PRODUCT_IDS = ["base_tool", "cool_fast_track", "exam_vault", "expert_review"] as const;
 export type ProductId = (typeof PRODUCT_IDS)[number];
 
 export interface Product {
@@ -17,7 +17,11 @@ export interface Product {
   name: string;
   shortName: string;
   priceCents: number;
-  kind: "base" | "addon";
+  /**
+   * base: the entry product. addon: software extras sold in checkout and in 1
+   * click. service: human-delivered work, sold only when the server enables it.
+   */
+  kind: "base" | "addon" | "service";
   headline: string;
   features: readonly string[];
   /** Route the buyer lands on first after this product unlocks. */
@@ -39,7 +43,7 @@ export const PRODUCTS: Record<ProductId, Product> = {
       "Personal dashboard with CAPM / PMP readiness plan",
       "Copy-ready text for every PMI experience field",
     ],
-    unlocksPath: "/translate",
+    unlocksPath: "/dashboard/translator",
   },
   cool_fast_track: {
     id: "cool_fast_track",
@@ -66,15 +70,32 @@ export const PRODUCTS: Record<ProductId, Product> = {
     headline: "Spaced-repetition flashcards that start from zero and end exam-ready.",
     features: [
       "Full deck across PM Fundamentals, Agile / Scrum, Predictive, Hybrid, and Business Analysis",
-      "Mapped to the CAPM domains and tagged to PMP domains",
+      "2026 PMP Business Environment modules: strategy, governance, value, AI, and sustainability",
+      "Mapped to the CAPM domains and to the 2026 PMP domain weights (People 33%, Process 41%, Business Environment 26%)",
       "Leitner-box retention tracking synced to your account",
       "Top trainer and tool breakdown: Study Hall, Pocket Prep, Ramdayal, Phillips, O2O",
     ],
     unlocksPath: "/vault",
   },
+  expert_review: {
+    id: "expert_review",
+    name: "Human Expert Application Review",
+    shortName: "Expert Review",
+    priceCents: 29900,
+    kind: "service",
+    headline: "A human reviewer checks your project descriptions and verification packet before you submit to PMI.",
+    features: [
+      "Line-by-line review of your translated project descriptions against your own evaluations",
+      "A check of your supervisor verification packet before you send it",
+      "Written fixes for every audit flag",
+      "We never add experience you did not do, and no one can guarantee the outcome of a PMI audit",
+    ],
+    unlocksPath: "/dashboard/verification",
+  },
 };
 
 export const ADDON_IDS: readonly ProductId[] = PRODUCT_IDS.filter((id) => PRODUCTS[id].kind === "addon");
+export const SERVICE_IDS: readonly ProductId[] = PRODUCT_IDS.filter((id) => PRODUCTS[id].kind === "service");
 
 export function isProductId(value: unknown): value is ProductId {
   return typeof value === "string" && (PRODUCT_IDS as readonly string[]).includes(value);
@@ -89,12 +110,20 @@ export type CartValidation = { ok: true; products: ProductId[] } | { ok: false; 
 /**
  * Add-ons extend the base tool, so a cart must either contain the base tool or
  * belong to someone who already owns it. Already-owned items are rejected so
- * nobody pays twice.
+ * nobody pays twice. Services are rejected unless the server has enabled them.
  */
-export function validateCart(requested: readonly ProductId[], owned: readonly ProductId[]): CartValidation {
+export function validateCart(
+  requested: readonly ProductId[],
+  owned: readonly ProductId[],
+  { servicesEnabled = false }: { servicesEnabled?: boolean } = {},
+): CartValidation {
   const products = [...new Set(requested)];
   if (products.length === 0) {
     return { ok: false, reason: "Select at least one product." };
+  }
+  const service = products.find((id) => SERVICE_IDS.includes(id));
+  if (service && !servicesEnabled) {
+    return { ok: false, reason: `${PRODUCTS[service].name} is not available yet.` };
   }
   const duplicate = products.find((id) => owned.includes(id));
   if (duplicate) {

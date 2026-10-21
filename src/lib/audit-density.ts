@@ -1,4 +1,4 @@
-import type { ProcessGroupKey, TranslationResult } from "./translation-schema";
+import type { ProcessGroupKey, TranslateRequest, TranslationResult } from "./translation-schema";
 import { countWords } from "./utils";
 
 /**
@@ -13,7 +13,7 @@ import { countWords } from "./utils";
 export type CheckStatus = "pass" | "warn" | "fail";
 
 export interface AuditCheck {
-  id: "length" | "coverage" | "metrics" | "jargon" | "ownership" | "elements";
+  id: "length" | "coverage" | "metrics" | "jargon" | "ownership" | "elements" | "fidelity";
   label: string;
   status: CheckStatus;
   detail: string;
@@ -26,6 +26,15 @@ export interface AuditDensityReport {
   gradeLabel: string;
   wordCount: number;
   checks: AuditCheck[];
+  /** Figures in the write-up that do not appear in the member's own material. */
+  unsupportedFigures: string[];
+}
+
+/** What the member actually wrote, so every figure in the draft can be traced back to it. */
+export interface AuditSource {
+  text: string;
+  /** Numbers derived from structured inputs, such as the project length in months. */
+  allowedNumbers?: readonly number[];
 }
 
 /** Military terms a civilian PMI reviewer may not parse. Matched as whole words. */
@@ -119,6 +128,108 @@ export function countQuantifiers(text: string): number {
   return matches.filter((match) => !/^(19|20)\d{2}$/.test(match)).length;
 }
 
+function monthNumber(yyyyMm: string): number {
+  const [year, month] = yyyyMm.split("-").map(Number);
+  return year * 12 + month;
+}
+
+/** Everything the member typed for this project, plus the project length derived from its dates. */
+export function auditSourceFor(input: TranslateRequest): AuditSource {
+  const span = monthNumber(input.endMonth) - monthNumber(input.startMonth);
+  const allowed = [span, span + 1, ...(input.teamSize ? [input.teamSize] : [])];
+  if ((span + 1) % 12 === 0) allowed.push((span + 1) / 12);
+  return {
+    text: [input.rawBullets, input.jstCourses ?? "", input.projectTitle, input.billet, input.rateOrMos].join("\n"),
+    allowedNumbers: allowed,
+  };
+}
+
+const NUMBER_WORDS: Record<string, number> = {
+  one: 1,
+  two: 2,
+  three: 3,
+  four: 4,
+  five: 5,
+  six: 6,
+  seven: 7,
+  eight: 8,
+  nine: 9,
+  ten: 10,
+  eleven: 11,
+  twelve: 12,
+  dozen: 12,
+  fifteen: 15,
+  twenty: 20,
+  thirty: 30,
+  fifty: 50,
+  hundred: 100,
+};
+
+const SCALE: Record<string, number> = { k: 1e3, thousand: 1e3, m: 1e6, million: 1e6, b: 1e9, billion: 1e9 };
+
+const figurePattern = /(\d{1,3}(?:,\d{3})+(?:\.\d+)?|\d+(?:\.\d+)?)\s*(k|m|b|thousand|million|billion)?\b/gi;
+
+function round(value: number): number {
+  return Math.round(value * 1000) / 1000;
+}
+
+/**
+ * Numeric values mentioned in a text, with scaled variants: "$2.1M" yields 2.1
+ * and 2,100,000 so "$2.1 million" in the draft matches "$2.1M" in the bullets.
+ */
+export function extractFigures(text: string): { raw: string; values: number[] }[] {
+  const figures: { raw: string; values: number[] }[] = [];
+  for (const match of text.matchAll(figurePattern)) {
+    const base = Number(match[1].replace(/,/g, ""));
+    if (!Number.isFinite(base)) continue;
+    const scale = match[2] ? SCALE[match[2].toLowerCase()] : undefined;
+    figures.push({ raw: match[0].trim(), values: scale ? [round(base), round(base * scale)] : [round(base)] });
+  }
+  return figures;
+}
+
+function knownNumbers(source: AuditSource): Set<number> {
+  const known = new Set<number>(source.allowedNumbers ?? []);
+  for (const figure of extractFigures(source.text)) {
+    for (const value of figure.values) known.add(value);
+  }
+  for (const word of source.text.toLowerCase().match(/[a-z]+/g) ?? []) {
+    if (word in NUMBER_WORDS) known.add(NUMBER_WORDS[word]);
+  }
+  return known;
+}
+
+/**
+ * Figures in the draft that never appear in the member's material: the most
+ * likely sign of an invented budget, headcount, or result. Calendar years and
+ * single digits used as list counts are ignored.
+ */
+export function findUnsupportedFigures(draft: string, source: AuditSource): string[] {
+  const known = knownNumbers(source);
+  const unsupported = new Set<string>();
+  for (const figure of extractFigures(draft)) {
+    const [value] = figure.values;
+    if (/^(19|20)\d{2}$/.test(figure.raw)) continue;
+    if (figure.values.some((candidate) => known.has(candidate))) continue;
+    if (value <= 5 && Number.isInteger(value) && !/[%$]/.test(figure.raw)) continue;
+    unsupported.add(figure.raw);
+  }
+  return [...unsupported];
+}
+
+function fidelityCheck(unsupported: string[]): AuditCheck {
+  const base = { id: "fidelity", label: "Every figure traces to your bullets", weight: 20 } as const;
+  if (unsupported.length === 0) {
+    return { ...base, status: "pass", detail: "No numbers appear that are missing from your own material." };
+  }
+  const list = unsupported.map((figure) => `"${figure}"`).join(", ");
+  return {
+    ...base,
+    status: unsupported.length === 1 ? "warn" : "fail",
+    detail: `Not found in your bullets: ${list}. Verify each one or remove it before you submit.`,
+  };
+}
+
 function lengthCheck(wordCount: number): AuditCheck {
   const base = { id: "length", label: "PMI length window (200-500 words)", weight: 20 } as const;
   if (wordCount >= 200 && wordCount <= 500) {
@@ -204,8 +315,11 @@ function elementsCheck(result: TranslationResult): AuditCheck {
 
 const STATUS_CREDIT: Record<CheckStatus, number> = { pass: 1, warn: 0.5, fail: 0 };
 
-export function analyzeAuditDensity(result: TranslationResult): AuditDensityReport {
+export function analyzeAuditDensity(result: TranslationResult, source?: AuditSource): AuditDensityReport {
   const wordCount = countWords(result.applicationSummary);
+  const unsupportedFigures = source
+    ? findUnsupportedFigures(`${result.applicationSummary} ${result.outcome}`, source)
+    : [];
   const checks = [
     lengthCheck(wordCount),
     coverageCheck(result.processGroups),
@@ -213,6 +327,7 @@ export function analyzeAuditDensity(result: TranslationResult): AuditDensityRepo
     jargonCheck(result.applicationSummary),
     ownershipCheck(result.applicationSummary),
     elementsCheck(result),
+    ...(source ? [fidelityCheck(unsupportedFigures)] : []),
   ];
   const totalWeight = checks.reduce((sum, check) => sum + check.weight, 0);
   const earned = checks.reduce((sum, check) => sum + check.weight * STATUS_CREDIT[check.status], 0);
@@ -220,5 +335,5 @@ export function analyzeAuditDensity(result: TranslationResult): AuditDensityRepo
   const grade = score >= 80 ? "audit_ready" : score >= 60 ? "needs_work" : "high_risk";
   const gradeLabel =
     grade === "audit_ready" ? "Low audit risk" : grade === "needs_work" ? "Moderate audit risk" : "High audit risk";
-  return { score, grade, gradeLabel, wordCount, checks };
+  return { score, grade, gradeLabel, wordCount, checks, unsupportedFigures };
 }

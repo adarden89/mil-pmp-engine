@@ -83,7 +83,7 @@ export function buildJstAuditChecklist(p: PacketPersonalization): ArrayBuffer {
     pdf
       .section("3. Map experience to projects")
       .checklist([
-        "List each project you led in the last 8 years with start and end months.",
+        "List each project you led in the last 10 years with start and end months.",
         "For each, name a verifier (supervisor or department head) you can still contact.",
         "Do not count months twice when projects overlap. PMI counts calendar months of experience.",
         "Translate each project in the MilToPMP Translation Studio and resolve every audit flag.",

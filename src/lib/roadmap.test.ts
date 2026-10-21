@@ -56,13 +56,13 @@ describe("Accidental PM mapper", () => {
     expect(coverageFor([{ dutyId: "ftx-planning", months: 3 }]).closing).toBe(1);
   });
 
-  it("caps total months at the eight-year window and ignores negatives", () => {
+  it("caps total months at the 10-year window and ignores negatives", () => {
     expect(
       totalMapperMonths([
         { dutyId: "a", months: 80 },
-        { dutyId: "b", months: 40 },
+        { dutyId: "b", months: 60 },
       ]),
-    ).toBe(96);
+    ).toBe(120);
     expect(
       totalMapperMonths([
         { dutyId: "a", months: -5 },

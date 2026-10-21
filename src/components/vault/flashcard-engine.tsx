@@ -16,8 +16,11 @@ import {
   cardsForAccess,
   CAPM_WEIGHT,
   CATEGORIES,
+  CATEGORY_GROUPS,
   CATEGORY_LABELS,
   DOMAIN_LABELS,
+  DOMAINS,
+  PMP_DOMAIN_WEIGHT,
   FLASHCARDS,
   type Category,
   type Flashcard,
@@ -94,7 +97,7 @@ export function FlashcardEngine() {
 
   return (
     <div className="space-y-8">
-      <div className="grid gap-4 sm:grid-cols-3 xl:grid-cols-6">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Card className="p-5">
           <p className="font-mono text-xs tracking-widest text-subtle uppercase">Overall</p>
           <p className="mt-2 text-3xl font-semibold">{overall.retention}%</p>
@@ -102,30 +105,61 @@ export function FlashcardEngine() {
             {overall.mastered} mastered · {overall.seen}/{overall.total} seen
           </p>
         </Card>
-        {CATEGORIES.map((key) => {
+        {DOMAINS.map((domain) => {
           const summary = summarizeRetention(
-            deck.filter((card) => card.category === key),
+            deck.filter((card) => card.domain === domain),
             progress,
           );
-          const weight = CAPM_WEIGHT[key];
           return (
-            <Card key={key} className="p-5">
-              <p className="text-sm font-medium">{CATEGORY_LABELS[key]}</p>
-              <p className="font-mono text-[11px] text-subtle">
-                {weight ? `${weight}% of CAPM` : "Heavily tested on PMP"}
-              </p>
+            <Card key={domain} className="p-5">
+              <div className="flex items-baseline justify-between gap-2">
+                <p className="text-sm font-medium">{DOMAIN_LABELS[domain]}</p>
+                <p className="font-mono text-lg font-semibold">{PMP_DOMAIN_WEIGHT[domain]}%</p>
+              </div>
+              <p className="font-mono text-[11px] text-subtle">of the PMP exam (2026 outline)</p>
               <Progress
                 value={summary.retention}
                 className="mt-4"
                 tone={summary.retention >= 70 ? "success" : summary.retention >= 40 ? "brand" : "warning"}
               />
               <p className="mt-2 text-xs text-muted-foreground">
-                {summary.retention}% · {summary.total} cards
+                {summary.retention}% retained · {summary.total} cards
               </p>
             </Card>
           );
         })}
       </div>
+
+      {CATEGORY_GROUPS.map((group) => (
+        <section key={group.label} aria-label={group.label}>
+          <p className="font-mono text-xs tracking-widest text-subtle uppercase">{group.label}</p>
+          <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-5">
+            {group.categories.map((key) => {
+              const summary = summarizeRetention(
+                deck.filter((card) => card.category === key),
+                progress,
+              );
+              const weight = CAPM_WEIGHT[key];
+              return (
+                <Card key={key} className="p-4">
+                  <p className="text-sm font-medium">{CATEGORY_LABELS[key]}</p>
+                  <p className="font-mono text-[11px] text-subtle">
+                    {weight ? `${weight}% of CAPM` : key === "hybrid" ? "Heavily tested on PMP" : "PMP 2026"}
+                  </p>
+                  <Progress
+                    value={summary.retention}
+                    className="mt-3"
+                    tone={summary.retention >= 70 ? "success" : summary.retention >= 40 ? "brand" : "warning"}
+                  />
+                  <p className="mt-2 text-xs text-muted-foreground">
+                    {summary.retention}% · {summary.total} cards
+                  </p>
+                </Card>
+              );
+            })}
+          </div>
+        </section>
+      ))}
 
       {!hasVault ? (
         <div className="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-brass/30 bg-brass/10 px-5 py-4">

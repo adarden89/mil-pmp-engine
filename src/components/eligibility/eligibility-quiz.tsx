@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { ArrowLeft, ArrowRight, Check, GraduationCap, Medal, Timer, Wand } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Flag, GraduationCap, Medal, Timer, Wand } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -21,10 +21,12 @@ import { BRANCH_LABELS, BRANCHES, type Branch } from "@/lib/translation-schema";
 import { cn } from "@/lib/utils";
 import { planStore, usePlan } from "./plan-store";
 
+/** One question per step; single-choice steps advance as soon as the member picks. */
 const STEPS = [
-  { icon: Medal, title: "Your service" },
-  { icon: GraduationCap, title: "Your education" },
-  { icon: Timer, title: "Your experience" },
+  { icon: Flag, title: "Branch" },
+  { icon: Medal, title: "Pay grade" },
+  { icon: GraduationCap, title: "Education" },
+  { icon: Timer, title: "Experience" },
 ] as const;
 
 interface Draft {
@@ -32,6 +34,8 @@ interface Draft {
   rank: RankBand | null;
   education: EducationLevel | null;
   leadershipMonths: number;
+  serving: boolean;
+  separatedOn: string;
 }
 
 function OptionButton({
@@ -73,18 +77,27 @@ export function EligibilityQuiz({ onComplete }: { onComplete: (input: Eligibilit
     rank: plan.input?.rank ?? null,
     education: plan.input?.education ?? null,
     leadershipMonths: plan.input?.leadershipMonths ?? 0,
+    serving: !plan.input?.separatedOn,
+    separatedOn: plan.input?.separatedOn ?? "",
   }));
   const mapperMonths = totalMapperMonths(plan.mapper);
 
-  const canContinue = step === 0 ? Boolean(draft.branch && draft.rank) : step === 1 ? Boolean(draft.education) : true;
+  const canContinue = [Boolean(draft.branch), Boolean(draft.rank), Boolean(draft.education), true][step];
+
+  function choose(patch: Partial<Draft>) {
+    setDraft((current) => ({ ...current, ...patch }));
+    setStep((current) => Math.min(current + 1, STEPS.length - 1));
+  }
+  const separationMissing = !draft.serving && !/^\d{4}-(0[1-9]|1[0-2])$/.test(draft.separatedOn);
 
   function submit() {
-    if (!draft.branch || !draft.rank || !draft.education) return;
+    if (!draft.branch || !draft.rank || !draft.education || separationMissing) return;
     const input: EligibilityInput = {
       branch: draft.branch,
       rank: draft.rank,
       education: draft.education,
       leadershipMonths: Math.max(0, Math.round(draft.leadershipMonths)),
+      separatedOn: draft.serving ? null : draft.separatedOn,
     };
     planStore.setInput(input);
     onComplete(input);
@@ -125,38 +138,42 @@ export function EligibilityQuiz({ onComplete }: { onComplete: (input: Eligibilit
         <AnimatePresence mode="wait">
           <motion.div key={step} {...slide} className="space-y-7">
             {step === 0 ? (
-              <>
-                <fieldset>
-                  <legend className="text-lg font-semibold">Branch of service</legend>
-                  <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3">
-                    {BRANCHES.map((branch) => (
-                      <OptionButton
-                        key={branch}
-                        selected={draft.branch === branch}
-                        label={BRANCH_LABELS[branch].replace("U.S. ", "")}
-                        onClick={() => setDraft({ ...draft, branch })}
-                      />
-                    ))}
-                  </div>
-                </fieldset>
-                <fieldset>
-                  <legend className="text-lg font-semibold">Pay grade</legend>
-                  <div className="mt-4 grid gap-2 sm:grid-cols-3">
-                    {RANK_BANDS.map((rank) => (
-                      <OptionButton
-                        key={rank}
-                        selected={draft.rank === rank}
-                        label={RANK_LABELS[rank].label}
-                        detail={RANK_LABELS[rank].detail}
-                        onClick={() => setDraft({ ...draft, rank })}
-                      />
-                    ))}
-                  </div>
-                </fieldset>
-              </>
+              <fieldset>
+                <legend className="text-lg font-semibold">Branch of service</legend>
+                <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3">
+                  {BRANCHES.map((branch) => (
+                    <OptionButton
+                      key={branch}
+                      selected={draft.branch === branch}
+                      label={BRANCH_LABELS[branch].replace("U.S. ", "")}
+                      onClick={() => choose({ branch })}
+                    />
+                  ))}
+                </div>
+              </fieldset>
             ) : null}
 
             {step === 1 ? (
+              <fieldset>
+                <legend className="text-lg font-semibold">Pay grade</legend>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  PMI never looks at rank. We use it to suggest where to start.
+                </p>
+                <div className="mt-4 grid gap-2 sm:grid-cols-3">
+                  {RANK_BANDS.map((rank) => (
+                    <OptionButton
+                      key={rank}
+                      selected={draft.rank === rank}
+                      label={RANK_LABELS[rank].label}
+                      detail={RANK_LABELS[rank].detail}
+                      onClick={() => choose({ rank })}
+                    />
+                  ))}
+                </div>
+              </fieldset>
+            ) : null}
+
+            {step === 2 ? (
               <fieldset>
                 <legend className="text-lg font-semibold">Highest completed education</legend>
                 <p className="mt-1 text-sm text-muted-foreground">
@@ -169,17 +186,17 @@ export function EligibilityQuiz({ onComplete }: { onComplete: (input: Eligibilit
                       selected={draft.education === education}
                       label={EDUCATION_LABELS[education].label}
                       detail={EDUCATION_LABELS[education].detail}
-                      onClick={() => setDraft({ ...draft, education })}
+                      onClick={() => choose({ education })}
                     />
                   ))}
                 </div>
               </fieldset>
             ) : null}
 
-            {step === 2 ? (
+            {step === 3 ? (
               <div>
                 <Label htmlFor="leadershipMonths" className="text-lg font-semibold">
-                  Months spent leading projects in the last 8 years
+                  Months spent leading projects in the last 10 years
                 </Label>
                 <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
                   Not your total time in service. Count months where you led or directed a defined effort: an exercise,
@@ -216,6 +233,39 @@ export function EligibilityQuiz({ onComplete }: { onComplete: (input: Eligibilit
                     PMI only counts the last {EXPERIENCE_WINDOW_MONTHS} months, so anything above that is ignored.
                   </p>
                 ) : null}
+                <fieldset className="mt-7">
+                  <legend className="text-sm font-semibold">Are you still on active duty?</legend>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    Veterans lose countable months as their service ages out of PMI&apos;s 10-year window.
+                  </p>
+                  <div className="mt-3 flex flex-wrap items-center gap-2">
+                    <OptionButton
+                      selected={draft.serving}
+                      label="Still serving"
+                      onClick={() => setDraft({ ...draft, serving: true })}
+                    />
+                    <OptionButton
+                      selected={!draft.serving}
+                      label="I have separated"
+                      onClick={() => setDraft({ ...draft, serving: false })}
+                    />
+                    {!draft.serving ? (
+                      <div className="flex items-center gap-2">
+                        <Label htmlFor="separatedOn" className="text-sm text-muted-foreground">
+                          Separation month
+                        </Label>
+                        <Input
+                          id="separatedOn"
+                          type="month"
+                          className="w-44"
+                          value={draft.separatedOn}
+                          onChange={(event) => setDraft({ ...draft, separatedOn: event.target.value })}
+                          aria-invalid={separationMissing}
+                        />
+                      </div>
+                    ) : null}
+                  </div>
+                </fieldset>
                 <div className="mt-6 flex flex-wrap items-center gap-3 rounded-xl border border-border bg-bg-elevated/60 p-4 text-sm">
                   <Wand className="size-4 text-primary" aria-hidden />
                   {mapperMonths > 0 ? (
@@ -260,7 +310,7 @@ export function EligibilityQuiz({ onComplete }: { onComplete: (input: Eligibilit
               Continue <ArrowRight className="size-4" aria-hidden />
             </Button>
           ) : (
-            <Button onClick={submit}>
+            <Button onClick={submit} disabled={separationMissing}>
               Build my roadmap <ArrowRight className="size-4" aria-hidden />
             </Button>
           )}
