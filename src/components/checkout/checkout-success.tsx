@@ -1,0 +1,126 @@
+"use client";
+
+import { motion } from "framer-motion";
+import { CircleCheck, LoaderCircle, ShieldCheck } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import type { CheckoutVerifyResponse } from "@/app/api/checkout/verify/route";
+import { useSession } from "@/components/providers/session-provider";
+import { LinkButton } from "@/components/ui/button";
+import { Card } from "@/components/ui/primitives";
+import { apiFetch } from "@/lib/api-client";
+import { PRODUCTS } from "@/lib/catalog";
+
+const MAX_ATTEMPTS = 10;
+const RETRY_MS = 2000;
+const REDIRECT_DELAY_MS = 2200;
+
+type Phase =
+  | { kind: "verifying" }
+  | { kind: "unlocked"; data: CheckoutVerifyResponse }
+  | { kind: "delayed" }
+  | { kind: "error"; message: string };
+
+/**
+ * Confirms payment with the server (which fulfills idempotently), shows what
+ * unlocked, then drops the buyer straight into their dashboard.
+ */
+export function CheckoutSuccess() {
+  const params = useSearchParams();
+  const router = useRouter();
+  const { refresh } = useSession();
+  const sessionId = params.get("session_id");
+  const [phase, setPhase] = useState<Phase>(
+    sessionId ? { kind: "verifying" } : { kind: "error", message: "Missing checkout reference." },
+  );
+
+  useEffect(() => {
+    if (!sessionId) return;
+    let cancelled = false;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+
+    async function attempt(count: number) {
+      const result = await apiFetch<CheckoutVerifyResponse>(
+        `/api/checkout/verify?session_id=${encodeURIComponent(sessionId!)}`,
+      );
+      if (cancelled) return;
+      if (result.ok && result.data.status === "fulfilled") {
+        await refresh();
+        setPhase({ kind: "unlocked", data: result.data });
+        timer = setTimeout(() => router.replace(result.data.redirectTo), REDIRECT_DELAY_MS);
+        return;
+      }
+      if (!result.ok && result.status !== 0 && result.status < 500) {
+        setPhase({ kind: "error", message: result.message });
+        return;
+      }
+      if (count + 1 >= MAX_ATTEMPTS) {
+        setPhase({ kind: "delayed" });
+        return;
+      }
+      timer = setTimeout(() => void attempt(count + 1), RETRY_MS);
+    }
+
+    void attempt(0);
+    return () => {
+      cancelled = true;
+      if (timer) clearTimeout(timer);
+    };
+  }, [sessionId, refresh, router]);
+
+  if (phase.kind === "unlocked") {
+    return (
+      <Card className="mx-auto max-w-lg p-10 text-center">
+        <motion.span
+          initial={{ scale: 0.4, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ type: "spring", stiffness: 260, damping: 18 }}
+          className="mx-auto grid size-14 place-items-center rounded-2xl bg-success/15 text-success"
+        >
+          <ShieldCheck className="size-7" aria-hidden />
+        </motion.span>
+        <h1 className="mt-5 text-2xl font-semibold">Payment confirmed</h1>
+        <ul className="mt-5 space-y-2 text-left">
+          {phase.data.entitlements.map((id) => (
+            <motion.li
+              key={id}
+              initial={{ opacity: 0, x: -8 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm"
+            >
+              <CircleCheck className="size-4 text-success" aria-hidden />
+              {PRODUCTS[id].name}
+            </motion.li>
+          ))}
+        </ul>
+        <p className="mt-6 text-sm text-muted">Taking you to your dashboard…</p>
+      </Card>
+    );
+  }
+
+  if (phase.kind === "verifying") {
+    return (
+      <Card className="mx-auto flex max-w-lg flex-col items-center p-10 text-center">
+        <LoaderCircle className="size-8 animate-spin text-brand" aria-hidden />
+        <h1 className="mt-4 text-xl font-semibold">Confirming your payment</h1>
+        <p className="mt-1 text-sm text-muted">This usually takes a few seconds.</p>
+      </Card>
+    );
+  }
+
+  return (
+    <Card className="mx-auto max-w-lg p-10 text-center">
+      <h1 className="text-xl font-semibold">
+        {phase.kind === "delayed" ? "Your payment is still processing" : "We couldn't confirm this checkout"}
+      </h1>
+      <p className="mt-2 text-sm text-muted">
+        {phase.kind === "delayed"
+          ? "Stripe has your payment. Access unlocks automatically as soon as it clears, usually within minutes."
+          : phase.message}
+      </p>
+      <LinkButton href="/dashboard" className="mt-6">
+        Go to dashboard
+      </LinkButton>
+    </Card>
+  );
+}

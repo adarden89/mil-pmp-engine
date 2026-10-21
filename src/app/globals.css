@@ -1,0 +1,145 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* ---------------------------------------------------------------------------
+ * Design tokens. Dark is the default command-center look; light mirrors it.
+ * ------------------------------------------------------------------------- */
+:root,
+[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #05070d;
+  --bg-elevated: #080c16;
+  --surface: #0b1120;
+  --surface-2: #111a2e;
+  --border: rgb(148 163 184 / 0.14);
+  --border-strong: rgb(148 163 184 / 0.28);
+  --fg: #e7ebf3;
+  --muted: #8d97ab;
+  --subtle: #5d6880;
+  --brand: #3b82f6;
+  --brand-2: #22d3ee;
+  --brass: #f2b544;
+  --success: #34d399;
+  --warning: #fbbf24;
+  --danger: #f87171;
+  --ring: rgb(59 130 246 / 0.55);
+  --grid-line: rgb(148 163 184 / 0.06);
+  --glow: rgb(59 130 246 / 0.18);
+}
+
+[data-theme="light"] {
+  color-scheme: light;
+  --bg: #f6f8fc;
+  --bg-elevated: #ffffff;
+  --surface: #ffffff;
+  --surface-2: #f0f3f9;
+  --border: rgb(15 23 42 / 0.09);
+  --border-strong: rgb(15 23 42 / 0.18);
+  --fg: #0b1220;
+  --muted: #536079;
+  --subtle: #8792a8;
+  --brand: #2563eb;
+  --brand-2: #0891b2;
+  --brass: #b7791f;
+  --success: #059669;
+  --warning: #d97706;
+  --danger: #dc2626;
+  --ring: rgb(37 99 235 / 0.45);
+  --grid-line: rgb(15 23 42 / 0.05);
+  --glow: rgb(37 99 235 / 0.12);
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-bg-elevated: var(--bg-elevated);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-subtle: var(--subtle);
+  --color-brand: var(--brand);
+  --color-brand-2: var(--brand-2);
+  --color-brass: var(--brass);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5rem;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background: rgb(59 130 246 / 0.3);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+}
+
+@layer utilities {
+  .bg-grid {
+    background-image:
+      linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+    background-size: 56px 56px;
+  }
+
+  .bg-radial-glow {
+    background: radial-gradient(60% 50% at 50% 0%, var(--glow), transparent 70%);
+  }
+
+  .text-gradient {
+    background: linear-gradient(100deg, var(--brand) 10%, var(--brand-2) 90%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .border-gradient {
+    border: 1px solid transparent;
+    background:
+      linear-gradient(var(--surface), var(--surface)) padding-box,
+      linear-gradient(135deg, var(--brand), var(--brand-2)) border-box;
+  }
+
+  .mask-fade-b {
+    mask-image: linear-gradient(to bottom, black 60%, transparent);
+  }
+
+  .perspective-1200 {
+    perspective: 1200px;
+  }
+
+  .preserve-3d {
+    transform-style: preserve-3d;
+  }
+
+  .backface-hidden {
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+}
