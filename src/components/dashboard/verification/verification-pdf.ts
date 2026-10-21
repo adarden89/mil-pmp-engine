@@ -36,7 +36,7 @@ const BOX: Rgb = [148, 163, 184];
 const MARGIN = 54;
 const TOP = 36;
 const BODY_SIZE = 8;
-const LEADING = 10;
+const LEADING = 9.75;
 const CELL_PADDING = 6;
 const COLUMN_GAP = 16;
 
@@ -48,7 +48,7 @@ class PacketLayout {
   constructor(private readonly doc: jsPDF) {
     this.width = doc.internal.pageSize.getWidth();
     // Last baseline sits clear of PdfBuilder's footer, which is stamped at height - 36.
-    this.bottom = doc.internal.pageSize.getHeight() - 50;
+    this.bottom = doc.internal.pageSize.getHeight() - 48;
   }
 
   private get contentWidth(): number {
@@ -101,13 +101,21 @@ class PacketLayout {
 
   section(title: string): void {
     this.ensure(30);
-    this.y += 6;
+    this.y += 5;
     this.style(8.5, "bold");
     this.doc.text(toPdfText(title.toUpperCase()), MARGIN, this.y);
     this.y += 4;
+    this.rule();
+    this.y += 10;
+  }
+
+  rule(): void {
     this.doc.setDrawColor(...RULE).setLineWidth(0.8);
     this.doc.line(MARGIN, this.y, this.width - MARGIN, this.y);
-    this.y += 11;
+  }
+
+  gap(points: number): void {
+    this.y += points;
   }
 
   /** Small-caps label above a wrapped value, laid out in equal columns. */
@@ -118,7 +126,7 @@ class PacketLayout {
         this.style(cell.strong ? 9.5 : 8.5, cell.strong ? "bold" : "normal");
         return { ...cell, lines: this.wrap(cell.value, columnWidth) };
       });
-      const height = 10 + Math.max(...row.map((cell) => cell.lines.length)) * 11 + 6;
+      const height = 10 + Math.max(...row.map((cell) => cell.lines.length)) * 11 + 5;
       this.ensure(height);
       row.forEach((cell, index) => {
         const x = MARGIN + index * (columnWidth + COLUMN_GAP);
@@ -190,11 +198,11 @@ class PacketLayout {
     this.style(8.5, "normal");
     for (const item of items) {
       const lines = this.wrap(item, this.contentWidth - 16);
-      this.ensure(lines.length * 11 + 3);
+      this.ensure(lines.length * 11 + 2);
       this.doc.setDrawColor(...BOX).setLineWidth(0.8);
       this.doc.rect(MARGIN, this.y - 7, 7.5, 7.5);
       lines.forEach((line, index) => this.doc.text(line, MARGIN + 15, this.y + index * 11));
-      this.y += lines.length * 11 + 3;
+      this.y += lines.length * 11 + 2;
     }
   }
 
@@ -222,7 +230,7 @@ class PacketLayout {
 
     for (let start = 0; start < entries.length; start += 2) {
       const row = entries.slice(start, start + 2).map(layoutEntry);
-      const height = Math.max(...row.map((entry) => entry.height)) + 3;
+      const height = Math.max(...row.map((entry) => entry.height)) + 2;
       this.ensure(height);
       row.forEach((entry, index) => {
         const x = MARGIN + index * (columnWidth + COLUMN_GAP);
@@ -244,14 +252,14 @@ class PacketLayout {
   }
 
   /** Bold label in a fixed left column, wrapped value to its right. */
-  rows(entries: { label: string; value: string }[], labelWidth = 112): void {
+  rows(entries: { label: string; value: string }[], labelWidth = 108): void {
     const valueWidth = this.contentWidth - labelWidth;
     for (const entry of entries) {
       this.style(BODY_SIZE, "bold");
       const labelLines = this.wrap(entry.label, labelWidth - 8);
       this.style(BODY_SIZE, "normal");
       const valueLines = this.wrap(entry.value, valueWidth);
-      const height = Math.max(labelLines.length, valueLines.length) * LEADING + 3;
+      const height = Math.max(labelLines.length, valueLines.length) * LEADING + 2;
       this.ensure(height);
       valueLines.forEach((line, index) => this.doc.text(line, MARGIN + labelWidth, this.y + index * LEADING));
       this.style(BODY_SIZE, "bold");
@@ -290,7 +298,8 @@ export function buildVerificationPdf(packet: SupervisorPacket, preparedOn: Date 
     },
   ]);
 
-  layout.section("Project");
+  layout.rule();
+  layout.gap(12);
   layout.grid([
     { label: "Project", value: oneLine(project.title) },
     showPmiTitle
