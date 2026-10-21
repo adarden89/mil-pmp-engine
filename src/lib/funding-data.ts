@@ -59,14 +59,16 @@ export const FUNDING_PROGRAMS: Record<FundingProgramId, FundingProgram> = {
     id: "navy",
     name: "Navy Credentialing Opportunities On-Line",
     shortName: "Navy COOL",
-    portalName: "Navy COOL voucher request",
+    portalName: "OPNAV 1500/57 (Certification & License Funding Request)",
     officialUrl: "https://www.cool.osd.mil/usn/",
     portalUrl: "https://www.cool.osd.mil/usn/",
     eligibilityHighlights: [
       "Credential is mapped to your rating, designator, collateral duty, or out-of-rate assignment",
       "Passed your most recent advancement exam and physical fitness assessment (or have a waiver)",
-      "Enough obligated service remaining to meet Navy COOL's current minimum",
-      "Command-level approval from your CO or a designated approving official",
+      "Enlisted: EAOS more than 2 months after Navy COOL receives your OPNAV 1500/57",
+      "Exam and fees completed at least 60 days before separation (waivable to 30 days)",
+      "Command approval of the OPNAV 1500/57 before you register for the exam or pay anything",
+      "Officers: Navy COOL's officer funding pilot ended; confirm current-year funding first",
     ],
     steps: [
       {
@@ -90,21 +92,21 @@ export const FUNDING_PROGRAMS: Record<FundingProgramId, FundingProgram> = {
       PMI_APPLICATION_STEP,
       {
         id: "navy-request",
-        title: "Submit the Navy COOL voucher request",
+        title: "Complete OPNAV 1500/57",
         owner: "You",
-        typicalDuration: "20 minutes to submit",
+        typicalDuration: "30 minutes",
         detail:
-          "Start the voucher request from the credential's Navy COOL page. Enter the exam, your PMI eligibility details, and your command approver. Funding is first-come, first-served and can run out late in the fiscal year.",
-        documents: ["PMI eligibility details", "Approving official's name and email"],
+          "Download the current OPNAV 1500/57 (Rev. 01 May 2026) from Navy COOL and fill it in. The Fast-Track prep packet lists every piece of information to have ready. This form funds exam and license fees only, not courses.",
+        documents: ["PMI eligibility details", "Exam fee amount", "Approving official's name and email"],
       },
       {
         id: "navy-approval",
-        title: "Command validates your eligibility",
+        title: "Route it through your chain of command",
         owner: "Command",
         typicalDuration: "Several days to 2 weeks",
         detail:
-          "Your CO or designated approving official confirms PFA, advancement, and service obligation status. Brief them in advance so the request does not sit in an inbox.",
-        documents: ["Command approval routing"],
+          "Your approving official validates the form for completeness and confirms you are eligible and ready to test. The command then emails the approved form to the Navy COOL Program Office at the address printed on the current form. Funding is first-come, first-served and can run short late in the fiscal year.",
+        documents: ["Command-approved OPNAV 1500/57"],
       },
       {
         id: "navy-voucher",
@@ -127,6 +129,7 @@ export const FUNDING_PROGRAMS: Record<FundingProgramId, FundingProgram> = {
       },
     ],
     watchOuts: [
+      "Navy COOL does not reimburse out-of-pocket payments. Never pay the exam fee yourself, even to hold a seat.",
       "Requesting funding before PMI approves your application can expire the voucher.",
       "End-of-fiscal-year funding often runs short. Submit early in the year.",
     ],

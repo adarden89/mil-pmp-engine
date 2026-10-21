@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { DashboardView } from "@/components/dashboard/dashboard-view";
 import { LinkButton } from "@/components/ui/button";
-import { Card, PageHeader } from "@/components/ui/primitives";
+import { PageHeader } from "@/components/ui/primitives";
+import { Card } from "@/components/ui/card";
 import { loginHref } from "@/lib/api-client";
 import { isProductId } from "@/lib/catalog";
 import { getEntitlements } from "@/lib/entitlements";
@@ -38,7 +39,7 @@ async function DashboardContent({ searchParams }: { searchParams: PageProps<"/da
 
   if (!supabasePublicConfig()) {
     return (
-      <Card className="p-8 text-sm text-muted">
+      <Card className="p-8 text-sm text-muted-foreground">
         Accounts are not configured on this deployment yet. Set the Supabase variables in your environment to enable
         sign-in and purchases.
       </Card>
@@ -51,7 +52,9 @@ async function DashboardContent({ searchParams }: { searchParams: PageProps<"/da
     return (
       <Card className="mx-auto max-w-lg p-8 text-center">
         <h2 className="text-lg font-semibold">Sign in to see your dashboard</h2>
-        <p className="mt-2 text-sm text-muted">We will email you a secure one-time link. No password to remember.</p>
+        <p className="mt-2 text-sm text-muted-foreground">
+          We will email you a secure one-time link. No password to remember.
+        </p>
         <LinkButton href={loginHref("/dashboard")} className="mt-6">
           Sign in
         </LinkButton>

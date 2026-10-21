@@ -5,6 +5,7 @@ import { Footer } from "@/components/layout/footer";
 import { Navbar } from "@/components/layout/navbar";
 import { THEME_INIT_SCRIPT } from "@/components/layout/theme-toggle";
 import { SessionProvider } from "@/components/providers/session-provider";
+import { TrackingProvider } from "@/components/tracking/tracking-provider";
 import { SITE } from "@/lib/site";
 import "./globals.css";
 
@@ -46,6 +47,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             {children}
           </main>
           <Footer />
+          <TrackingProvider />
         </SessionProvider>
       </body>
     </html>

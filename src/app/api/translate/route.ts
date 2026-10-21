@@ -18,7 +18,7 @@ export async function POST(request: Request) {
 
     const owned = await getEntitlements(supabase, user.id);
     if (!owned.includes("base_tool")) {
-      throw new HttpError(402, "payment_required", "The Translation Studio is part of the MilToPMP Base Tool.");
+      throw new HttpError(402, "payment_required", "The Translation Studio is part of the MilToPMP Core Translator.");
     }
 
     const burst = translateLimiter.check(user.id);

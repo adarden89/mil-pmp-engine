@@ -3,7 +3,7 @@
 import { motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, BookOpen, CircleCheck, Gauge, Landmark, Languages, ShieldCheck, Target } from "lucide-react";
 import { LinkButton } from "@/components/ui/button";
-import { Badge } from "@/components/ui/primitives";
+import { Badge } from "@/components/ui/badge";
 
 const PIPELINE = [
   { icon: Target, label: "Eligibility", detail: "CAPM vs. PMP decided", state: "done" },
@@ -16,7 +16,7 @@ const PIPELINE = [
 const STATS = [
   { value: "5", label: "Service COOL workflows mapped" },
   { value: "3", label: "Questions to your CAPM / PMP path" },
-  { value: "$0", label: "Exam fee when COOL funding is approved" },
+  { value: "$0", label: "Out of pocket for the exam once funding is approved" },
 ];
 
 export function Hero() {
@@ -34,8 +34,8 @@ export function Hero() {
       <div className="relative mx-auto grid max-w-7xl items-center gap-14 px-4 pt-16 pb-20 sm:px-6 lg:grid-cols-[1.1fr_0.9fr] lg:px-8 lg:pt-24 lg:pb-28">
         <div>
           <motion.div {...fadeUp(0)}>
-            <Badge tone="brass" className="font-mono tracking-wide">
-              E-1 to E-6 · NCOs · Junior Officers
+            <Badge variant="brass" className="font-mono tracking-wide">
+              E-1 to E-9 · Officers · Every branch
             </Badge>
           </motion.div>
           <motion.h1
@@ -45,12 +45,16 @@ export function Hero() {
             From your first billet to <span className="text-gradient">PMI certified</span>, funded by benefits you
             already earned.
           </motion.h1>
-          <motion.p {...fadeUp(0.16)} className="mt-6 max-w-xl text-lg leading-relaxed text-pretty text-muted">
-            Find out in under a minute whether the CAPM or the PMP fits you today, walk through your service&apos;s COOL
-            funding step by step, and turn evaluation bullets into PMI-ready experience that holds up in an audit.
+          <motion.p
+            {...fadeUp(0.16)}
+            className="mt-6 max-w-xl text-lg leading-relaxed text-pretty text-muted-foreground"
+          >
+            Zero project management background required. Find out in under a minute whether the CAPM or the PMP fits
+            you, get the exam funded through Navy COOL, Army IgnitED, or AF COOL with $0 out of pocket, and turn your
+            evaluations into PMI-ready experience that holds up in an audit.
           </motion.p>
           <motion.div {...fadeUp(0.24)} className="mt-9 flex flex-wrap items-center gap-3">
-            <LinkButton href="/#eligibility" size="lg" icon={<ArrowRight className="size-4" aria-hidden />}>
+            <LinkButton href="/eligibility" size="lg" icon={<ArrowRight className="size-4" aria-hidden />}>
               Check my eligibility
             </LinkButton>
             <LinkButton href="/funding" size="lg" variant="secondary">
@@ -62,7 +66,7 @@ export function Hero() {
               <div key={stat.label}>
                 <dt className="sr-only">{stat.label}</dt>
                 <dd className="text-2xl font-semibold tracking-tight sm:text-3xl">{stat.value}</dd>
-                <dd className="mt-1 text-xs leading-snug text-muted sm:text-sm">{stat.label}</dd>
+                <dd className="mt-1 text-xs leading-snug text-muted-foreground sm:text-sm">{stat.label}</dd>
               </div>
             ))}
           </motion.dl>
@@ -84,7 +88,7 @@ export function Hero() {
                 <p className="font-mono text-[11px] tracking-[0.2em] text-subtle uppercase">Certification pipeline</p>
                 <p className="mt-1 text-sm font-medium">Sample member: IT2, 6 years of service</p>
               </div>
-              <Badge tone="success">
+              <Badge variant="success">
                 <Gauge className="size-3" aria-hidden /> On track
               </Badge>
             </div>
@@ -110,7 +114,7 @@ export function Hero() {
                   </span>
                   <div className="min-w-0 flex-1">
                     <p className="text-sm font-medium">{step.label}</p>
-                    <p className="truncate text-xs text-muted">{step.detail}</p>
+                    <p className="truncate text-xs text-muted-foreground">{step.detail}</p>
                   </div>
                   {step.state === "done" ? (
                     <CircleCheck className="size-4 text-success" aria-label="Complete" />

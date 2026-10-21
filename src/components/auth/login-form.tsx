@@ -5,7 +5,9 @@ import { Mail, MailCheck } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, Field, inputClasses } from "@/components/ui/primitives";
+import { Field } from "@/components/ui/primitives";
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/form-controls";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import { safeRedirectPath } from "@/lib/utils";
 
@@ -54,7 +56,7 @@ export function LoginForm() {
             <MailCheck className="size-6" aria-hidden />
           </span>
           <h1 className="mt-4 text-xl font-semibold">Check your inbox</h1>
-          <p className="mt-2 text-sm text-muted">
+          <p className="mt-2 text-sm text-muted-foreground">
             We sent a secure sign-in link to <span className="text-fg">{email}</span>. It works once and expires soon.
           </p>
           <p className="mt-4 text-xs text-subtle">
@@ -65,13 +67,12 @@ export function LoginForm() {
       ) : (
         <form onSubmit={submit} noValidate>
           <h1 className="text-xl font-semibold">Sign in to MilToPMP</h1>
-          <p className="mt-2 text-sm text-muted">No password. We email you a one-time link.</p>
+          <p className="mt-2 text-sm text-muted-foreground">No password. We email you a one-time link.</p>
           <Field label="Email" htmlFor="email" className="mt-6" error={error ?? undefined}>
-            <input
+            <Input
               id="email"
               type="email"
               autoComplete="email"
-              className={inputClasses}
               value={email}
               onChange={(event) => setEmail(event.target.value)}
               placeholder="you@example.com"

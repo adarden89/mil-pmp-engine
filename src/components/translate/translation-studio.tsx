@@ -5,7 +5,10 @@ import { ArrowLeft, ArrowRight, Eye, Lock, RotateCcw, Sparkles, WandSparkles } f
 import { useEffect, useState, type FormEvent } from "react";
 import { useSession } from "@/components/providers/session-provider";
 import { Button, LinkButton } from "@/components/ui/button";
-import { Badge, Card, Field, inputClasses } from "@/components/ui/primitives";
+import { Field } from "@/components/ui/primitives";
+import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
+import { Input, Textarea } from "@/components/ui/form-controls";
 import { apiFetch, loginHref } from "@/lib/api-client";
 import { SAMPLE_REQUEST, SAMPLE_TRANSLATION } from "@/lib/sample-translation";
 import {
@@ -30,6 +33,7 @@ interface FormState {
   endMonth: string;
   teamSize: string;
   rawBullets: string;
+  jstCourses: string;
 }
 
 const EMPTY: FormState = {
@@ -41,12 +45,13 @@ const EMPTY: FormState = {
   endMonth: "",
   teamSize: "",
   rawBullets: "",
+  jstCourses: "",
 };
 
 const STEPS = [
   { title: "Service profile", fields: ["branch", "rateOrMos", "billet"] },
   { title: "Project frame", fields: ["projectTitle", "startMonth", "endMonth", "teamSize"] },
-  { title: "Evaluation bullets", fields: ["rawBullets"] },
+  { title: "Evaluation bullets", fields: ["rawBullets", "jstCourses"] },
 ] as const satisfies readonly { title: string; fields: readonly (keyof FormState)[] }[];
 
 const PROGRESS_MESSAGES = [
@@ -63,6 +68,7 @@ function toRequest(form: FormState): unknown {
   return {
     ...form,
     teamSize: form.teamSize.trim() === "" ? undefined : Number(form.teamSize),
+    jstCourses: form.jstCourses.trim() === "" ? undefined : form.jstCourses,
   };
 }
 
@@ -153,6 +159,7 @@ export function TranslationStudio() {
     setForm({
       ...SAMPLE_REQUEST,
       teamSize: String(SAMPLE_REQUEST.teamSize ?? ""),
+      jstCourses: SAMPLE_REQUEST.jstCourses ?? "",
     });
     setErrors({});
     setStep(2);
@@ -167,7 +174,7 @@ export function TranslationStudio() {
           </Button>
           <div className="flex items-center gap-3">
             {remaining ? (
-              <Badge tone="neutral">
+              <Badge variant="neutral">
                 {remaining.remaining} of {remaining.limit} translations left this period
               </Badge>
             ) : null}
@@ -242,7 +249,7 @@ export function TranslationStudio() {
                             "rounded-lg border px-3 py-2.5 text-left text-sm transition-colors",
                             form.branch === branch
                               ? "border-brand bg-brand/10 text-fg"
-                              : "border-border text-muted hover:border-border-strong",
+                              : "border-border text-muted-foreground hover:border-border-strong",
                           )}
                         >
                           {BRANCH_LABELS[branch]}
@@ -256,9 +263,8 @@ export function TranslationStudio() {
                     error={errors.rateOrMos}
                     hint="e.g. IT2 / Information Systems Technician, 25B, 3D0X2"
                   >
-                    <input
+                    <Input
                       id="rateOrMos"
-                      className={inputClasses}
                       value={form.rateOrMos}
                       onChange={(e) => update("rateOrMos", e.target.value)}
                       aria-invalid={Boolean(errors.rateOrMos)}
@@ -271,9 +277,8 @@ export function TranslationStudio() {
                     error={errors.billet}
                     hint="The position you held during this project"
                   >
-                    <input
+                    <Input
                       id="billet"
-                      className={inputClasses}
                       value={form.billet}
                       onChange={(e) => update("billet", e.target.value)}
                       aria-invalid={Boolean(errors.billet)}
@@ -291,9 +296,8 @@ export function TranslationStudio() {
                     error={errors.projectTitle}
                     hint="One temporary effort with a start and finish, not your whole tour"
                   >
-                    <input
+                    <Input
                       id="projectTitle"
-                      className={inputClasses}
                       value={form.projectTitle}
                       onChange={(e) => update("projectTitle", e.target.value)}
                       aria-invalid={Boolean(errors.projectTitle)}
@@ -302,32 +306,29 @@ export function TranslationStudio() {
                   </Field>
                   <div className="grid gap-5 sm:grid-cols-3">
                     <Field label="Start month" htmlFor="startMonth" error={errors.startMonth}>
-                      <input
+                      <Input
                         id="startMonth"
                         type="month"
-                        className={inputClasses}
                         value={form.startMonth}
                         onChange={(e) => update("startMonth", e.target.value)}
                         aria-invalid={Boolean(errors.startMonth)}
                       />
                     </Field>
                     <Field label="End month" htmlFor="endMonth" error={errors.endMonth}>
-                      <input
+                      <Input
                         id="endMonth"
                         type="month"
-                        className={inputClasses}
                         value={form.endMonth}
                         onChange={(e) => update("endMonth", e.target.value)}
                         aria-invalid={Boolean(errors.endMonth)}
                       />
                     </Field>
                     <Field label="Team size (optional)" htmlFor="teamSize" error={errors.teamSize}>
-                      <input
+                      <Input
                         id="teamSize"
                         type="number"
                         min={1}
                         inputMode="numeric"
-                        className={inputClasses}
                         value={form.teamSize}
                         onChange={(e) => update("teamSize", e.target.value)}
                         aria-invalid={Boolean(errors.teamSize)}
@@ -344,10 +345,10 @@ export function TranslationStudio() {
                   error={errors.rawBullets}
                   hint="Paste the bullets about this project, including numbers you can verify. Remove anything classified, CUI, or personally identifying (names, SSNs, unit locations)."
                 >
-                  <textarea
+                  <Textarea
                     id="rawBullets"
                     rows={11}
-                    className={cn(inputClasses, "resize-y font-mono text-[13px] leading-relaxed")}
+                    className="resize-y font-mono text-[13px] leading-relaxed"
                     value={form.rawBullets}
                     onChange={(e) => update("rawBullets", e.target.value)}
                     aria-invalid={Boolean(errors.rawBullets)}
@@ -355,6 +356,25 @@ export function TranslationStudio() {
                     placeholder={"- Led 8-person team to ...\n- Developed schedule for ...\n- Reduced ... by 30%"}
                   />
                   <p className="text-right font-mono text-[11px] text-subtle">{form.rawBullets.length} / 6000</p>
+                </Field>
+              ) : null}
+              {step === 2 ? (
+                <Field
+                  label="Relevant JST training (optional)"
+                  htmlFor="jstCourses"
+                  error={errors.jstCourses}
+                  hint="Leadership or management courses from your Joint Services Transcript. Used for context only, never presented as project experience."
+                >
+                  <Textarea
+                    id="jstCourses"
+                    rows={3}
+                    className="resize-y text-[13px]"
+                    value={form.jstCourses}
+                    onChange={(e) => update("jstCourses", e.target.value)}
+                    aria-invalid={Boolean(errors.jstCourses)}
+                    maxLength={2000}
+                    placeholder="e.g. Basic Leader Course; Petty Officer Selectee Leadership Course"
+                  />
                 </Field>
               ) : null}
             </motion.div>
@@ -399,7 +419,7 @@ export function TranslationStudio() {
                 initial={{ opacity: 0, y: 4 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0 }}
-                className="mt-4 flex items-center justify-end gap-2 text-xs text-muted"
+                className="mt-4 flex items-center justify-end gap-2 text-xs text-muted-foreground"
                 aria-live="polite"
               >
                 <Sparkles className="size-3.5 text-brand" aria-hidden />
@@ -413,7 +433,7 @@ export function TranslationStudio() {
       <aside className="space-y-4">
         <Card className="p-5">
           <p className="font-mono text-xs tracking-widest text-subtle uppercase">Try it first</p>
-          <p className="mt-2 text-sm text-muted">
+          <p className="mt-2 text-sm text-muted-foreground">
             See the full output format with example Navy bullets, no credit used.
           </p>
           <div className="mt-4 flex flex-col gap-2">
@@ -432,7 +452,7 @@ export function TranslationStudio() {
         </Card>
         <Card className="p-5">
           <p className="font-mono text-xs tracking-widest text-subtle uppercase">What PMI wants</p>
-          <ul className="mt-3 space-y-2 text-sm text-muted">
+          <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
             <li>Objective, your role, deliverables, and outcome for each project.</li>
             <li>First-person statements about what you personally led.</li>
             <li>Civilian language a reviewer outside the military can follow.</li>
@@ -442,10 +462,10 @@ export function TranslationStudio() {
         {session.status === "ready" && !session.owns("base_tool") ? (
           <Card className="border-brand/30 p-5">
             <p className="flex items-center gap-2 text-sm font-medium">
-              <Lock className="size-4 text-brand" aria-hidden /> Base Tool required to translate
+              <Lock className="size-4 text-brand" aria-hidden /> Core Translator required
             </p>
-            <p className="mt-2 text-xs text-muted">
-              The sample is free. Live translations are included with the $27 Base Tool.
+            <p className="mt-2 text-xs text-muted-foreground">
+              The sample is free. Live translations are included with the $24.99 Core Translator.
             </p>
             <LinkButton href="/#pricing" size="sm" className="mt-4 w-full">
               See pricing
@@ -464,7 +484,7 @@ function BlockerCard({ blocker }: { blocker: NonNullable<Blocker> }) {
       <p className="text-sm">
         {blocker.kind === "signin"
           ? "Sign in to run live translations. Your inputs stay on this page."
-          : "Live translations are part of the MilToPMP Base Tool."}
+          : "Live translations are part of the MilToPMP Core Translator."}
       </p>
       {blocker.kind === "signin" ? (
         <LinkButton href={loginHref("/translate")} size="sm">
@@ -472,7 +492,7 @@ function BlockerCard({ blocker }: { blocker: NonNullable<Blocker> }) {
         </LinkButton>
       ) : (
         <LinkButton href="/#pricing" size="sm">
-          Get the Base Tool
+          Get the Core Translator
         </LinkButton>
       )}
     </div>

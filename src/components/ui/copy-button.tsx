@@ -38,7 +38,7 @@ export function CopyButton({ text, label = "Copy", className }: { text: string; 
       onClick={async () => setCopied(await writeClipboard(text))}
       className={cn(
         "inline-flex items-center gap-1.5 rounded-md border border-border px-2.5 py-1.5 text-xs font-medium transition-colors",
-        copied ? "border-success/40 text-success" : "text-muted hover:border-border-strong hover:text-fg",
+        copied ? "border-success/40 text-success" : "text-muted-foreground hover:border-border-strong hover:text-fg",
         className,
       )}
       aria-live="polite"

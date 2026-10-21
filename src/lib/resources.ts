@@ -1,97 +1,145 @@
-export type ResourceCategory = "official" | "practice" | "course" | "reference" | "military";
+/**
+ * Trainer and study-tool directory. One list feeds both the funding page's
+ * education section and the Study Vault, so details never drift apart.
+ * No affiliate links. Course details change often; each entry says what to
+ * confirm before paying.
+ */
+
+export type ResourceCategory = "course" | "practice" | "official" | "reference" | "military";
+export type ResourceSurface = "education" | "vault";
 
 export interface StudyResource {
   id: string;
   name: string;
   provider: string;
   category: ResourceCategory;
+  featuredIn: readonly ResourceSurface[];
   url: string;
   cost: string;
   bestFor: string;
   breakdown: string[];
+  /** Short highlight shown as a badge, e.g. "#1 exam simulator". */
+  highlight?: string;
   caution?: string;
 }
 
 export const RESOURCE_CATEGORY_LABELS: Record<ResourceCategory, string> = {
-  official: "Official PMI",
+  course: "Contact-hour courses",
   practice: "Practice exams",
-  course: "35-hour courses",
+  official: "Official PMI",
   reference: "Reference",
   military: "Military programs",
 };
 
 export const RESOURCES: readonly StudyResource[] = [
   {
-    id: "pmi-eco",
-    name: "PMP Examination Content Outline",
-    provider: "PMI",
-    category: "official",
-    url: "https://www.pmi.org/certifications/project-management-pmp",
-    cost: "Free",
-    bestFor: "Knowing exactly what is tested",
+    id: "ramdayal-udemy",
+    name: "PMP Certification Exam Prep Course (35 Contact Hours)",
+    provider: "Andrew Ramdayal · TIA Education on Udemy",
+    category: "course",
+    featuredIn: ["education", "vault"],
+    url: "https://www.udemy.com/courses/search/?q=andrew%20ramdayal%20pmp",
+    cost: "Low cost during frequent Udemy sales",
+    bestFor: "Earning the 35 contact hours and learning the PMP mindset",
+    highlight: "35 contact hour certificate",
     breakdown: [
-      "The exam blueprint: domains, tasks, and enablers.",
-      "The July 2026 outline weights People ~33%, Process ~41%, Business Environment ~26%.",
-      "Read it first, then map every other resource back to it.",
+      "Issues a certificate for the 35 contact hours the PMP application requires.",
+      "Known for teaching the situational 'PMP mindset' behind most exam questions.",
+      "Pair it with a simulator; the course alone is not enough practice.",
+    ],
+    caution: "Confirm the course version targets the exam launched July 9, 2026 before enrolling.",
+  },
+  {
+    id: "phillips-udemy",
+    name: "PMP Exam Prep Seminar: Complete Exam Coverage with 35 PDUs",
+    provider: "Joseph Phillips on Udemy",
+    category: "course",
+    featuredIn: ["education", "vault"],
+    url: "https://www.udemy.com/courses/search/?q=joseph%20phillips%20pmp%20exam%20prep%20seminar",
+    cost: "Low cost during frequent Udemy sales",
+    bestFor: "A structured, lecture-style walk through every exam topic",
+    highlight: "35 contact hours",
+    breakdown: [
+      "Long-running, widely used seminar-style course from a veteran PM author.",
+      "Completing every assignment is required to claim the 35 contact hours.",
+      "Good second perspective if one instructor's style does not click.",
+    ],
+    caution: "Some listings still reference older exam outlines. Check the last-updated date on Udemy.",
+  },
+  {
+    id: "onward-to-opportunity",
+    name: "Onward to Opportunity (O2O)",
+    provider: "Syracuse University IVMF",
+    category: "military",
+    featuredIn: ["education", "vault"],
+    url: "https://ivmf.syracuse.edu/",
+    cost: "Free for eligible service members, veterans, and spouses",
+    bestFor: "Transitioning members who want structured, no-cost training",
+    highlight: "Free military pathway",
+    breakdown: [
+      "Career training tracks that have included project management certification prep.",
+      "Check the current catalog and your eligibility window before you enroll.",
     ],
   },
   {
     id: "pmi-study-hall",
-    name: "PMI Study Hall",
+    name: "PMI Study Hall (Essentials / Plus)",
     provider: "PMI",
     category: "practice",
+    featuredIn: ["vault"],
     url: "https://www.pmi.org/shop",
-    cost: "Paid subscription (Essentials or Plus tiers)",
-    bestFor: "Question style closest to the real exam",
+    cost: "Paid 3-month subscription",
+    bestFor: "Practice questions written by the organization that writes the exam",
+    highlight: "#1 recommended exam simulator",
     breakdown: [
-      "Full-length practice exams plus mini-exams and extra practice questions.",
+      "Full-length timed practice exams plus mini-exams and extra question banks.",
       "Plus adds more full exams and mini-exams than Essentials.",
-      "Take one full exam under timed conditions about two weeks out.",
+      "Take at least one full exam under real timing about two weeks before test day.",
     ],
-    caution:
-      "Make sure the version you buy is aligned to the exam launched July 9, 2026. Some product pages still describe prep for the older exam.",
+    caution: "Buy the version aligned to the July 2026 exam; some product pages still describe the previous exam.",
   },
   {
     id: "pocket-prep",
-    name: "Pocket Prep PMP",
+    name: "Pocket Prep (PMP & CAPM)",
     provider: "Pocket Prep",
     category: "practice",
+    featuredIn: ["vault"],
     url: "https://www.pocketprep.com/",
     cost: "Free tier, paid premium",
-    bestFor: "Short drills on watch, in the field, or between formations",
+    bestFor: "Ten-minute drills on watch, in the field, or in the barracks",
+    highlight: "Best mobile study tool",
     breakdown: [
-      "Mobile question bank with explanations.",
-      "Use its weak-area reports alongside the Exam Vault retention tracker.",
-      "Good for daily reps, weaker for full-length endurance practice.",
+      "Mobile question banks for both the PMP and the CAPM, with explanations.",
+      "Use its weak-area reports alongside the Study Vault retention tracker.",
+      "Great for daily reps; weaker for full-length endurance practice.",
     ],
-  },
-  {
-    id: "ramdayal-udemy",
-    name: "Andrew Ramdayal PMP course",
-    provider: "Udemy / TIA Education",
-    category: "course",
-    url: "https://www.udemy.com/courses/search/?q=andrew%20ramdayal%20pmp",
-    cost: "Low cost on frequent Udemy sales",
-    bestFor: "Earning the 35 contact hours and learning the PMI mindset",
-    breakdown: [
-      "Widely used course that issues a 35 contact hour certificate for the PMI application.",
-      "Strong on the situational 'PMI mindset' that drives most questions.",
-      "Check that the edition you enroll in targets the current exam outline.",
-    ],
-    caution: "Confirm with your service's COOL or CA office whether course costs are fundable before paying.",
   },
   {
     id: "pmbok-8",
     name: "PMBOK Guide, Eighth Edition",
     provider: "PMI",
     category: "reference",
+    featuredIn: ["vault"],
     url: "https://www.pmi.org/pmbok-guide",
     cost: "Free digital copy with PMI membership",
     bestFor: "Authoritative definitions and principles",
     breakdown: [
       "Published November 2025; it supersedes the Seventh Edition.",
       "Use it as a reference, not a cover-to-cover study plan.",
-      "Pair it with the Agile Practice Guide for adaptive topics.",
+    ],
+  },
+  {
+    id: "pmi-eco",
+    name: "Exam Content Outlines (PMP and CAPM)",
+    provider: "PMI",
+    category: "official",
+    featuredIn: ["vault"],
+    url: "https://www.pmi.org/certifications",
+    cost: "Free",
+    bestFor: "Knowing exactly what is tested",
+    breakdown: [
+      "PMP (July 2026): People ~33%, Process ~41%, Business Environment ~26%.",
+      "CAPM: Fundamentals 36%, Predictive 17%, Agile 20%, Business Analysis 27%.",
     ],
   },
   {
@@ -99,36 +147,17 @@ export const RESOURCES: readonly StudyResource[] = [
     name: "PMI membership",
     provider: "PMI",
     category: "official",
+    featuredIn: ["vault"],
     url: "https://www.pmi.org/membership",
     cost: "Annual fee",
-    bestFor: "Lowering the exam fee and getting PMI standards free",
+    bestFor: "Lowering the exam fee your voucher has to cover",
     breakdown: [
-      "Members pay a reduced exam fee, which often offsets the membership cost.",
-      "Includes digital access to PMI standards.",
-      "Check whether your COOL program will fund the member or non-member fee.",
+      "Members pay a lower exam fee, especially for the PMP.",
+      "Check whether your COOL program will fund the member or the non-member fee.",
     ],
-  },
-  {
-    id: "onward-to-opportunity",
-    name: "Onward to Opportunity (O2O)",
-    provider: "Syracuse University IVMF",
-    category: "military",
-    url: "https://ivmf.syracuse.edu/",
-    cost: "Free for eligible service members, veterans, and spouses",
-    bestFor: "Transitioning members who want structured, no-cost training",
-    breakdown: [
-      "Career training tracks that have included project management certification prep.",
-      "Check the current catalog and eligibility window before you enroll.",
-    ],
-  },
-  {
-    id: "dod-cool",
-    name: "DoD COOL",
-    provider: "Department of Defense",
-    category: "military",
-    url: "https://www.cool.osd.mil/",
-    cost: "Free",
-    bestFor: "Confirming credential mapping and funding rules for your service",
-    breakdown: ["Hub for every service's COOL program.", "Shows which credentials map to your rating, MOS, or AFSC."],
   },
 ];
+
+export function resourcesFor(surface: ResourceSurface): readonly StudyResource[] {
+  return RESOURCES.filter((resource) => resource.featuredIn.includes(surface));
+}

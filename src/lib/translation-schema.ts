@@ -15,7 +15,7 @@ export const BRANCH_LABELS: Record<Branch, string> = {
 export const EVAL_SYSTEM_BY_BRANCH: Record<Branch, string> = {
   navy: "EVAL / FITREP",
   army: "NCOER / OER",
-  air_force: "EPB / OPB",
+  air_force: "EPB / EPR / OPB",
   marine_corps: "FITREP / ProMark",
   coast_guard: "EER / OER",
   space_force: "EPB / OPB",
@@ -37,6 +37,7 @@ export const translateRequestSchema = z
       .trim()
       .min(40, "Paste at least a few evaluation bullets (40+ characters).")
       .max(6000, "Keep raw bullets under 6,000 characters per project."),
+    jstCourses: z.string().trim().max(2000, "Keep JST entries under 2,000 characters.").optional(),
   })
   .refine((value) => value.startMonth <= value.endMonth, {
     message: "End month must be on or after the start month.",

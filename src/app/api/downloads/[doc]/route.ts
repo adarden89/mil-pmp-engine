@@ -1,4 +1,4 @@
-import { connection, type NextRequest } from "next/server";
+import type { NextRequest } from "next/server";
 import {
   buildCoolDocument,
   COOL_DOCUMENT_META,
@@ -6,11 +6,14 @@ import {
   packetPersonalizationSchema,
 } from "@/lib/documents/cool-packet";
 import { getEntitlements } from "@/lib/entitlements";
-import { HttpError, toErrorResponse } from "@/lib/http";
+import { HttpError, parseJsonBody, toErrorResponse } from "@/lib/http";
 import { requireUser } from "@/lib/supabase/server";
 
-export async function GET(request: NextRequest, context: RouteContext<"/api/downloads/[doc]">) {
-  await connection();
+/**
+ * POST so personal details travel in the body, never in URLs that end up in
+ * logs, browser history, or referrers.
+ */
+export async function POST(request: NextRequest, context: RouteContext<"/api/downloads/[doc]">) {
   try {
     const { doc } = await context.params;
     if (!isCoolDocumentId(doc)) {
@@ -23,17 +26,16 @@ export async function GET(request: NextRequest, context: RouteContext<"/api/down
       throw new HttpError(
         402,
         "payment_required",
-        "Pre-filled COOL documents are part of the COOL Voucher Fast-Track.",
+        "Pre-filled COOL documents are part of the Navy COOL Fast-Track Guide.",
       );
     }
 
-    const params = Object.fromEntries(request.nextUrl.searchParams.entries());
-    const parsed = packetPersonalizationSchema.safeParse(params);
-    if (!parsed.success) {
-      throw new HttpError(400, "validation_failed", "Check the personalization fields and try again.");
+    const personalization = await parseJsonBody(request, packetPersonalizationSchema);
+    if (COOL_DOCUMENT_META[doc].navyOnly && personalization.branch !== "navy") {
+      throw new HttpError(400, "navy_only", "The OPNAV 1500/57 prep packet is for Navy members.");
     }
 
-    const pdf = buildCoolDocument(doc, parsed.data);
+    const pdf = buildCoolDocument(doc, personalization);
     return new Response(pdf, {
       headers: {
         "Content-Type": "application/pdf",

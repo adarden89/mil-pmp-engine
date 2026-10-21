@@ -1,5 +1,7 @@
 import { z } from "zod";
 import { FUNDING_PROGRAM_IDS, FUNDING_PROGRAMS } from "@/lib/funding-data";
+import { checkNavyCoolTiming } from "@/lib/navy-cool";
+import { EXAM_FEES, NAVY_COOL } from "@/lib/pmi-facts";
 import { LEGAL_DISCLAIMER } from "@/lib/site";
 import { COOL_DOCUMENT_IDS, type CoolDocumentId } from "./cool-documents-meta";
 import { PdfBuilder } from "./pdf-builder";
@@ -22,6 +24,17 @@ export const packetPersonalizationSchema = z.object({
   command: z.string().trim().max(120).optional(),
   obligatedServiceEnd: monthOrEmpty,
   targetExamMonth: monthOrEmpty,
+  // OPNAV 1500/57 extras. No SSN or DoD ID is collected: the member writes
+  // those directly on the official form.
+  email: z.union([z.email().max(120), z.literal("")]).optional(),
+  phone: z.string().trim().max(32).optional(),
+  uic: z.string().trim().max(12).optional(),
+  mappingBasis: z.string().trim().max(120).optional(),
+  pmiApplicationId: z.string().trim().max(40).optional(),
+  pmiMember: z.boolean().optional(),
+  approverName: z.string().trim().max(80).optional(),
+  approverTitle: z.string().trim().max(80).optional(),
+  approverEmail: z.union([z.email().max(120), z.literal("")]).optional(),
 });
 
 export type PacketPersonalization = z.infer<typeof packetPersonalizationSchema>;
@@ -135,9 +148,104 @@ export function buildVoucherPrepWorksheet(p: PacketPersonalization): ArrayBuffer
 }
 
 export function buildCoolDocument(id: CoolDocumentId, p: PacketPersonalization): ArrayBuffer {
-  return id === "jst-audit-checklist" ? buildJstAuditChecklist(p) : buildVoucherPrepWorksheet(p);
+  switch (id) {
+    case "opnav-1500-57-prep":
+      return buildOpnavPrepPacket(p);
+    case "jst-audit-checklist":
+      return buildJstAuditChecklist(p);
+    case "voucher-prep-worksheet":
+      return buildVoucherPrepWorksheet(p);
+  }
 }
 
 export function isCoolDocumentId(value: unknown): value is CoolDocumentId {
   return typeof value === "string" && (COOL_DOCUMENT_IDS as readonly string[]).includes(value);
+}
+
+export function buildOpnavPrepPacket(p: PacketPersonalization, today: Date = new Date()): ArrayBuffer {
+  const fee = p.pmiMember ? EXAM_FEES[p.credential].member : EXAM_FEES[p.credential].nonMember;
+  const timing = checkNavyCoolTiming(p.obligatedServiceEnd, p.targetExamMonth, today);
+  const name = p.fullName || "[Your name]";
+  const rank = p.rank || "[Rank/rate]";
+
+  const pdf = new PdfBuilder(
+    `This prep packet is NOT ${NAVY_COOL.formNumber} and cannot be submitted in its place. Download the official form from ${NAVY_COOL.portalUrl}. ${LEGAL_DISCLAIMER}`,
+  ).header(
+    `${NAVY_COOL.formNumber} Prep Packet`,
+    `Information to transfer onto the official ${NAVY_COOL.formNumber}, "${NAVY_COOL.formTitle}" (Rev. ${NAVY_COOL.formRevision}), for ${name}. The approved form must be in hand before you register for the exam or pay any fee.`,
+  );
+
+  pdf
+    .section("Stop: before you do anything else")
+    .checklist([
+      "Do NOT pay out of pocket or schedule the exam before Navy COOL approves your funding. Unapproved expenses are not reimbursed.",
+      `Use the current ${NAVY_COOL.formNumber} from Navy COOL. Older versions may be rejected.`,
+      "This form requests exam and license fees only. It is not used to request courses or training.",
+    ]);
+
+  pdf.section("Timing check");
+  if (timing.length === 0) {
+    pdf.paragraph(
+      `Based on your EAOS (${p.obligatedServiceEnd}) and target exam month (${p.targetExamMonth || "not set"}), your request fits Navy COOL's timing rules.`,
+    );
+  } else {
+    pdf.bullets(timing.map((issue) => `${issue.severity === "blocker" ? "BLOCKER" : "Check"}: ${issue.message}`));
+  }
+
+  pdf
+    .section("Member information")
+    .field("Name", p.fullName)
+    .field("Rank / rate", p.rank)
+    .field("Rating / designator", p.rateOrMos)
+    .field("Command", p.command)
+    .field("UIC", p.uic)
+    .field("Email", p.email)
+    .field("Phone", p.phone)
+    .field("EAOS / end of obligation", p.obligatedServiceEnd)
+    .labeled(
+      "Identifiers",
+      "Write your DoD ID or other identifiers directly on the official form. MilToPMP never collects them.",
+    );
+
+  pdf
+    .section("Credential and exam")
+    .field(
+      "Credential",
+      p.credential === "PMP"
+        ? "Project Management Professional (PMP)"
+        : "Certified Associate in Project Management (CAPM)",
+    )
+    .field("Credentialing body", "Project Management Institute (PMI)")
+    .field("PMI application ID", p.pmiApplicationId)
+    .field("Exam fee requested", `$${fee} (${p.pmiMember ? "PMI member" : "non-member"} price)`)
+    .field("Target exam month", p.targetExamMonth)
+    .labeled(
+      "Basis for funding",
+      p.mappingBasis ||
+        "State how the credential is mapped to you: rating, designator, collateral duty, or out-of-rate assignment, as shown on Navy COOL.",
+    );
+
+  pdf
+    .section("Approving official")
+    .field("Name", p.approverName)
+    .field("Title", p.approverTitle)
+    .field("Email", p.approverEmail);
+
+  pdf
+    .section("Routing")
+    .checklist([
+      `Print or fill the official ${NAVY_COOL.formNumber}, sign it, and give it to your approving official with the memo below.`,
+      "Your approving official validates completeness, your eligibility, and your readiness to test, then signs.",
+      "The command emails the approved form to the Navy COOL Program Office at the address printed on the current form.",
+      "Wait for Navy COOL's approval. Schedule the exam only after it arrives, inside the validity window.",
+      "After the exam, report your result as your approval instructs.",
+    ]);
+
+  pdf
+    .section("Routing memo to your approving official")
+    .paragraph(
+      `${p.approverTitle || "Approving Official"},\n\nI request your approval of the attached ${NAVY_COOL.formNumber} for Navy COOL funding of the ${p.credential} exam ($${fee}), paid by Navy COOL directly to PMI at no cost to the command. The credential is mapped to me as ${p.mappingBasis || p.rateOrMos || "[rating/designator]"}. I meet the PFA, advancement, and obligated-service requirements, and my EAOS is ${p.obligatedServiceEnd || "[YYYY-MM]"}. I plan to test ${p.targetExamMonth ? `in ${p.targetExamMonth}` : "after approval"} and will report my result to Navy COOL.\n\nVery respectfully,\n${rank} ${name}${p.email ? `\n${p.email}` : ""}`,
+    );
+
+  return pdf.toArrayBuffer();
 }

@@ -1,10 +1,7 @@
 import { describe, expect, it } from "vitest";
-import {
-  assessEligibility,
-  EXPERIENCE_WINDOW_MONTHS,
-  estimateLeadershipMonths,
-  requiredPmpMonths,
-} from "./eligibility";
+import { assessEligibility, EXPERIENCE_WINDOW_MONTHS, requiredPmpMonths, type EligibilityInput } from "./eligibility";
+
+const base: EligibilityInput = { branch: "navy", rank: "E5_E6", education: "HIGH_SCHOOL", leadershipMonths: 0 };
 
 describe("requiredPmpMonths", () => {
   it("follows PMI's education-based thresholds", () => {
@@ -16,52 +13,64 @@ describe("requiredPmpMonths", () => {
   });
 });
 
-describe("estimateLeadershipMonths", () => {
-  it("gives junior enlisted no leadership months regardless of time in service", () => {
-    expect(estimateLeadershipMonths("E1_E3", "10_PLUS")).toBe(0);
+describe("assessEligibility routing", () => {
+  it("routes high school + under 36 months to the CAPM (23 hours, no experience)", () => {
+    const result = assessEligibility({ ...base, leadershipMonths: 20 });
+    expect(result.path).toBe("CAPM");
+    expect(result.educationHours).toBe(23);
+    expect(result.pmpGapMonths).toBe(40);
   });
 
-  it("caps at PMI's eight-year experience window", () => {
-    expect(estimateLeadershipMonths("O3_PLUS", "10_PLUS")).toBe(EXPERIENCE_WINDOW_MONTHS);
+  it("routes high school + 60 months to the PMP (35 hours)", () => {
+    const result = assessEligibility({ ...base, leadershipMonths: 60 });
+    expect(result.path).toBe("PMP");
+    expect(result.educationHours).toBe(35);
   });
 
-  it("uses the low end of the service band", () => {
-    expect(estimateLeadershipMonths("E5", "4_6")).toBe(24);
+  it("keeps high school + 36 to 59 months on the CAPM with a dated PMP gap", () => {
+    const result = assessEligibility({ ...base, leadershipMonths: 48 });
+    expect(result.path).toBe("CAPM");
+    expect(result.pmpGapMonths).toBe(12);
+  });
+
+  it("routes a bachelor's degree + 36 months to the PMP", () => {
+    expect(assessEligibility({ ...base, education: "BACHELOR", leadershipMonths: 36 }).path).toBe("PMP");
+    expect(assessEligibility({ ...base, education: "BACHELOR", leadershipMonths: 35 }).path).toBe("CAPM");
+  });
+
+  it("routes E-1 to E-4 to the CAPM even when the months meet the PMP bar, and says why", () => {
+    const result = assessEligibility({ ...base, rank: "E1_E4", education: "BACHELOR", leadershipMonths: 40 });
+    expect(result.path).toBe("CAPM");
+    expect(result.pmpGapMonths).toBe(0);
+    expect(result.notes.some((note) => note.text.includes("on paper"))).toBe(true);
+  });
+
+  it("only counts the last eight years of experience", () => {
+    expect(assessEligibility({ ...base, leadershipMonths: 200 }).countedMonths).toBe(EXPERIENCE_WINDOW_MONTHS);
+  });
+
+  it("flags borderline PMP candidates for audit care", () => {
+    const result = assessEligibility({ ...base, education: "BACHELOR", leadershipMonths: 38 });
+    expect(result.path).toBe("PMP");
+    expect(result.notes[0].tone).toBe("warning");
   });
 });
 
-describe("assessEligibility", () => {
-  it("recommends the CAPM for a junior enlisted member with no PM background", () => {
-    const result = assessEligibility({ rank: "E1_E3", service: "2_4", education: "HIGH_SCHOOL" });
-    expect(result.recommendation).toBe("CAPM");
-    expect(result.confidence).toBe("not_yet");
-    expect(result.educationHoursRequired).toBe(23);
+describe("funding notes", () => {
+  it("always carries the do-not-pay-out-of-pocket warning", () => {
+    expect(assessEligibility(base).notes.some((note) => note.tone === "critical")).toBe(true);
   });
 
-  it("recommends CAPM-then-PMP when the gap is two years or less", () => {
-    // E-6 with 4-6 years: 48 * 0.7 = 33 months vs 60 required -> 27 month gap (too big)
-    // E-6 with 6-10 years: 72 * 0.7 = 50 months vs 60 required -> 10 month gap
-    const result = assessEligibility({ rank: "E6", service: "6_10", education: "HIGH_SCHOOL" });
-    expect(result.recommendation).toBe("CAPM_THEN_PMP");
-    expect(result.gapMonths).toBe(10);
-  });
-
-  it("recommends the PMP when estimated experience clears the bar", () => {
-    const result = assessEligibility({ rank: "O3_PLUS", service: "6_10", education: "BACHELOR" });
-    expect(result.recommendation).toBe("PMP");
-    expect(result.confidence).toBe("strong");
-    expect(result.educationHoursRequired).toBe(35);
-  });
-
-  it("flags a borderline PMP candidate", () => {
-    // E-5, 6-10 years: 72 * 0.5 = 36 months vs 36 required -> exactly at the bar
-    const result = assessEligibility({ rank: "E5", service: "6_10", education: "BACHELOR" });
-    expect(result.recommendation).toBe("PMP");
-    expect(result.confidence).toBe("borderline");
-  });
-
-  it("never reports a negative gap", () => {
-    const result = assessEligibility({ rank: "E7_E9", service: "10_PLUS", education: "GRADUATE" });
-    expect(result.gapMonths).toBe(0);
+  it("warns Navy officers that Navy COOL officer funding may not be available", () => {
+    const officer = assessEligibility({ ...base, rank: "O1_O3", education: "BACHELOR", leadershipMonths: 40 });
+    expect(officer.notes.some((note) => note.text.includes("officer funding"))).toBe(true);
+    const soldier = assessEligibility({
+      ...base,
+      branch: "army",
+      rank: "O1_O3",
+      education: "BACHELOR",
+      leadershipMonths: 40,
+    });
+    expect(soldier.notes.some((note) => note.text.includes("officer funding"))).toBe(false);
   });
 });

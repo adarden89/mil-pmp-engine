@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useRef } from "react";
 import { usePurchase } from "@/components/providers/use-purchase";
 import { LinkButton } from "@/components/ui/button";
-import { Card } from "@/components/ui/primitives";
+import { Card } from "@/components/ui/card";
 import { isProductId } from "@/lib/catalog";
 import { decodeCartParam } from "@/lib/cart-param";
 
@@ -28,7 +28,7 @@ export function CheckoutStart() {
     return (
       <Card className="mx-auto max-w-md p-8 text-center">
         <p className="font-semibold">We couldn&apos;t start checkout</p>
-        <p className="mt-2 text-sm text-muted">{purchase.error ?? "No products were selected."}</p>
+        <p className="mt-2 text-sm text-muted-foreground">{purchase.error ?? "No products were selected."}</p>
         <LinkButton href="/#pricing" className="mt-6">
           Back to pricing
         </LinkButton>
@@ -40,7 +40,7 @@ export function CheckoutStart() {
     <Card className="mx-auto flex max-w-md flex-col items-center p-10 text-center">
       <LoaderCircle className="size-8 animate-spin text-brand" aria-hidden />
       <p className="mt-4 font-semibold">Opening secure checkout…</p>
-      <p className="mt-1 text-sm text-muted">You&apos;ll be redirected to Stripe.</p>
+      <p className="mt-1 text-sm text-muted-foreground">You&apos;ll be redirected to Stripe.</p>
     </Card>
   );
 }

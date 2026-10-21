@@ -2,6 +2,11 @@
  * Product catalog: the single source of truth for prices. Checkout sessions and
  * 1-click upsell PaymentIntents both read amounts from here, so the Stripe
  * dashboard never needs a matching Price object.
+ *
+ * There is deliberately no "compare at" price. Showing a crossed-out former
+ * price the product never sold at is a fictitious reference price, which the
+ * FTC Guides Against Deceptive Pricing (16 CFR 233.1) and state laws treat as
+ * deceptive. The pricing page anchors on real exam fees instead (pmi-facts.ts).
  */
 
 export const PRODUCT_IDS = ["base_tool", "cool_fast_track", "exam_vault"] as const;
@@ -22,9 +27,9 @@ export interface Product {
 export const PRODUCTS: Record<ProductId, Product> = {
   base_tool: {
     id: "base_tool",
-    name: "MilToPMP Base Tool",
-    shortName: "Base Tool",
-    priceCents: 2700,
+    name: "MilToPMP Core Translator",
+    shortName: "Core Translator",
+    priceCents: 2499,
     kind: "base",
     headline: "Build a PMI application written to hold up in an audit.",
     features: [
@@ -38,31 +43,32 @@ export const PRODUCTS: Record<ProductId, Product> = {
   },
   cool_fast_track: {
     id: "cool_fast_track",
-    name: "COOL Voucher Fast-Track",
+    name: "Navy COOL Fast-Track Guide",
     shortName: "COOL Fast-Track",
-    priceCents: 1200,
+    priceCents: 999,
     kind: "addon",
-    headline: "Show up to your ESO with a complete, pre-filled voucher packet.",
+    headline: "Walk into your command with every OPNAV 1500/57 field ready and the timing checked.",
     features: [
-      "Pre-filled Joint Services Transcript (JST) audit checklist (PDF)",
-      "Pre-filled COOL voucher request prep worksheet (PDF)",
-      "Command approval and ESO email templates",
+      "OPNAV 1500/57 prep packet: every field, pre-filled from your answers",
+      "Navy COOL timing check (EAOS and 60-day separation rules)",
+      "Routing memo for your approving official",
+      "Pre-filled JST audit checklist and funding worksheet (all branches)",
       "Versions for Navy, Army, Air Force, Marine Corps, and Coast Guard programs",
     ],
-    unlocksPath: "/funding#downloads",
+    unlocksPath: "/funding#opnav-1500-57",
   },
   exam_vault: {
     id: "exam_vault",
-    name: "Master Exam Vault & Flashcard Suite",
-    shortName: "Exam Vault",
-    priceCents: 1700,
+    name: "Zero-Knowledge Study Vault",
+    shortName: "Study Vault",
+    priceCents: 1999,
     kind: "addon",
-    headline: "Spaced-repetition drills mapped to the current PMP exam outline.",
+    headline: "Spaced-repetition flashcards that start from zero and end exam-ready.",
     features: [
-      "Full flashcard deck across People, Process, and Business Environment",
-      "Predictive, Agile, and Hybrid approach tagging",
+      "Full deck across PM Fundamentals, Agile / Scrum, Predictive, Hybrid, and Business Analysis",
+      "Mapped to the CAPM domains and tagged to PMP domains",
       "Leitner-box retention tracking synced to your account",
-      "Weak-domain analytics before you book the exam",
+      "Top trainer and tool breakdown: Study Hall, Pocket Prep, Ramdayal, Phillips, O2O",
     ],
     unlocksPath: "/vault",
   },
@@ -96,7 +102,7 @@ export function validateCart(requested: readonly ProductId[], owned: readonly Pr
   }
   const hasBase = products.includes("base_tool") || owned.includes("base_tool");
   if (!hasBase) {
-    return { ok: false, reason: "Add-ons require the MilToPMP Base Tool." };
+    return { ok: false, reason: "Add-ons require the MilToPMP Core Translator." };
   }
   return { ok: true, products };
 }

@@ -1,4 +1,4 @@
-import { EligibilityCalculator } from "@/components/eligibility/eligibility-calculator";
+import { EligibilityTeaser } from "@/components/home/eligibility-teaser";
 import { Faq } from "@/components/home/faq";
 import { Hero } from "@/components/home/hero";
 import { ModuleGrid } from "@/components/home/module-grid";
@@ -9,7 +9,7 @@ export default function HomePage() {
     <>
       <Hero />
       <ModuleGrid />
-      <EligibilityCalculator />
+      <EligibilityTeaser />
       <PricingTiers />
       <Faq />
     </>

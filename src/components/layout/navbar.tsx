@@ -65,7 +65,7 @@ export function Navbar() {
                   href={link.href}
                   className={cn(
                     "rounded-md px-3 py-2 text-sm whitespace-nowrap transition-colors",
-                    active ? "text-fg" : "text-muted hover:text-fg",
+                    active ? "text-fg" : "text-muted-foreground hover:text-fg",
                   )}
                   aria-current={active ? "page" : undefined}
                 >
@@ -95,7 +95,7 @@ export function Navbar() {
           )}
           {!ownsBase ? (
             <LinkButton
-              href="/#eligibility"
+              href="/eligibility"
               size="sm"
               className="hidden sm:inline-flex"
               icon={<ArrowRight className="size-4" aria-hidden />}
@@ -105,7 +105,7 @@ export function Navbar() {
           ) : null}
           <button
             type="button"
-            className="grid size-9 place-items-center rounded-lg border border-border text-muted lg:hidden"
+            className="grid size-9 place-items-center rounded-lg border border-border text-muted-foreground lg:hidden"
             onClick={() => setOpen((value) => !value)}
             aria-expanded={open}
             aria-controls="mobile-nav"
@@ -133,7 +133,7 @@ export function Navbar() {
                   key={link.href}
                   href={link.href}
                   onClick={() => setOpen(false)}
-                  className="block rounded-md px-3 py-2.5 text-sm text-muted hover:bg-surface-2 hover:text-fg"
+                  className="block rounded-md px-3 py-2.5 text-sm text-muted-foreground hover:bg-surface-2 hover:text-fg"
                 >
                   {link.longLabel}
                 </Link>

@@ -7,27 +7,26 @@ import type { ProgressResponse } from "@/app/api/flashcards/progress/route";
 import { useSession } from "@/components/providers/session-provider";
 import { usePurchase } from "@/components/providers/use-purchase";
 import { Button, LinkButton } from "@/components/ui/button";
-import { Badge, Card, ProgressBar } from "@/components/ui/primitives";
+import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
+import { Progress } from "@/components/ui/form-controls";
 import { apiFetch } from "@/lib/api-client";
 import { PRODUCTS } from "@/lib/catalog";
 import {
-  APPROACH_LABELS,
-  APPROACHES,
   cardsForAccess,
-  DOMAIN_EXAM_WEIGHT,
+  CAPM_WEIGHT,
+  CATEGORIES,
+  CATEGORY_LABELS,
   DOMAIN_LABELS,
-  DOMAINS,
   FLASHCARDS,
-  type Approach,
-  type Domain,
+  type Category,
   type Flashcard,
 } from "@/lib/flashcards";
 import { buildStudyQueue, mergeProgress, reviewCard, summarizeRetention, type ProgressMap } from "@/lib/leitner";
 import { cn, formatUsd } from "@/lib/utils";
 import { progressStore } from "./progress-store";
 
-type DomainFilter = Domain | "all";
-type ApproachFilter = Approach | "all";
+type CategoryFilter = Category | "all";
 
 const SWIPE_THRESHOLD = 110;
 
@@ -58,8 +57,7 @@ export function FlashcardEngine() {
     () => true,
     () => false,
   );
-  const [domain, setDomain] = useState<DomainFilter>("all");
-  const [approach, setApproach] = useState<ApproachFilter>("all");
+  const [category, setCategory] = useState<CategoryFilter>("all");
   const [sessionNonce, setSessionNonce] = useState(0);
 
   // Pull server progress once for vault owners and merge it with this device.
@@ -78,11 +76,8 @@ export function FlashcardEngine() {
 
   const deck = useMemo(() => cardsForAccess(hasVault), [hasVault]);
   const filtered = useMemo(
-    () =>
-      deck.filter(
-        (card) => (domain === "all" || card.domain === domain) && (approach === "all" || card.approach === approach),
-      ),
-    [deck, domain, approach],
+    () => deck.filter((card) => category === "all" || card.category === category),
+    [deck, category],
   );
 
   const persist = useCallback(
@@ -99,32 +94,33 @@ export function FlashcardEngine() {
 
   return (
     <div className="space-y-8">
-      <div className="grid gap-4 md:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-3 xl:grid-cols-6">
         <Card className="p-5">
-          <p className="font-mono text-xs tracking-widest text-subtle uppercase">Overall retention</p>
+          <p className="font-mono text-xs tracking-widest text-subtle uppercase">Overall</p>
           <p className="mt-2 text-3xl font-semibold">{overall.retention}%</p>
-          <p className="mt-1 text-xs text-muted">
+          <p className="mt-1 text-xs text-muted-foreground">
             {overall.mastered} mastered · {overall.seen}/{overall.total} seen
           </p>
         </Card>
-        {DOMAINS.map((key) => {
+        {CATEGORIES.map((key) => {
           const summary = summarizeRetention(
-            deck.filter((card) => card.domain === key),
+            deck.filter((card) => card.category === key),
             progress,
           );
+          const weight = CAPM_WEIGHT[key];
           return (
             <Card key={key} className="p-5">
-              <div className="flex items-baseline justify-between">
-                <p className="text-sm font-medium">{DOMAIN_LABELS[key]}</p>
-                <span className="font-mono text-[11px] text-subtle">{DOMAIN_EXAM_WEIGHT[key]}% of exam</span>
-              </div>
-              <ProgressBar
+              <p className="text-sm font-medium">{CATEGORY_LABELS[key]}</p>
+              <p className="font-mono text-[11px] text-subtle">
+                {weight ? `${weight}% of CAPM` : "Heavily tested on PMP"}
+              </p>
+              <Progress
                 value={summary.retention}
                 className="mt-4"
                 tone={summary.retention >= 70 ? "success" : summary.retention >= 40 ? "brand" : "warning"}
               />
-              <p className="mt-2 text-xs text-muted">
-                {summary.retention}% retention · {summary.total} cards
+              <p className="mt-2 text-xs text-muted-foreground">
+                {summary.retention}% · {summary.total} cards
               </p>
             </Card>
           );
@@ -155,25 +151,17 @@ export function FlashcardEngine() {
         </div>
       ) : null}
       {purchase.error ? (
-        <p className="text-sm text-danger" role="alert">
+        <p className="text-sm text-destructive" role="alert">
           {purchase.error}
         </p>
       ) : null}
 
-      <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
-        <FilterGroup
-          label="Domain"
-          value={domain}
-          options={[["all", "All"], ...DOMAINS.map((key) => [key, DOMAIN_LABELS[key]] as const)]}
-          onChange={(value) => setDomain(value as DomainFilter)}
-        />
-        <FilterGroup
-          label="Approach"
-          value={approach}
-          options={[["all", "All"], ...APPROACHES.map((key) => [key, APPROACH_LABELS[key]] as const)]}
-          onChange={(value) => setApproach(value as ApproachFilter)}
-        />
-      </div>
+      <FilterGroup
+        label="Category"
+        value={category}
+        options={[["all", "All"], ...CATEGORIES.map((key) => [key, CATEGORY_LABELS[key]] as const)]}
+        onChange={(value) => setCategory(value as CategoryFilter)}
+      />
 
       {/* The study queue depends on the current time and on-device progress, so it starts after hydration. */}
       {!isClient ? (
@@ -183,7 +171,7 @@ export function FlashcardEngine() {
         />
       ) : (
         <StudySession
-          key={`${domain}-${approach}-${hasVault}-${sessionNonce}`}
+          key={`${category}-${hasVault}-${sessionNonce}`}
           cards={filtered}
           progress={progress}
           onReview={persist}
@@ -220,7 +208,7 @@ function FilterGroup({
           aria-pressed={value === key}
           className={cn(
             "rounded-full border px-3 py-1 text-xs font-medium transition-colors",
-            value === key ? "border-brand bg-brand/15 text-fg" : "border-border text-muted hover:text-fg",
+            value === key ? "border-brand bg-brand/15 text-fg" : "border-border text-muted-foreground hover:text-fg",
           )}
         >
           {text}
@@ -289,7 +277,9 @@ function StudySession({
 
   if (cards.length === 0) {
     return (
-      <Card className="p-10 text-center text-sm text-muted">No cards match these filters in your current deck.</Card>
+      <Card className="p-10 text-center text-sm text-muted-foreground">
+        No cards match these filters in your current deck.
+      </Card>
     );
   }
 
@@ -301,7 +291,7 @@ function StudySession({
           <Trophy className="size-6" aria-hidden />
         </span>
         <h3 className="mt-4 text-xl font-semibold">Session complete</h3>
-        <p className="mt-2 text-sm text-muted">
+        <p className="mt-2 text-sm text-muted-foreground">
           {total} reviews · {total ? Math.round((stats.correct / total) * 100) : 0}% first-pass accuracy. Cards you
           missed are scheduled sooner; cards you knew move to longer intervals.
         </p>
@@ -314,7 +304,7 @@ function StudySession({
 
   return (
     <div className="mx-auto max-w-2xl">
-      <div className="mb-4 flex items-center justify-between text-xs text-muted">
+      <div className="mb-4 flex items-center justify-between text-xs text-muted-foreground">
         <span className="font-mono">{queue.length} in queue</span>
         <span className="flex items-center gap-3">
           <span className="text-success">{stats.correct} known</span>
@@ -420,8 +410,8 @@ function SwipeCard({
       >
         <div className="absolute inset-0 flex flex-col rounded-2xl border border-border-strong bg-surface p-7 shadow-xl backface-hidden">
           <div className="flex items-center gap-2">
-            <Badge tone="brand">{DOMAIN_LABELS[card.domain]}</Badge>
-            <Badge tone="neutral">{APPROACH_LABELS[card.approach]}</Badge>
+            <Badge variant="brand">{CATEGORY_LABELS[card.category]}</Badge>
+            {card.domain ? <Badge variant="neutral">PMP: {DOMAIN_LABELS[card.domain]}</Badge> : null}
             {box ? <span className="ml-auto font-mono text-[11px] text-subtle">Box {box}/5</span> : null}
           </div>
           <p className="my-auto text-xl leading-snug font-semibold text-balance sm:text-2xl">{card.front}</p>

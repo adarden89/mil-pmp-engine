@@ -28,7 +28,7 @@ export async function POST(request: Request) {
 
     const owned = await getEntitlements(supabase, user.id);
     if (!owned.includes("base_tool")) {
-      throw new HttpError(409, "base_required", "Add-ons require the MilToPMP Base Tool.");
+      throw new HttpError(409, "base_required", "Add-ons require the MilToPMP Core Translator.");
     }
     if (owned.includes(productId)) {
       throw new HttpError(409, "already_owned", `You already own ${PRODUCTS[productId].name}.`);

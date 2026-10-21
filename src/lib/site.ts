@@ -21,7 +21,7 @@ export const PMI_TRADEMARK_NOTICE =
   "PMI, PMP, CAPM, PMBOK and Project Management Professional are registered marks of the Project Management Institute, Inc.";
 
 export const NAV_LINKS = [
-  { href: "/#eligibility", label: "Eligibility", longLabel: "Eligibility Calculator" },
+  { href: "/eligibility", label: "Eligibility", longLabel: "Eligibility & Roadmap" },
   { href: "/funding", label: "Funding", longLabel: "COOL Funding Engine" },
   { href: "/translate", label: "Translate", longLabel: "Translation Studio" },
   { href: "/vault", label: "Study Vault", longLabel: "Study Vault" },

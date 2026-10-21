@@ -61,6 +61,24 @@ export const MILITARY_JARGON = [
   "OPTEMPO",
   "OPORD",
   "FRAGO",
+  "S-1",
+  "S-2",
+  "S-3",
+  "S-4",
+  "S-6",
+  "S3",
+  "S4",
+  "FTX",
+  "CPX",
+  "COA",
+  "MDMP",
+  "CONOP",
+  "CONOPS",
+  "PMCS",
+  "MTOE",
+  "AAR",
+  "EPR",
+  "RSO",
   "SITREP",
   "POA&M",
   "CASREP",
@@ -201,6 +219,6 @@ export function analyzeAuditDensity(result: TranslationResult): AuditDensityRepo
   const score = Math.round((earned / totalWeight) * 100);
   const grade = score >= 80 ? "audit_ready" : score >= 60 ? "needs_work" : "high_risk";
   const gradeLabel =
-    grade === "audit_ready" ? "Audit-ready" : grade === "needs_work" ? "Needs work" : "High audit risk";
+    grade === "audit_ready" ? "Low audit risk" : grade === "needs_work" ? "Moderate audit risk" : "High audit risk";
   return { score, grade, gradeLabel, wordCount, checks };
 }

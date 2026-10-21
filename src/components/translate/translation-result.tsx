@@ -5,7 +5,8 @@ import { FileDown, Languages, ShieldCheck, TriangleAlert, UserCheck } from "luci
 import { useMemo, useState } from "react";
 import { CopyButton } from "@/components/ui/copy-button";
 import { Button } from "@/components/ui/button";
-import { Badge, Card } from "@/components/ui/primitives";
+import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
 import { analyzeAuditDensity } from "@/lib/audit-density";
 import { LEGAL_DISCLAIMER } from "@/lib/site";
 import {
@@ -42,7 +43,7 @@ async function exportPdf(result: TranslationResult, input: TranslateRequest | nu
       result.civilianProjectTitle,
       input ? `${input.rateOrMos} · ${input.startMonth} to ${input.endMonth}` : "PMI project experience",
     )
-    .section(`Application summary (${report.wordCount} words · audit score ${report.score})`)
+    .section(`Application summary (${report.wordCount} words · ${report.gradeLabel.toLowerCase()})`)
     .paragraph(result.applicationSummary)
     .section("Project details")
     .labeled("Objective", result.objective)
@@ -124,7 +125,7 @@ export function TranslationResultView({
 
         <Card className="p-6">
           <p className="mb-5 flex items-center gap-2 font-mono text-xs tracking-widest text-subtle uppercase">
-            <ShieldCheck className="size-3.5" aria-hidden /> Audit density check
+            <ShieldCheck className="size-3.5" aria-hidden /> Audit risk meter
           </p>
           <AuditDensityMeter report={report} />
         </Card>
@@ -171,7 +172,7 @@ export function TranslationResultView({
                 {items.length > 0 ? (
                   <ul className="mt-3 space-y-2">
                     {items.map((item) => (
-                      <li key={item} className="text-xs leading-relaxed text-muted">
+                      <li key={item} className="text-xs leading-relaxed text-muted-foreground">
                         {item}
                       </li>
                     ))}
@@ -200,13 +201,13 @@ export function TranslationResultView({
               ))}
             </ul>
           ) : (
-            <p className="mt-4 text-sm text-muted">No open items flagged.</p>
+            <p className="mt-4 text-sm text-muted-foreground">No open items flagged.</p>
           )}
           <div className="mt-6 flex items-start gap-2.5 rounded-lg border border-border bg-bg-elevated/60 p-3">
             <UserCheck className="mt-0.5 size-4 shrink-0 text-brand" aria-hidden />
             <div>
               <p className="text-xs font-medium">Suggested verifier</p>
-              <p className="text-xs text-muted">{result.suggestedVerifier}</p>
+              <p className="text-xs text-muted-foreground">{result.suggestedVerifier}</p>
             </div>
           </div>
         </Card>
@@ -226,7 +227,7 @@ export function TranslationResultView({
               <tbody className="divide-y divide-border">
                 {result.jargonTranslations.map((row) => (
                   <tr key={row.military}>
-                    <td className="py-2 pr-4 font-mono text-xs text-muted">{row.military}</td>
+                    <td className="py-2 pr-4 font-mono text-xs text-muted-foreground">{row.military}</td>
                     <td className="py-2 text-sm">{row.civilian}</td>
                   </tr>
                 ))}
@@ -234,8 +235,8 @@ export function TranslationResultView({
             </table>
           </div>
           <div className="mt-4 flex flex-wrap gap-2">
-            <Badge tone="neutral">{result.deliverables.length} deliverables</Badge>
-            <Badge tone="neutral">{result.jargonTranslations.length} terms translated</Badge>
+            <Badge variant="neutral">{result.deliverables.length} deliverables</Badge>
+            <Badge variant="neutral">{result.jargonTranslations.length} terms translated</Badge>
           </div>
         </Card>
       </div>

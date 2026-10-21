@@ -3,6 +3,7 @@ import type Stripe from "stripe";
 import { isProductId, PRODUCTS, type ProductId } from "@/lib/catalog";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import type { AppSupabaseClient } from "@/lib/supabase/server";
+import { findOrCreateUserByEmail } from "@/lib/provisioning";
 import { CHECKOUT_METADATA_KEYS, decodeProductIds, idOf, stripe } from "@/lib/stripe";
 
 /** Active (non-revoked) products for a user, read with the user's own RLS-scoped client. */
@@ -103,10 +104,17 @@ export async function fulfillCheckoutSession(session: Stripe.Checkout.Session): 
   if (session.payment_status !== "paid" && session.payment_status !== "no_payment_required") {
     return { status: "pending", reason: `payment_status=${session.payment_status}` };
   }
-  const userId = session.client_reference_id ?? session.metadata?.[CHECKOUT_METADATA_KEYS.userId];
   const productIds = productIdsFromMetadata(session.metadata);
-  if (!userId || productIds.length === 0) {
-    return { status: "ignored", reason: "session is missing user or product metadata" };
+  if (productIds.length === 0) {
+    return { status: "ignored", reason: "session is missing product metadata" };
+  }
+  // Signed-in buyers carry their user id; guest buyers get an account created
+  // from the email they gave Stripe, then receive a sign-in link by email.
+  let userId = session.client_reference_id || session.metadata?.[CHECKOUT_METADATA_KEYS.userId] || null;
+  if (!userId) {
+    const email = session.customer_details?.email;
+    if (!email) return { status: "ignored", reason: "guest session has no customer email" };
+    userId = await findOrCreateUserByEmail(email);
   }
 
   const paymentIntentId = idOf(session.payment_intent);

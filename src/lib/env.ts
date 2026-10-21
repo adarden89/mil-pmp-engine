@@ -19,12 +19,32 @@ const serverEnvSchema = z.object({
   NEXT_PUBLIC_SITE_URL: z.preprocess(emptyToUndefined, z.url().default("http://localhost:3000")),
   NEXT_PUBLIC_SUPABASE_URL: optionalString,
   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: optionalString,
+  NEXT_PUBLIC_SUPABASE_ANON_KEY: optionalString,
   SUPABASE_SECRET_KEY: optionalString,
   STRIPE_SECRET_KEY: optionalString,
   STRIPE_WEBHOOK_SECRET: optionalString,
   ANTHROPIC_API_KEY: optionalString,
   ANTHROPIC_MODEL: z.preprocess(emptyToUndefined, z.string().trim().min(1).default("claude-opus-5-5")),
   TRANSLATION_LIMIT_PER_30_DAYS: z.preprocess(emptyToUndefined, z.coerce.number().int().positive().default(40)),
+  // Transactional email
+  RESEND_API_KEY: optionalString,
+  RESEND_FROM_EMAIL: optionalString,
+  // Server-side ad conversions
+  META_PIXEL_ID: optionalString,
+  META_CAPI_ACCESS_TOKEN: optionalString,
+  META_GRAPH_API_VERSION: z.preprocess(
+    emptyToUndefined,
+    z
+      .string()
+      .regex(/^v\d+\.\d+$/)
+      .default("v24.0"),
+  ),
+  META_TEST_EVENT_CODE: optionalString,
+  TIKTOK_PIXEL_ID: optionalString,
+  TIKTOK_EVENTS_API_ACCESS_TOKEN: optionalString,
+  TIKTOK_TEST_EVENT_CODE: optionalString,
+  /** opt-out: share unless the visitor opts out or sends GPC (US model). opt-in: share only after consent. */
+  TRACKING_CONSENT_MODE: z.preprocess(emptyToUndefined, z.enum(["opt-out", "opt-in"]).default("opt-out")),
 });
 
 export type ServerEnv = z.infer<typeof serverEnvSchema>;
@@ -71,9 +91,14 @@ export function integrationStatus() {
   const env = serverEnv();
   return {
     supabase: Boolean(
-      env.NEXT_PUBLIC_SUPABASE_URL && env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY && env.SUPABASE_SECRET_KEY,
+      env.NEXT_PUBLIC_SUPABASE_URL &&
+      (env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || env.NEXT_PUBLIC_SUPABASE_ANON_KEY) &&
+      env.SUPABASE_SECRET_KEY,
     ),
     stripe: Boolean(env.STRIPE_SECRET_KEY && env.STRIPE_WEBHOOK_SECRET),
     anthropic: Boolean(env.ANTHROPIC_API_KEY),
+    email: Boolean(env.RESEND_API_KEY && env.RESEND_FROM_EMAIL),
+    metaConversions: Boolean(env.META_PIXEL_ID && env.META_CAPI_ACCESS_TOKEN),
+    tiktokEvents: Boolean(env.TIKTOK_PIXEL_ID && env.TIKTOK_EVENTS_API_ACCESS_TOKEN),
   };
 }

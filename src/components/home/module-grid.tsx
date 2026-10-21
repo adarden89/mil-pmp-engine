@@ -1,10 +1,11 @@
 import { ArrowRight, BookOpen, Landmark, Languages, Target } from "lucide-react";
 import Link from "next/link";
-import { Card, SectionHeading } from "@/components/ui/primitives";
+import { SectionHeading } from "@/components/ui/primitives";
+import { Card } from "@/components/ui/card";
 
 const MODULES = [
   {
-    href: "/#eligibility",
+    href: "/eligibility",
     icon: Target,
     title: "Eligibility Calculator",
     body: "Three questions tell you whether to go for the CAPM now or the PMP, based on PMI's actual experience rules rather than rank.",
@@ -15,21 +16,21 @@ const MODULES = [
     icon: Landmark,
     title: "COOL Funding Engine",
     body: "A step-by-step map for Navy COOL, Army Credentialing Assistance, AF COOL, USMC COOL, and USCG COOL, with a pre-filled packet.",
-    tag: "Map free · Packet $12",
+    tag: "Map free · Guide $9.99",
   },
   {
     href: "/translate",
     icon: Languages,
     title: "AI Translation Studio",
     body: "Turn EVAL, NCOER, EPB, and FITREP bullets into first-person PMI project descriptions, scored for audit risk.",
-    tag: "Base Tool",
+    tag: "Core Translator · $24.99",
   },
   {
     href: "/vault",
     icon: BookOpen,
     title: "Study Vault",
     body: "Spaced-repetition flashcards across People, Process, and Business Environment, plus a vetted resource directory.",
-    tag: "Sample free · Vault $17",
+    tag: "Sample free · Vault $19.99",
   },
 ] as const;
 
@@ -49,7 +50,7 @@ export function ModuleGrid() {
                 <module.icon className="size-5" aria-hidden />
               </span>
               <h3 className="mt-5 text-base font-semibold">{module.title}</h3>
-              <p className="mt-2 flex-1 text-sm leading-relaxed text-muted">{module.body}</p>
+              <p className="mt-2 flex-1 text-sm leading-relaxed text-muted-foreground">{module.body}</p>
               <div className="mt-6 flex items-center justify-between">
                 <span className="font-mono text-[11px] tracking-wider text-subtle uppercase">{module.tag}</span>
                 <ArrowRight

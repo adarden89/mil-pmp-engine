@@ -3,7 +3,10 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronRight, CircleCheck, Clock, ExternalLink, FileText, TriangleAlert, UserRound } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Badge, Card, ProgressBar } from "@/components/ui/primitives";
+import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
+import { Progress } from "@/components/ui/form-controls";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   FUNDING_PROGRAM_IDS,
   FUNDING_PROGRAMS,
@@ -74,28 +77,22 @@ export function FundingEngine({
 
   return (
     <div>
-      <div role="tablist" aria-label="Service" className="flex flex-wrap gap-2">
-        {FUNDING_PROGRAM_IDS.map((id) => (
-          <button
-            key={id}
-            role="tab"
-            type="button"
-            aria-selected={id === branch}
-            onClick={() => {
-              onBranchChange(id);
-              setExpanded(FUNDING_PROGRAMS[id].steps[0]?.id ?? null);
-            }}
-            className={cn(
-              "rounded-full border px-4 py-2 text-sm font-medium transition-all",
-              id === branch
-                ? "border-brand bg-brand text-white shadow-[0_8px_24px_-8px_var(--glow)]"
-                : "border-border text-muted hover:border-border-strong hover:text-fg",
-            )}
-          >
-            {FUNDING_PROGRAMS[id].shortName}
-          </button>
-        ))}
-      </div>
+      <Tabs
+        value={branch}
+        onValueChange={(value) => {
+          const id = value as FundingProgramId;
+          onBranchChange(id);
+          setExpanded(FUNDING_PROGRAMS[id].steps[0]?.id ?? null);
+        }}
+      >
+        <TabsList aria-label="Service">
+          {FUNDING_PROGRAM_IDS.map((id) => (
+            <TabsTrigger key={id} value={id}>
+              {FUNDING_PROGRAMS[id].shortName}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+      </Tabs>
 
       <div className="mt-10 grid gap-8 lg:grid-cols-[1.5fr_1fr]">
         <Card className="p-6 sm:p-8">
@@ -103,18 +100,18 @@ export function FundingEngine({
             <div>
               <p className="font-mono text-xs tracking-widest text-subtle uppercase">Workflow map</p>
               <h2 className="mt-1 text-2xl font-semibold">{program.name}</h2>
-              <p className="mt-1 text-sm text-muted">
+              <p className="mt-1 text-sm text-muted-foreground">
                 Requests are submitted in <span className="text-fg">{program.portalName}</span>
               </p>
             </div>
             <div className="w-full sm:w-48">
-              <div className="flex justify-between text-xs text-muted">
+              <div className="flex justify-between text-xs text-muted-foreground">
                 <span>Your progress</span>
                 <span className="font-mono">
                   {done.length}/{program.steps.length}
                 </span>
               </div>
-              <ProgressBar value={percent} className="mt-2" tone={percent === 100 ? "success" : "brand"} />
+              <Progress value={percent} className="mt-2" tone={percent === 100 ? "success" : "brand"} />
             </div>
           </div>
 
@@ -141,7 +138,7 @@ export function FundingEngine({
                       "absolute top-1 left-0 grid size-8 place-items-center rounded-full border font-mono text-xs transition-all",
                       isDone
                         ? "border-success bg-success text-white"
-                        : "border-border-strong bg-bg-elevated text-muted hover:border-brand hover:text-brand",
+                        : "border-border-strong bg-bg-elevated text-muted-foreground hover:border-brand hover:text-brand",
                     )}
                     aria-label={isDone ? `Mark "${step.title}" as not done` : `Mark "${step.title}" as done`}
                     aria-pressed={isDone}
@@ -165,13 +162,13 @@ export function FundingEngine({
                         <span
                           className={cn(
                             "block text-sm font-semibold",
-                            isDone && "text-muted line-through decoration-success/60",
+                            isDone && "text-muted-foreground line-through decoration-success/60",
                           )}
                         >
                           {step.title}
                         </span>
                         <span className="mt-1 flex flex-wrap items-center gap-2">
-                          <Badge tone={OWNER_TONE[step.owner]}>
+                          <Badge variant={OWNER_TONE[step.owner]}>
                             <UserRound className="size-3" aria-hidden />
                             {step.owner}
                           </Badge>
@@ -196,7 +193,7 @@ export function FundingEngine({
                           className="overflow-hidden"
                         >
                           <div className="space-y-3 px-3 pb-4">
-                            <p className="text-sm leading-relaxed text-muted">{step.detail}</p>
+                            <p className="text-sm leading-relaxed text-muted-foreground">{step.detail}</p>
                             {step.documents.length > 0 ? (
                               <ul className="space-y-1.5">
                                 {step.documents.map((doc) => (
@@ -242,7 +239,7 @@ export function FundingEngine({
             <p className="flex items-center gap-2 font-mono text-xs tracking-widest text-warning uppercase">
               <TriangleAlert className="size-3.5" aria-hidden /> Watch outs
             </p>
-            <ul className="mt-4 space-y-2.5 text-sm text-muted">
+            <ul className="mt-4 space-y-2.5 text-sm text-muted-foreground">
               {program.watchOuts.map((item) => (
                 <li key={item}>{item}</li>
               ))}
@@ -257,7 +254,7 @@ export function FundingEngine({
                     href={resource.href}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex items-center gap-1.5 text-sm text-muted hover:text-fg"
+                    className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-fg"
                   >
                     {resource.label} <ExternalLink className="size-3" aria-hidden />
                   </a>

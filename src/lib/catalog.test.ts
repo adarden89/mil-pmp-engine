@@ -3,13 +3,14 @@ import { cartTotalCents, isProductId, PRODUCTS, validateCart } from "./catalog";
 
 describe("catalog", () => {
   it("prices the three tiers as specified", () => {
-    expect(PRODUCTS.base_tool.priceCents).toBe(2700);
-    expect(PRODUCTS.cool_fast_track.priceCents).toBe(1200);
-    expect(PRODUCTS.exam_vault.priceCents).toBe(1700);
+    expect(PRODUCTS.base_tool.priceCents).toBe(2499);
+    expect(PRODUCTS.cool_fast_track.priceCents).toBe(999);
+    expect(PRODUCTS.exam_vault.priceCents).toBe(1999);
   });
 
   it("totals a cart without double counting duplicates", () => {
-    expect(cartTotalCents(["base_tool", "exam_vault", "exam_vault"])).toBe(4400);
+    expect(cartTotalCents(["base_tool", "exam_vault", "exam_vault"])).toBe(4498);
+    expect(cartTotalCents(["base_tool", "cool_fast_track", "exam_vault"])).toBe(5497);
   });
 
   it("recognizes only known product ids", () => {
@@ -22,7 +23,7 @@ describe("validateCart", () => {
   it("rejects an add-on bought without the base tool", () => {
     expect(validateCart(["exam_vault"], [])).toEqual({
       ok: false,
-      reason: "Add-ons require the MilToPMP Base Tool.",
+      reason: "Add-ons require the MilToPMP Core Translator.",
     });
   });
 

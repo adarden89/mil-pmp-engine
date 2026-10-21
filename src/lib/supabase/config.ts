@@ -9,7 +9,8 @@ export interface SupabasePublicConfig {
 
 export function supabasePublicConfig(): SupabasePublicConfig | null {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const publishableKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+  // The legacy anon key works as a publishable key; accept either name.
+  const publishableKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   if (!url || !publishableKey) return null;
   return { url, publishableKey };
 }

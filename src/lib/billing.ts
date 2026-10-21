@@ -39,22 +39,35 @@ export async function getOrCreateStripeCustomer(user: SessionUser): Promise<Cust
   return { customerId: customer.id, defaultPaymentMethodId: null };
 }
 
-function paymentMetadata(userId: string, productIds: readonly ProductId[], source: "checkout" | "upsell") {
+function paymentMetadata(userId: string | null, productIds: readonly ProductId[], source: "checkout" | "upsell") {
   return {
-    [CHECKOUT_METADATA_KEYS.userId]: userId,
+    ...(userId ? { [CHECKOUT_METADATA_KEYS.userId]: userId } : {}),
     [CHECKOUT_METADATA_KEYS.productIds]: encodeProductIds(productIds),
     [CHECKOUT_METADATA_KEYS.source]: source,
   };
 }
 
-/** Hosted Checkout for one or more products. Saves the card for later 1-click add-ons. */
-export async function createCheckoutSession(user: SessionUser, productIds: readonly ProductId[]): Promise<string> {
-  const { customerId } = await getOrCreateStripeCustomer(user);
-  const metadata = paymentMetadata(user.id, productIds, "checkout");
+export interface CreatedCheckout {
+  id: string;
+  url: string;
+}
+
+/**
+ * Hosted Checkout for one or more products. Saves the card for later 1-click
+ * add-ons. Guests (no account yet) can check out too: Stripe collects their
+ * email and the webhook provisions the account and emails a sign-in link.
+ */
+export async function createCheckoutSession(
+  user: SessionUser | null,
+  productIds: readonly ProductId[],
+): Promise<CreatedCheckout> {
+  const customer = user ? await getOrCreateStripeCustomer(user) : null;
+  const metadata = paymentMetadata(user?.id ?? null, productIds, "checkout");
   const session = await stripe().checkout.sessions.create({
     mode: "payment",
-    customer: customerId,
-    client_reference_id: user.id,
+    ...(customer && user
+      ? { customer: customer.customerId, client_reference_id: user.id }
+      : { customer_creation: "always" as const }),
     line_items: productIds.map((id) => ({
       quantity: 1,
       price_data: {
@@ -80,7 +93,7 @@ export async function createCheckoutSession(user: SessionUser, productIds: reado
     cancel_url: `${siteUrl()}/?checkout=cancelled#pricing`,
   });
   if (!session.url) throw new Error("Stripe did not return a Checkout URL.");
-  return session.url;
+  return { id: session.id, url: session.url };
 }
 
 export type UpsellResult =
@@ -98,7 +111,7 @@ export async function chargeUpsell(user: SessionUser, productId: ProductId): Pro
   if (!defaultPaymentMethodId) {
     return {
       status: "redirect",
-      url: await createCheckoutSession(user, [productId]),
+      url: (await createCheckoutSession(user, [productId])).url,
       reason: "no_saved_card",
     };
   }
@@ -129,14 +142,14 @@ export async function chargeUpsell(user: SessionUser, productId: ProductId): Pro
     }
     return {
       status: "redirect",
-      url: await createCheckoutSession(user, [productId]),
+      url: (await createCheckoutSession(user, [productId])).url,
       reason: "authentication_required",
     };
   } catch (error) {
     if (error instanceof Stripe.errors.StripeCardError) {
       return {
         status: "redirect",
-        url: await createCheckoutSession(user, [productId]),
+        url: (await createCheckoutSession(user, [productId])).url,
         reason: error.code === "authentication_required" ? "authentication_required" : "card_declined",
       };
     }

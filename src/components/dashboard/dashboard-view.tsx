@@ -4,7 +4,6 @@ import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowRight,
   BookOpen,
-  CircleCheck,
   Landmark,
   Languages,
   Lock,
@@ -15,14 +14,17 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import Link from "next/link";
-import { useState, useSyncExternalStore } from "react";
+import { useMemo, useState } from "react";
+import { usePlan, usePlanSync } from "@/components/eligibility/plan-store";
 import { useSession } from "@/components/providers/session-provider";
 import { usePurchase } from "@/components/providers/use-purchase";
 import { Button, LinkButton } from "@/components/ui/button";
-import { Badge, Card } from "@/components/ui/primitives";
+import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
 import { PRODUCTS, type ProductId } from "@/lib/catalog";
-import type { EligibilityResult } from "@/lib/eligibility";
-import { ELIGIBILITY_STORAGE_KEY } from "@/lib/storage-keys";
+import { assessEligibility } from "@/lib/eligibility";
+import { buildRoadmap, currentPhase, roadmapProgress } from "@/lib/roadmap";
+import { Progress } from "@/components/ui/form-controls";
 import { cn, formatUsd } from "@/lib/utils";
 
 interface ModuleTile {
@@ -35,9 +37,9 @@ interface ModuleTile {
 
 const MODULES: ModuleTile[] = [
   {
-    title: "Eligibility calculator",
-    description: "Re-run your CAPM vs. PMP assessment.",
-    href: "/#eligibility",
+    title: "Eligibility & roadmap",
+    description: "Your CAPM or PMP path and step-by-step plan.",
+    href: "/eligibility",
     icon: Target,
     requires: null,
   },
@@ -49,51 +51,20 @@ const MODULES: ModuleTile[] = [
     requires: "base_tool",
   },
   {
-    title: "COOL voucher packet",
-    description: "Pre-filled JST checklist and voucher worksheet.",
-    href: "/funding#downloads",
+    title: "Navy COOL Fast-Track Guide",
+    description: "OPNAV 1500/57 prep packet and JST checklist.",
+    href: "/funding#opnav-1500-57",
     icon: Landmark,
     requires: "cool_fast_track",
   },
   {
-    title: "Exam Vault",
+    title: "Study Vault",
     description: "Full flashcard deck with synced retention.",
     href: "/vault",
     icon: BookOpen,
     requires: "exam_vault",
   },
 ];
-
-const READINESS = [
-  "Run the eligibility calculator and pick CAPM or PMP",
-  "Confirm the credential is mapped to you on your service's COOL site",
-  "Earn your PM education hours (23 for CAPM, 35 for PMP)",
-  "Translate every project and clear all audit flags",
-  "Submit the PMI application, then request COOL funding",
-  "Reach 70%+ retention in every exam domain before booking",
-];
-
-function subscribeStorage(onChange: () => void) {
-  window.addEventListener("storage", onChange);
-  return () => window.removeEventListener("storage", onChange);
-}
-
-function readEligibilityRaw(): string | null {
-  try {
-    return localStorage.getItem(ELIGIBILITY_STORAGE_KEY);
-  } catch {
-    return null;
-  }
-}
-
-function parseEligibility(raw: string | null): EligibilityResult | null {
-  if (!raw) return null;
-  try {
-    return (JSON.parse(raw) as { result: EligibilityResult }).result;
-  } catch {
-    return null;
-  }
-}
 
 export function DashboardView({
   email,
@@ -107,8 +78,15 @@ export function DashboardView({
   const session = useSession();
   const purchase = usePurchase();
   const [showWelcome, setShowWelcome] = useState(Boolean(welcome));
-  const eligibilityRaw = useSyncExternalStore(subscribeStorage, readEligibilityRaw, () => null);
-  const eligibility = parseEligibility(eligibilityRaw);
+  usePlanSync();
+  const plan = usePlan();
+  const eligibility = useMemo(() => (plan.input ? assessEligibility(plan.input) : null), [plan.input]);
+  const roadmap = useMemo(
+    () => (plan.input && eligibility ? buildRoadmap(eligibility, plan.input.branch) : null),
+    [plan.input, eligibility],
+  );
+  const progress = roadmap ? roadmapProgress(roadmap, plan.completed) : null;
+  const focus = roadmap ? currentPhase(roadmap, plan.completed) : null;
 
   // Server data renders first; client state takes over after a 1-click purchase refresh.
   const owned = session.status === "ready" && session.signedIn ? session.entitlements : serverEntitlements;
@@ -130,7 +108,9 @@ export function DashboardView({
             </span>
             <div className="flex-1">
               <p className="font-semibold">{PRODUCTS[welcome].name} is unlocked.</p>
-              <p className="text-sm text-muted">Your receipt is on its way from Stripe. Here is where to start.</p>
+              <p className="text-sm text-muted-foreground">
+                Your receipt is on its way from Stripe. Here is where to start.
+              </p>
             </div>
             <LinkButton href={PRODUCTS[welcome].unlocksPath} icon={<ArrowRight className="size-4" aria-hidden />}>
               Start now
@@ -176,7 +156,7 @@ export function DashboardView({
                     )}
                   </div>
                   <p className="mt-4 text-sm font-semibold">{module.title}</p>
-                  <p className="mt-1 text-xs text-muted">{module.description}</p>
+                  <p className="mt-1 text-xs text-muted-foreground">{module.description}</p>
                 </Link>
               );
             })}
@@ -185,42 +165,58 @@ export function DashboardView({
 
         <Card className="p-6">
           <p className="font-mono text-xs tracking-widest text-subtle uppercase">Your path</p>
-          {eligibility ? (
+          {eligibility && progress ? (
             <>
-              <p className="text-gradient mt-3 font-mono text-4xl font-semibold">
-                {eligibility.recommendation === "CAPM_THEN_PMP" ? "CAPM → PMP" : eligibility.recommendation}
-              </p>
+              <p className="text-gradient mt-3 font-mono text-4xl font-semibold">{eligibility.path}</p>
               <p className="mt-2 text-sm font-medium">{eligibility.headline}</p>
-              <p className="mt-2 text-xs leading-relaxed text-muted">
-                Estimated {eligibility.estimatedLeadershipMonths} of {eligibility.requiredMonths} months of project
-                leadership. {eligibility.educationHoursRequired} contact hours of PM education required.
+              <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+                {eligibility.countedMonths} of {eligibility.requiredPmpMonths} months of project leadership toward the
+                PMP. {eligibility.educationHours} contact hours of PM education required.
               </p>
+              <div className="mt-6 flex justify-between text-xs text-muted-foreground">
+                <span>Roadmap progress</span>
+                <span className="font-mono">
+                  {progress.done}/{progress.total}
+                </span>
+              </div>
+              <Progress
+                value={progress.percent}
+                className="mt-2"
+                tone={progress.percent === 100 ? "success" : "brand"}
+              />
+              {focus ? (
+                <p className="mt-3 flex items-center gap-1.5 text-xs text-muted-foreground">
+                  <Target className="size-3.5 text-primary" aria-hidden /> Current focus: {focus.title}
+                </p>
+              ) : null}
+              <LinkButton
+                href="/eligibility"
+                size="sm"
+                variant="secondary"
+                className="mt-5"
+                icon={<ArrowRight className="size-4" aria-hidden />}
+              >
+                Open my roadmap
+              </LinkButton>
             </>
           ) : (
             <>
-              <p className="mt-3 text-sm text-muted">You have not run the eligibility calculator on this device yet.</p>
-              <LinkButton href="/#eligibility" size="sm" variant="secondary" className="mt-4">
+              <p className="mt-3 text-sm text-muted-foreground">
+                Answer three questions to get your CAPM or PMP path and a roadmap you can track here.
+              </p>
+              <LinkButton href="/eligibility" size="sm" variant="secondary" className="mt-4">
                 Check eligibility
               </LinkButton>
             </>
           )}
-          <p className="mt-8 font-mono text-xs tracking-widest text-subtle uppercase">Readiness checklist</p>
-          <ol className="mt-3 space-y-2.5">
-            {READINESS.map((item) => (
-              <li key={item} className="flex gap-2.5 text-xs leading-relaxed text-muted">
-                <CircleCheck className="mt-0.5 size-3.5 shrink-0 text-subtle" aria-hidden />
-                {item}
-              </li>
-            ))}
-          </ol>
         </Card>
       </div>
 
       {!owns("base_tool") ? (
         <Card className="flex flex-wrap items-center justify-between gap-4 p-6">
           <div>
-            <p className="font-semibold">Unlock the MilToPMP Base Tool</p>
-            <p className="text-sm text-muted">{PRODUCTS.base_tool.headline}</p>
+            <p className="font-semibold">Unlock the MilToPMP Core Translator</p>
+            <p className="text-sm text-muted-foreground">{PRODUCTS.base_tool.headline}</p>
           </div>
           <LinkButton href="/#pricing">Get it for {formatUsd(PRODUCTS.base_tool.priceCents)}</LinkButton>
         </Card>
@@ -228,11 +224,11 @@ export function DashboardView({
         <div className="grid gap-4 md:grid-cols-2">
           {missingAddons.map((id) => (
             <Card key={id} className="flex flex-col p-6">
-              <Badge tone="brass" className="self-start">
+              <Badge variant="brass" className="self-start">
                 1-click add-on
               </Badge>
               <p className="mt-3 font-semibold">{PRODUCTS[id].name}</p>
-              <p className="mt-1 flex-1 text-sm text-muted">{PRODUCTS[id].headline}</p>
+              <p className="mt-1 flex-1 text-sm text-muted-foreground">{PRODUCTS[id].headline}</p>
               <Button
                 variant="brass"
                 className="mt-5"

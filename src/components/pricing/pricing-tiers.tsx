@@ -3,12 +3,16 @@
 import { motion } from "framer-motion";
 import { Check, CircleAlert, Lock, ShieldCheck, Zap } from "lucide-react";
 import { useSearchParams } from "next/navigation";
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { usePurchase } from "@/components/providers/use-purchase";
 import { useSession } from "@/components/providers/session-provider";
 import { Button } from "@/components/ui/button";
-import { Badge, Card, SectionHeading } from "@/components/ui/primitives";
+import { SectionHeading } from "@/components/ui/primitives";
+import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
 import { ADDON_IDS, cartTotalCents, PRODUCTS, type ProductId } from "@/lib/catalog";
+import { EXAM_FEES, FACTS_AS_OF } from "@/lib/pmi-facts";
+import { trackFunnelEvent } from "@/lib/tracking/browser";
 import { cn, formatUsd } from "@/lib/utils";
 
 function CancelledNotice() {
@@ -28,6 +32,25 @@ export function PricingTiers() {
   const ownsBase = session.owns("base_tool");
   const base = PRODUCTS.base_tool;
 
+  const sectionRef = useRef<HTMLElement>(null);
+
+  // One ViewContent per visit when the pricing section is actually seen.
+  useEffect(() => {
+    const node = sectionRef.current;
+    if (!node) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          trackFunnelEvent("ViewContent", ["base_tool"]);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.4 },
+    );
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
+
   const cart: ProductId[] = ["base_tool", ...bumps];
   const total = cartTotalCents(cart);
 
@@ -36,7 +59,7 @@ export function PricingTiers() {
   }
 
   return (
-    <section id="pricing" className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+    <section ref={sectionRef} id="pricing" className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
       <SectionHeading
         eyebrow="Pricing"
         title="Priced for an E-3's paycheck"
@@ -45,6 +68,7 @@ export function PricingTiers() {
       <Suspense fallback={null}>
         <CancelledNotice />
       </Suspense>
+      <ExamFeeAnchor />
 
       <div className="mt-14 grid gap-6 lg:grid-cols-[1.25fr_1fr]">
         <motion.div
@@ -56,9 +80,9 @@ export function PricingTiers() {
           <div className="border-gradient relative h-full rounded-2xl p-8 shadow-[0_30px_80px_-30px_var(--glow)]">
             <div className="flex items-start justify-between gap-4">
               <div>
-                <Badge tone="brand">Core platform</Badge>
+                <Badge variant="brand">Core platform</Badge>
                 <h3 className="mt-4 text-2xl font-semibold">{base.name}</h3>
-                <p className="mt-2 text-sm text-muted">{base.headline}</p>
+                <p className="mt-2 text-sm text-muted-foreground">{base.headline}</p>
               </div>
               <div className="text-right">
                 <p className="text-5xl font-semibold tracking-tight">{formatUsd(base.priceCents)}</p>
@@ -76,7 +100,7 @@ export function PricingTiers() {
 
             {ownsBase ? (
               <div className="mt-8 flex items-center gap-2 rounded-xl border border-success/30 bg-success/10 px-4 py-3 text-sm text-success">
-                <ShieldCheck className="size-4" aria-hidden /> You own the Base Tool. Add-ons below are one click.
+                <ShieldCheck className="size-4" aria-hidden /> You own the Core Translator. Add-ons below are one click.
               </div>
             ) : (
               <>
@@ -103,7 +127,7 @@ export function PricingTiers() {
                         />
                         <span className="flex-1 text-sm">
                           <span className="font-medium">{product.name}</span>
-                          <span className="block text-xs text-muted">{product.headline}</span>
+                          <span className="block text-xs text-muted-foreground">{product.headline}</span>
                         </span>
                         <span className="font-mono text-sm font-medium">+{formatUsd(product.priceCents)}</span>
                       </label>
@@ -167,14 +191,14 @@ function AddonCard({
       <Card className="h-full p-6">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <Badge tone="brass">Add-on</Badge>
+            <Badge variant="brass">Add-on</Badge>
             <h3 className="mt-3 text-lg font-semibold">{product.name}</h3>
           </div>
           <p className="text-3xl font-semibold tracking-tight">{formatUsd(product.priceCents)}</p>
         </div>
         <ul className="mt-5 space-y-2">
           {product.features.map((feature) => (
-            <li key={feature} className="flex gap-2.5 text-sm text-muted">
+            <li key={feature} className="flex gap-2.5 text-sm text-muted-foreground">
               <Check className="mt-0.5 size-4 shrink-0 text-brand" aria-hidden />
               {feature}
             </li>
@@ -182,7 +206,7 @@ function AddonCard({
         </ul>
         <div className="mt-6">
           {owned ? (
-            <Badge tone="success">
+            <Badge variant="success">
               <ShieldCheck className="size-3" aria-hidden /> Unlocked
             </Badge>
           ) : canOneClick ? (
@@ -196,10 +220,45 @@ function AddonCard({
               Unlock in 1 click · {formatUsd(product.priceCents)}
             </Button>
           ) : (
-            <p className="text-xs text-subtle">Add it to your Base Tool order, or unlock it in one click afterwards.</p>
+            <p className="text-xs text-subtle">
+              Add it to your Core Translator order, or unlock it in one click afterwards.
+            </p>
           )}
         </div>
       </Card>
     </motion.div>
+  );
+}
+
+/**
+ * Price anchor built on real numbers: the exam fee approved COOL/CA funding pays,
+ * next to what the member actually pays us. No fictitious "was" price.
+ */
+function ExamFeeAnchor() {
+  return (
+    <div className="mx-auto mt-10 grid max-w-4xl gap-px overflow-hidden rounded-2xl border border-border bg-border sm:grid-cols-3">
+      <div className="bg-card p-5">
+        <p className="font-mono text-[11px] tracking-widest text-subtle uppercase">CAPM exam fee</p>
+        <p className="mt-2 text-2xl font-semibold">
+          ${EXAM_FEES.CAPM.member}–${EXAM_FEES.CAPM.nonMember}
+        </p>
+        <p className="mt-1 text-xs text-muted-foreground">Paid by approved COOL / CA funding, not you</p>
+      </div>
+      <div className="bg-card p-5">
+        <p className="font-mono text-[11px] tracking-widest text-subtle uppercase">PMP exam fee</p>
+        <p className="mt-2 text-2xl font-semibold">
+          ${EXAM_FEES.PMP.member}–${EXAM_FEES.PMP.nonMember}
+        </p>
+        <p className="mt-1 text-xs text-muted-foreground">Paid by approved COOL / CA funding, not you</p>
+      </div>
+      <div className="bg-card p-5">
+        <p className="font-mono text-[11px] tracking-widest text-brand uppercase">MilToPMP Core</p>
+        <p className="mt-2 text-2xl font-semibold">{formatUsd(PRODUCTS.base_tool.priceCents)}</p>
+        <p className="mt-1 text-xs text-muted-foreground">One-time. Helps you get that funding approved.</p>
+      </div>
+      <p className="bg-card px-5 py-2 text-[11px] text-subtle sm:col-span-3">
+        PMI fee ranges are member to non-member pricing as of {FACTS_AS_OF}. Confirm current fees at pmi.org.
+      </p>
+    </div>
   );
 }

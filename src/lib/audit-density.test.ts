@@ -39,6 +39,7 @@ describe("findJargon", () => {
   it("matches whole-word military terms only", () => {
     expect(findJargon("As LPO I briefed the CO on the INSURV POA&M.")).toEqual(["LPO", "CO", "INSURV", "POA&M"]);
     expect(findJargon("Coordinated with COOL staff on a commanded change")).toEqual([]);
+    expect(findJargon("Briefed the S-3 on the FTX COA as NCOIC")).toEqual(["S-3", "FTX", "COA", "NCOIC"]);
   });
 });
 

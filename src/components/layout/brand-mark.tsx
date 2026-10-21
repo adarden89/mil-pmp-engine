@@ -32,7 +32,9 @@ export function BrandMark({ className, compact = false }: { className?: string; 
       {compact ? null : (
         <span className="flex flex-col leading-none">
           <span className="text-[15px] font-semibold tracking-tight">MilToPMP</span>
-          <span className="mt-0.5 font-mono text-[9.5px] tracking-[0.22em] text-muted uppercase">Enterprise</span>
+          <span className="mt-0.5 font-mono text-[9.5px] tracking-[0.22em] text-muted-foreground uppercase">
+            Enterprise
+          </span>
         </span>
       )}
     </Link>

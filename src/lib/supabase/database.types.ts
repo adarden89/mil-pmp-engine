@@ -8,6 +8,10 @@ import type { ProductId } from "@/lib/catalog";
 
 type Timestamp = string;
 
+export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
+export type ConsentState = "granted" | "denied" | "unknown";
+export type ConversionStatus = "pending" | "sent" | "failed" | "skipped";
+
 export interface Database {
   public: {
     Tables: {
@@ -161,6 +165,122 @@ export interface Database {
           model?: string;
           input_tokens?: number | null;
           output_tokens?: number | null;
+        };
+        Relationships: [];
+      };
+      member_plans: {
+        Row: {
+          user_id: string;
+          input: Json | null;
+          completed: string[];
+          mapper: Json;
+          updated_at: Timestamp;
+        };
+        Insert: {
+          user_id: string;
+          input?: Json | null;
+          completed?: string[];
+          mapper?: Json;
+          updated_at?: Timestamp;
+        };
+        Update: {
+          input?: Json | null;
+          completed?: string[];
+          mapper?: Json;
+          updated_at?: Timestamp;
+        };
+        Relationships: [];
+      };
+      checkout_attribution: {
+        Row: {
+          checkout_session_id: string;
+          user_id: string | null;
+          fbp: string | null;
+          fbc: string | null;
+          ttclid: string | null;
+          ttp: string | null;
+          client_ip: string | null;
+          user_agent: string | null;
+          event_source_url: string | null;
+          consent: ConsentState;
+          created_at: Timestamp;
+        };
+        Insert: {
+          checkout_session_id: string;
+          user_id?: string | null;
+          fbp?: string | null;
+          fbc?: string | null;
+          ttclid?: string | null;
+          ttp?: string | null;
+          client_ip?: string | null;
+          user_agent?: string | null;
+          event_source_url?: string | null;
+          consent?: ConsentState;
+          created_at?: Timestamp;
+        };
+        Update: { user_id?: string | null };
+        Relationships: [];
+      };
+      conversion_events: {
+        Row: {
+          id: number;
+          platform: "meta" | "tiktok";
+          event_name: string;
+          event_id: string;
+          status: ConversionStatus;
+          attempts: number;
+          response_code: number | null;
+          last_error: string | null;
+          created_at: Timestamp;
+          updated_at: Timestamp;
+        };
+        Insert: {
+          platform: "meta" | "tiktok";
+          event_name: string;
+          event_id: string;
+          status: ConversionStatus;
+          attempts?: number;
+          response_code?: number | null;
+          last_error?: string | null;
+          created_at?: Timestamp;
+          updated_at?: Timestamp;
+        };
+        Update: {
+          status?: ConversionStatus;
+          attempts?: number;
+          response_code?: number | null;
+          last_error?: string | null;
+          updated_at?: Timestamp;
+        };
+        Relationships: [];
+      };
+      email_deliveries: {
+        Row: {
+          id: number;
+          dedupe_key: string;
+          kind: string;
+          to_email: string;
+          provider_message_id: string | null;
+          status: "pending" | "sent" | "failed";
+          last_error: string | null;
+          created_at: Timestamp;
+          updated_at: Timestamp;
+        };
+        Insert: {
+          dedupe_key: string;
+          kind: string;
+          to_email: string;
+          provider_message_id?: string | null;
+          status: "pending" | "sent" | "failed";
+          last_error?: string | null;
+          created_at?: Timestamp;
+          updated_at?: Timestamp;
+        };
+        Update: {
+          provider_message_id?: string | null;
+          status?: "pending" | "sent" | "failed";
+          last_error?: string | null;
+          updated_at?: Timestamp;
         };
         Relationships: [];
       };

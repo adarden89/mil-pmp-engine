@@ -1,13 +1,18 @@
-import { NextResponse } from "next/server";
+import { after, NextResponse } from "next/server";
 import type Stripe from "stripe";
 import { ConfigError, requireEnv } from "@/lib/env";
 import { fulfillCheckoutSession, fulfillUpsellPaymentIntent, revokeForPaymentIntent } from "@/lib/entitlements";
 import { jsonError, toErrorResponse } from "@/lib/http";
+import { runPostPurchase } from "@/lib/provisioning";
 import { idOf, stripe } from "@/lib/stripe";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 
 /**
- * Stripe webhook. Configure the endpoint in Stripe for:
+ * Stripe webhook: the automatic order-delivery listener.
+ * Grants access, provisions guest accounts, emails sign-in links, and reports
+ * server-side Purchase conversions to Meta and TikTok.
+ *
+ * Configure the endpoint in Stripe for:
  *   checkout.session.completed
  *   checkout.session.async_payment_succeeded
  *   payment_intent.succeeded
@@ -70,10 +75,15 @@ async function handleEvent(event: Stripe.Event): Promise<void> {
   switch (event.type) {
     case "checkout.session.completed":
     case "checkout.session.async_payment_succeeded": {
-      const outcome = await fulfillCheckoutSession(event.data.object);
+      const session = event.data.object;
+      const outcome = await fulfillCheckoutSession(session);
       if (outcome.status !== "fulfilled") {
         console.info(`[webhooks/stripe] ${event.type} ${outcome.status}: ${outcome.reason}`);
+        return;
       }
+      // Access email and server-side ad conversions run after Stripe gets its
+      // 200, so a slow email or ad API never causes webhook retries.
+      after(() => runPostPurchase(session, outcome.userId, event.created));
       return;
     }
     case "payment_intent.succeeded": {

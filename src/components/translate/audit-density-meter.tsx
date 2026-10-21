@@ -36,7 +36,7 @@ export function AuditDensityMeter({ report }: { report: AuditDensityReport }) {
       <div
         className="relative mx-auto size-36"
         role="img"
-        aria-label={`Audit density score ${report.score} out of 100: ${report.gradeLabel}`}
+        aria-label={`Audit readiness ${report.score} out of 100: ${report.gradeLabel}`}
       >
         <svg viewBox="0 0 120 120" className="size-full -rotate-90">
           <circle cx="60" cy="60" r={RADIUS} fill="none" stroke="var(--surface-2)" strokeWidth="10" />
@@ -71,7 +71,7 @@ export function AuditDensityMeter({ report }: { report: AuditDensityReport }) {
               <Icon className={cn("mt-0.5 size-4 shrink-0", STATUS_CLASS[check.status])} aria-label={check.status} />
               <div className="min-w-0">
                 <p className="text-sm font-medium">{check.label}</p>
-                <p className="text-xs leading-relaxed text-muted">{check.detail}</p>
+                <p className="text-xs leading-relaxed text-muted-foreground">{check.detail}</p>
               </div>
             </li>
           );

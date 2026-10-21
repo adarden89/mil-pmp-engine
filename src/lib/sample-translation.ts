@@ -17,6 +17,7 @@ export const SAMPLE_REQUEST: TranslateRequest = {
     "- Managed $180K in OPTAR spares and consumables",
     "- Trained 9 junior Sailors on new baseline; authored turnover binder adopted by ISIC",
   ].join("\n"),
+  jstCourses: "Petty Officer Second Class Selectee Leadership Course; Information Systems Technician A School",
 };
 
 export const SAMPLE_TRANSLATION: TranslationResult = {

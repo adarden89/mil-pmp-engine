@@ -18,6 +18,12 @@ const nextConfig: NextConfig = {
   cacheComponents: true,
   partialPrefetching: true,
   poweredByHeader: false,
+  // Pixel ids are public identifiers; exposing them here keeps one env var per platform.
+  env: {
+    NEXT_PUBLIC_META_PIXEL_ID: process.env.META_PIXEL_ID ?? "",
+    NEXT_PUBLIC_TIKTOK_PIXEL_ID: process.env.TIKTOK_PIXEL_ID ?? "",
+    NEXT_PUBLIC_TRACKING_CONSENT_MODE: process.env.TRACKING_CONSENT_MODE ?? "opt-out",
+  },
   // jsPDF ships a dedicated Node build; load it as-is instead of bundling it.
   serverExternalPackages: ["jspdf"],
   turbopack: {

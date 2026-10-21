@@ -1,106 +1,80 @@
 /**
- * CAPM vs. PMP eligibility estimator.
+ * CAPM vs. PMP routing.
  *
  * PMI does not look at rank or time in service. It counts months spent leading
  * and directing projects within the last eight years, plus hours of project
- * management education. Rank and time in service are only a proxy for that, so
- * the estimate below is deliberately conservative: it uses the low end of each
- * time-in-service band and a rank-based share of that time as "leading" months.
- *
- * Thresholds (PMI PMP / CAPM requirements):
- * - PMP, four-year degree: 36 months leading projects in the last 8 years + 35 contact hours
- * - PMP, GAC-accredited bachelor's or master's: 24 months + 35 contact hours
- * - PMP, high school diploma or associate's degree: 60 months + 35 contact hours
- * - CAPM: secondary diploma + 23 contact hours of project management education
+ * management education:
+ * - PMP, four-year degree: 36 months + 35 contact hours
+ * - PMP, GAC-accredited degree: 24 months + 35 contact hours
+ * - PMP, high school diploma or associate degree: 60 months + 35 contact hours
+ * - CAPM: secondary diploma + 23 contact hours, no experience
  * An active CAPM satisfies the PMP's 35-hour education requirement.
+ *
+ * Product rule layered on top: junior enlisted (E-1 to E-4) are routed to the
+ * CAPM first. Their numbers may meet the PMP bar on paper, but most of that
+ * time is supporting rather than leading work, which is what PMI audits.
  */
 
-export const RANK_BANDS = ["E1_E3", "E4", "E5", "E6", "E7_E9", "W1_W5", "O1_O2", "O3_PLUS"] as const;
-export type RankBand = (typeof RANK_BANDS)[number];
+import { z } from "zod";
+import { EDUCATION_HOURS, EXAM_FEES, NAVY_COOL } from "./pmi-facts";
+import { BRANCHES, type Branch } from "./translation-schema";
 
-export const SERVICE_BANDS = ["LT_2", "2_4", "4_6", "6_10", "10_PLUS"] as const;
-export type ServiceBand = (typeof SERVICE_BANDS)[number];
+export const RANK_BANDS = ["E1_E4", "E5_E6", "E7_E9", "W1_W5", "O1_O3", "O4_PLUS"] as const;
+export type RankBand = (typeof RANK_BANDS)[number];
 
 export const EDUCATION_LEVELS = ["HIGH_SCHOOL", "ASSOCIATE", "BACHELOR", "BACHELOR_GAC", "GRADUATE"] as const;
 export type EducationLevel = (typeof EDUCATION_LEVELS)[number];
 
 export interface EligibilityInput {
+  branch: Branch;
   rank: RankBand;
-  service: ServiceBand;
   education: EducationLevel;
+  /** Months spent leading or directing projects in the last eight years. */
+  leadershipMonths: number;
 }
 
-export type Recommendation = "PMP" | "CAPM_THEN_PMP" | "CAPM";
-export type Confidence = "strong" | "borderline" | "not_yet";
+export type CertificationPath = "CAPM" | "PMP";
+export type NoteTone = "info" | "warning" | "critical";
+
+export interface EligibilityNote {
+  tone: NoteTone;
+  text: string;
+}
 
 export interface EligibilityResult {
-  recommendation: Recommendation;
-  confidence: Confidence;
-  requiredMonths: number;
-  estimatedLeadershipMonths: number;
-  gapMonths: number;
-  educationHoursRequired: number;
+  path: CertificationPath;
+  /** Set when the member starts with the CAPM but could reach the PMP later. */
+  pmpGapMonths: number | null;
+  requiredPmpMonths: number;
+  countedMonths: number;
+  educationHours: number;
+  examFee: { member: number; nonMember: number };
   headline: string;
   rationale: string;
-  nextSteps: string[];
+  notes: EligibilityNote[];
 }
 
 export const RANK_LABELS: Record<RankBand, { label: string; detail: string }> = {
-  E1_E3: { label: "E-1 to E-3", detail: "Junior enlisted" },
-  E4: { label: "E-4", detail: "Specialist / Corporal / PO3 / SrA" },
-  E5: { label: "E-5", detail: "Sergeant / PO2 / SSgt" },
-  E6: { label: "E-6", detail: "Staff Sergeant / PO1 / TSgt" },
-  E7_E9: { label: "E-7 to E-9", detail: "Senior NCO / Chief" },
+  E1_E4: { label: "E-1 to E-4", detail: "Junior enlisted" },
+  E5_E6: { label: "E-5 to E-6", detail: "NCO / Petty Officer" },
+  E7_E9: { label: "E-7 to E-9", detail: "Senior enlisted / Chief" },
   W1_W5: { label: "W-1 to W-5", detail: "Warrant officer" },
-  O1_O2: { label: "O-1 to O-2", detail: "Junior officer" },
-  O3_PLUS: { label: "O-3 and above", detail: "Company grade and up" },
-};
-
-export const SERVICE_LABELS: Record<ServiceBand, string> = {
-  LT_2: "Less than 2 years",
-  "2_4": "2 to 4 years",
-  "4_6": "4 to 6 years",
-  "6_10": "6 to 10 years",
-  "10_PLUS": "10+ years",
+  O1_O3: { label: "O-1 to O-3", detail: "Company grade / junior officer" },
+  O4_PLUS: { label: "O-4 and above", detail: "Field grade and senior officer" },
 };
 
 export const EDUCATION_LABELS: Record<EducationLevel, { label: string; detail: string }> = {
   HIGH_SCHOOL: { label: "High school / GED", detail: "Secondary diploma" },
   ASSOCIATE: { label: "Associate degree", detail: "Or some college" },
   BACHELOR: { label: "Bachelor's degree", detail: "Four-year degree" },
-  BACHELOR_GAC: {
-    label: "Bachelor's (GAC-accredited)",
-    detail: "PMI GAC-accredited PM program",
-  },
+  BACHELOR_GAC: { label: "GAC-accredited degree", detail: "PMI GAC-accredited PM program" },
   GRADUATE: { label: "Master's or higher", detail: "Graduate degree" },
-};
-
-/** Low end of each band, in months. Conservative on purpose. */
-const SERVICE_FLOOR_MONTHS: Record<ServiceBand, number> = {
-  LT_2: 0,
-  "2_4": 24,
-  "4_6": 48,
-  "6_10": 72,
-  "10_PLUS": 120,
-};
-
-/**
- * Share of service time that typically involves leading or directing work
- * (planning a task, running a work center, owning a deliverable).
- */
-const LEADERSHIP_SHARE: Record<RankBand, number> = {
-  E1_E3: 0,
-  E4: 0.25,
-  E5: 0.5,
-  E6: 0.7,
-  E7_E9: 0.8,
-  W1_W5: 0.8,
-  O1_O2: 0.7,
-  O3_PLUS: 0.8,
 };
 
 /** PMI only counts experience inside the last eight years. */
 export const EXPERIENCE_WINDOW_MONTHS = 96;
+
+const OFFICER_BANDS: readonly RankBand[] = ["W1_W5", "O1_O3", "O4_PLUS"];
 
 export function requiredPmpMonths(education: EducationLevel): number {
   switch (education) {
@@ -108,87 +82,85 @@ export function requiredPmpMonths(education: EducationLevel): number {
     case "ASSOCIATE":
       return 60;
     case "BACHELOR":
-      return 36;
-    // PMI's 24-month path applies to GAC-accredited degrees (bachelor's or
-    // post-graduate). A general master's still requires 36 months.
-    case "BACHELOR_GAC":
-      return 24;
     case "GRADUATE":
       return 36;
+    case "BACHELOR_GAC":
+      return 24;
   }
 }
 
-export function estimateLeadershipMonths(rank: RankBand, service: ServiceBand): number {
-  const months = SERVICE_FLOOR_MONTHS[service] * LEADERSHIP_SHARE[rank];
-  return Math.min(Math.floor(months), EXPERIENCE_WINDOW_MONTHS);
+export function isOfficer(rank: RankBand): boolean {
+  return OFFICER_BANDS.includes(rank);
 }
 
-/** Gap under which we recommend CAPM now with a dated PMP target. */
-const CAPM_BRIDGE_MAX_GAP_MONTHS = 24;
+function fundingNotes(input: EligibilityInput): EligibilityNote[] {
+  const notes: EligibilityNote[] = [
+    {
+      tone: "critical",
+      text: "Do not pay out of pocket or schedule your exam before your COOL / credentialing voucher is approved. Unapproved expenses are not reimbursed.",
+    },
+  ];
+  if (input.branch === "navy" && isOfficer(input.rank)) {
+    notes.push({ tone: "warning", text: NAVY_COOL.officerFundingNote });
+  }
+  return notes;
+}
 
 export function assessEligibility(input: EligibilityInput): EligibilityResult {
   const requiredMonths = requiredPmpMonths(input.education);
-  const estimatedLeadershipMonths = estimateLeadershipMonths(input.rank, input.service);
-  const gapMonths = Math.max(0, requiredMonths - estimatedLeadershipMonths);
+  const countedMonths = Math.max(0, Math.min(Math.floor(input.leadershipMonths), EXPERIENCE_WINDOW_MONTHS));
+  const meetsPmp = countedMonths >= requiredMonths;
+  const juniorEnlisted = input.rank === "E1_E4";
+  const notes = fundingNotes(input);
 
-  if (gapMonths === 0) {
-    const strong = estimatedLeadershipMonths >= requiredMonths * 1.25;
+  if (meetsPmp && !juniorEnlisted) {
+    const borderline = countedMonths < requiredMonths * 1.15;
+    if (borderline) {
+      notes.unshift({
+        tone: "warning",
+        text: `You are within a few months of the ${requiredMonths}-month minimum. PMI audits a share of applications, so claim only months a supervisor will verify.`,
+      });
+    }
     return {
-      recommendation: "PMP",
-      confidence: strong ? "strong" : "borderline",
-      requiredMonths,
-      estimatedLeadershipMonths,
-      gapMonths,
-      educationHoursRequired: 35,
-      headline: strong ? "Go straight for the PMP" : "PMP is within reach, document carefully",
-      rationale: strong
-        ? `Your profile suggests roughly ${estimatedLeadershipMonths} months of project leadership against PMI's ${requiredMonths}-month requirement. You have margin for an audit.`
-        : `Your estimated ${estimatedLeadershipMonths} months only just clears the ${requiredMonths}-month bar. Every month you claim must be verifiable by a supervisor, so list projects conservatively.`,
-      nextSteps: [
-        "Inventory every project you led in the last 8 years with dates and a supervisor who can verify it.",
-        "Complete 35 contact hours of PM education (or hold an active CAPM).",
-        "Translate each project in the Translation Studio and keep audit scores at 80+.",
-        "Request a COOL voucher before you submit the PMI application, since funding approval takes time.",
-      ],
+      path: "PMP",
+      pmpGapMonths: null,
+      requiredPmpMonths: requiredMonths,
+      countedMonths,
+      educationHours: EDUCATION_HOURS.PMP,
+      examFee: EXAM_FEES.PMP,
+      headline: "You qualify for the PMP",
+      rationale: `PMI requires ${requiredMonths} months of project leadership for your education level, and you reported ${countedMonths}. Next you need 35 contact hours of PM education, then a PMI application your supervisors can verify.`,
+      notes,
     };
   }
 
-  if (gapMonths <= CAPM_BRIDGE_MAX_GAP_MONTHS && estimatedLeadershipMonths > 0) {
-    return {
-      recommendation: "CAPM_THEN_PMP",
-      confidence: "borderline",
-      requiredMonths,
-      estimatedLeadershipMonths,
-      gapMonths,
-      educationHoursRequired: 23,
-      headline: `CAPM now, PMP in about ${gapMonths} months`,
-      rationale: `You are an estimated ${gapMonths} months short of the ${requiredMonths}-month PMP requirement. Earning the CAPM now gets you a funded credential today, and it also satisfies the PMP's 35-hour education requirement later.`,
-      nextSteps: [
-        "Complete 23 contact hours of PM education to qualify for the CAPM.",
-        "Request a COOL voucher for the CAPM exam.",
-        "Start logging projects now: objective, your role, deliverables, outcome, and a verifier.",
-        `Volunteer to lead tasks and working groups so that your remaining ${gapMonths} months count.`,
-      ],
-    };
+  if (meetsPmp && juniorEnlisted) {
+    notes.unshift({
+      tone: "info",
+      text: `Your ${countedMonths} months meet PMI's ${requiredMonths}-month bar on paper. At E-1 to E-4 most of that time is usually supporting rather than leading work, so start with the CAPM. Apply for the PMP only if you can name a verifier who will confirm you led each project.`,
+    });
   }
 
+  const gap = Math.max(0, requiredMonths - countedMonths);
   return {
-    recommendation: "CAPM",
-    confidence: "not_yet",
-    requiredMonths,
-    estimatedLeadershipMonths,
-    gapMonths,
-    educationHoursRequired: 23,
+    path: "CAPM",
+    pmpGapMonths: gap,
+    requiredPmpMonths: requiredMonths,
+    countedMonths,
+    educationHours: EDUCATION_HOURS.CAPM,
+    examFee: EXAM_FEES.CAPM,
     headline: "Start with the CAPM",
     rationale:
-      estimatedLeadershipMonths === 0
-        ? "PMI counts months spent leading projects, not time in service. At this stage the CAPM is the credential you can actually earn, and it needs no project experience."
-        : `PMI counts months spent leading projects, not time in service. Your estimated ${estimatedLeadershipMonths} months is well short of ${requiredMonths}, so the CAPM is the honest, fundable first step.`,
-    nextSteps: [
-      "Complete 23 contact hours of PM education.",
-      "Request a COOL voucher for the CAPM exam.",
-      "Build your Leitner flashcard streak around the CAPM and PMP fundamentals.",
-      "Ask your chain of command for ownership of a small project, and log it from day one.",
-    ],
+      gap > 0
+        ? `The CAPM needs no project experience, only 23 contact hours of PM education. You are ${gap} months of project leadership away from the PMP, and an active CAPM also covers the PMP's education requirement when you get there.`
+        : "The CAPM needs no project experience, only 23 contact hours of PM education. It is the fastest funded credential for your rank, and it also covers the PMP's education requirement later.",
+    notes,
   };
 }
+
+export const eligibilityInputSchema = z.object({
+  branch: z.enum(BRANCHES),
+  rank: z.enum(RANK_BANDS),
+  education: z.enum(EDUCATION_LEVELS),
+  leadershipMonths: z.number().int().min(0).max(600),
+});
