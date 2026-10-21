@@ -49,6 +49,8 @@ const serverEnvSchema = z.object({
   EXPERT_REVIEW_ENABLED: z.preprocess(emptyToUndefined, z.stringbool().default(false)),
   /** Where new expert review orders are sent for a human to pick up. */
   EXPERT_REVIEW_INBOX: z.preprocess(emptyToUndefined, z.email().optional()),
+  /** Optional Sentry DSN; error reports are always logged as JSON and also forwarded here when set. */
+  SENTRY_DSN: optionalString,
   /** opt-out: share unless the visitor opts out or sends GPC (US model). opt-in: share only after consent. */
   TRACKING_CONSENT_MODE: z.preprocess(emptyToUndefined, z.enum(["opt-out", "opt-in"]).default("opt-out")),
 });
@@ -104,6 +106,7 @@ export function integrationStatus() {
     stripe: Boolean(env.STRIPE_SECRET_KEY && env.STRIPE_WEBHOOK_SECRET),
     stripeElements: Boolean(env.STRIPE_SECRET_KEY && env.STRIPE_PUBLISHABLE_KEY),
     expertReview: env.EXPERT_REVIEW_ENABLED && Boolean(env.EXPERT_REVIEW_INBOX),
+    errorMonitoring: Boolean(env.SENTRY_DSN),
     anthropic: Boolean(env.ANTHROPIC_API_KEY),
     email: Boolean(env.RESEND_API_KEY && env.RESEND_FROM_EMAIL),
     metaConversions: Boolean(env.META_PIXEL_ID && env.META_CAPI_ACCESS_TOKEN),

@@ -13,6 +13,28 @@ type Timestamp = string;
 export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
 export type ConsentState = "granted" | "denied" | "unknown";
 export type ConversionStatus = "pending" | "sent" | "failed" | "skipped";
+export type UsageKind = "pmi_narrative" | "resume_bullets";
+export type VerificationStatus = "unverified" | "supervisor_reviewed";
+
+type ExperienceEntryFields = {
+  title: string;
+  role: string | null;
+  start_month: string | null;
+  end_month: string | null;
+  is_project: boolean | null;
+  led: boolean | null;
+  objective: string | null;
+  responsibilities: string | null;
+  deliverables: string | null;
+  stakeholders: string | null;
+  outcomes: string | null;
+  evidence_notes: string | null;
+  verifier_role: string | null;
+  verification_status: VerificationStatus;
+  verification_note: string | null;
+  resume_draft: Json | null;
+  resume_final: Json | null;
+};
 
 export interface Database {
   public: {
@@ -154,6 +176,7 @@ export interface Database {
           model: string;
           input_tokens: number | null;
           output_tokens: number | null;
+          kind: UsageKind;
           created_at: Timestamp;
         };
         Insert: {
@@ -161,6 +184,7 @@ export interface Database {
           model: string;
           input_tokens?: number | null;
           output_tokens?: number | null;
+          kind?: UsageKind;
           created_at?: Timestamp;
         };
         Update: {
@@ -168,6 +192,18 @@ export interface Database {
           input_tokens?: number | null;
           output_tokens?: number | null;
         };
+        Relationships: [];
+      };
+      experience_entries: {
+        Row: ExperienceEntryFields & { id: string; user_id: string; created_at: Timestamp; updated_at: Timestamp };
+        Insert: Partial<ExperienceEntryFields> & {
+          title: string;
+          id?: string;
+          user_id: string;
+          created_at?: Timestamp;
+          updated_at?: Timestamp;
+        };
+        Update: Partial<ExperienceEntryFields> & { updated_at?: Timestamp };
         Relationships: [];
       };
       saved_translations: {
@@ -204,6 +240,7 @@ export interface Database {
           input: Json | null;
           completed: string[];
           mapper: Json;
+          pathway: Json | null;
           updated_at: Timestamp;
         };
         Insert: {
@@ -211,12 +248,14 @@ export interface Database {
           input?: Json | null;
           completed?: string[];
           mapper?: Json;
+          pathway?: Json | null;
           updated_at?: Timestamp;
         };
         Update: {
           input?: Json | null;
           completed?: string[];
           mapper?: Json;
+          pathway?: Json | null;
           updated_at?: Timestamp;
         };
         Relationships: [];

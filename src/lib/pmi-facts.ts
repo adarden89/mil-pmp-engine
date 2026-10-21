@@ -17,6 +17,19 @@ export const EXAM_FEES = {
 
 export const EDUCATION_HOURS = { CAPM: 23, PMP: 35 } as const;
 
+/**
+ * Reported change to how PMP education hours count, effective 1 December 2026:
+ * live, instructor-led hours count only from PMI Authorized Training Partners
+ * or accredited academic programs; self-paced courses are unaffected; hours
+ * completed before the date keep counting. Training-provider summaries agree
+ * on this; confirm the wording on pmi.org before relying on it.
+ */
+export const PMP_LIVE_TRAINING_RULE = {
+  effectiveDate: "2026-12-01",
+  summary:
+    "From December 1, 2026, live instructor-led PMP training hours reportedly count only when they come from a PMI Authorized Training Partner or an accredited academic program. Self-paced courses are not affected, and hours completed before that date still count.",
+} as const;
+
 /** Months of project leadership inside the lookback window, by education (July 2026 rules). */
 export const PMP_EXPERIENCE_MONTHS = { secondary: 60, associate: 48, fourYearDegree: 36, gacDegree: 24 } as const;
 

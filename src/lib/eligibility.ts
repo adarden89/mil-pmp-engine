@@ -212,8 +212,8 @@ export function assessEligibility(input: EligibilityInput, today: Date = new Dat
       countedMonths,
       educationHours: EDUCATION_HOURS.PMP,
       examFee: EXAM_FEES.PMP,
-      headline: "You qualify for the PMP",
-      rationale: `PMI requires ${requiredMonths} months of project leadership for your education level, and ${countedMonths} of your months count. Next you need 35 contact hours of PM education, then a PMI application your supervisors can verify.`,
+      headline: "You may be ready to apply for the PMP",
+      rationale: `This is a preliminary screen, not a PMI decision. PMI requires ${requiredMonths} months of project leadership for your education level, and you reported ${countedMonths} that fall inside the window. Before you spend money, document each project (dates, objective, your role, deliverables, a verifier) and confirm the current rules on pmi.org. Then you need 35 contact hours of PM education and a PMI application your supervisors can verify.`,
       notes,
     };
   }
