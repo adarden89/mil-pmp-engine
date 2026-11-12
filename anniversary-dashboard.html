@@ -199,6 +199,15 @@ p{margin:0}
 .fline.credit b{color:var(--ok)}
 .hint{font-size:12.5px;color:var(--ivory);border-left:1px solid var(--gold);padding:4px 0 4px 12px}
 .hint b{color:var(--gold);font-weight:600}
+.capin{width:120px;background:transparent;border:1px solid var(--gold-line);color:var(--ivory);font:500 22px/1 var(--serif);padding:8px 10px;text-align:right}
+.capin:focus{outline:1px solid var(--gold);outline-offset:2px}
+.plan-rank{font-family:var(--serif);font-style:italic;color:var(--gold);font-size:18px}
+.plan-score{display:flex;align-items:baseline;gap:8px}
+.plan-score b{font-family:var(--serif);font-size:44px;font-weight:300;line-height:1;font-variant-numeric:lining-nums tabular-nums}
+.plan-list{list-style:none;margin:0;padding:0;display:grid;gap:8px;font-size:13.5px}
+.plan-list li{display:grid;grid-template-columns:92px minmax(0,1fr);gap:10px;border-top:1px solid var(--hair);padding-top:8px}
+.plan-list li span:first-child{font-size:10.5px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--stone);padding-top:2px}
+.card.best{border-color:var(--gold)}
 .fit{display:grid;gap:4px}
 .fit .setting .btn{flex:0 0 auto}
 .setting{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:10px 0;border-top:1px solid var(--hair)}
@@ -279,9 +288,9 @@ p{margin:0}
   <div class="wrap">
     <span class="mark">One Year, <i>Two Cities</i></span>
     <div class="navlinks">
-      <a href="#route">Route</a><a href="#stay">Stay</a><a href="#table">Table</a><a href="#experiences">Experiences</a><a href="#gifts">Gifts</a><a href="#itinerary">Itinerary</a><a href="#reservations">Reservations</a>
+      <a href="#concierge">Concierge</a><a href="#route">Route</a><a href="#stay">Stay</a><a href="#table">Table</a><a href="#experiences">Experiences</a><a href="#gifts">Gifts</a><a href="#itinerary">Itinerary</a><a href="#reservations">Reservations</a>
     </div>
-    <a class="netchip" href="#folio" aria-label="Net out-of-pocket"><b class="num" id="chip-net">$0</b><span>of $1,500</span></a>
+    <a class="netchip" href="#folio" aria-label="Net out-of-pocket"><b class="num" id="chip-net">$0</b><span>of <span class="captxt">$2,000</span></span></a>
   </div>
 </nav>
 
@@ -292,7 +301,7 @@ p{margin:0}
       <p class="kicker">The Anniversary Edit · San Diego &amp; Los Angeles</p>
       <h1><span>One year,</span><em>two cities.</em></h1>
       <p class="dateline">Thursday 31 December 2026 — Sunday 3 January 2027</p>
-      <p class="lede">She grew up in San Diego and you live downtown by Petco Park, so this weekend is built to get you both out of the neighborhood: New Year's Eve somewhere new, the coast by train, and the things locals never get around to doing. Choose each piece below. The folio keeps the whole weekend under $1,500 after your Amex credits and military discounts.</p>
+      <p class="lede">Tamar grew up in San Diego and you live downtown by Petco Park, so this weekend is built to get you both out of the neighborhood: New Year's Eve somewhere new, the coast by train, and the things locals never get around to doing. Choose each piece below. The folio keeps the whole weekend under <span class="captxt">$2,000</span> after your Amex credits and military discounts.</p>
       <div class="count" aria-live="polite" aria-label="Countdown to December 31, 2026">
         <div><b id="cd-d">--</b><span>Days</span></div>
         <div><b id="cd-h">--</b><span>Hours</span></div>
@@ -337,6 +346,22 @@ p{margin:0}
   <div class="atelier">
     <div class="chapters">
 
+      <section class="chapter" id="concierge" aria-labelledby="cg-h">
+        <div class="chead"><span class="roman">✦</span><h2 id="cg-h">The concierge</h2><p>I priced every combination of route, hotel pair, dinner level, New Year's Eve format and spa, kept your must-haves, then spent what was left on the most romantic extras. These are the most luxurious weekends <span class="captxt">$2,000</span> buys after every credit and discount.</p></div>
+        <div class="sub-head"><span class="label">Must-haves</span><span class="tiny muted" id="cg-status"></span></div>
+        <div class="filters" role="group" aria-label="Must-haves" id="cg-must">
+          <button class="chip" data-must="spa" aria-pressed="true">Couples massage</button>
+          <button class="chip" data-must="moi" aria-pressed="true">Museum of Illusions</button>
+          <button class="chip" data-must="fof" aria-pressed="true">Friends of Friends</button>
+          <button class="chip" data-must="charm" aria-pressed="true">Gold charm</button>
+          <button class="chip" data-must="california" aria-pressed="true">Stay in California</button>
+        </div>
+        <div class="grid" id="cg-plans"></div>
+        <details class="fgroup"><summary>How I score luxury</summary>
+          <p class="small muted" style="padding:8px 0 4px">Points are my judgment, added up: the New Year's Eve hotel (×1.5) and the Jan 1–3 hotel (×2.5) on a 1–10 scale (Four Seasons and Shore House 10, the Del 9, Estancia and the Miramar 8.5, the Conrad 8, the US Grant 3.5 because you can walk home from it); dinners (New Year's Eve is the anniversary dinner, so 1/7/11; the other two nights 2/4/6.5 each); the spa (day spa 5, Estancia bungalow 8, the Del's Ocean Wave 9); +1 for NYE somewhere new; each experience by its romance rating, each extra one counting a little less than the last; minus 4 for every activity past three in a day, because rushing isn't luxury; gifts from 2 (a trip charm) to 9 (solid gold rings). A plan only counts if it stays under your cap with no schedule clashes.</p>
+        </details>
+      </section>
+
       <section class="chapter" id="route" aria-labelledby="route-h">
         <div class="chead"><span class="roman">I</span><h2 id="route-h">The route</h2><p>Where midnight happens decides everything else. Both routes use the train, which means 2 h 50 of coastline, no parking and no Sunday traffic on the 5.</p></div>
         <div class="grid two" id="route-cards"></div>
@@ -352,7 +377,7 @@ p{margin:0}
       </section>
 
       <section class="chapter" id="table" aria-labelledby="table-h">
-        <div class="chead"><span class="roman">III</span><h2 id="table-h">The table</h2><p>Three dinners: New Year's Eve, the 1st (when your January Resy credits reset), and the 2nd at your hotel, where the $100 property credit pays the first part of the bill. With the massage in the plan, Casual keeps you under $1,500; if Andrew opens her own Platinum, New Year's Eve can go back to Date night.</p></div>
+        <div class="chead"><span class="roman">III</span><h2 id="table-h">The table</h2><p>Three dinners: New Year's Eve, the 1st (when your January Resy credits reset), and the 2nd at your hotel, where the $100 property credit pays the first part of the bill. The concierge picks the levels that fit your cap; change them here and the folio updates.</p></div>
         <div class="sub-head"><h3>New Year's Eve <i>dinner</i></h3><span class="label">The one to splurge on</span></div>
         <div class="grid" id="tiers"></div>
         <div class="sub-head"><h3>The other <i>two nights</i></h3><span class="label">Jan 1 on Resy · Jan 2 at your hotel</span></div>
@@ -379,7 +404,7 @@ p{margin:0}
       </section>
 
       <section class="chapter" id="gifts" aria-labelledby="gifts-h">
-        <div class="chead"><span class="roman">V</span><h2 id="gifts-h">Anniversary gifts</h2><p>Paper is the traditional first-anniversary material, so a few of these lean that way. Gifts count against the same $1,500.</p></div>
+        <div class="chead"><span class="roman">V</span><h2 id="gifts-h">Anniversary gifts</h2><p>Paper is the traditional first-anniversary material, so a few of these lean that way. Gifts count against the same cap.</p></div>
         <div class="grid" id="gift-cards"></div>
       </section>
 
@@ -392,9 +417,10 @@ p{margin:0}
         <div class="net num" id="f-net">$0</div>
         <span class="status" id="f-status"></span>
       </div>
+      <div class="setting" style="border-top:0;padding:0"><div class="t"><b>Your cap</b><span>Total out of pocket, after credits</span></div><input type="number" class="capin num" id="f-cap" min="500" max="20000" step="50" inputmode="numeric" aria-label="Spending cap"></div>
       <div style="display:grid;gap:8px">
         <div class="meter" aria-hidden="true"><div class="g" id="m-g"></div><div class="n" id="m-n"></div><div class="cap" id="m-cap"></div></div>
-        <div class="meter-legend"><span>Gross shaded · net solid</span><span>Cap $1,500</span></div>
+        <div class="meter-legend"><span>Gross shaded · net solid</span><span>Cap <span class="captxt">$2,000</span></span></div>
       </div>
       <div class="trio">
         <div><span class="label">Gross</span><b id="f-gross">$0</b></div>
@@ -404,8 +430,8 @@ p{margin:0}
       <div id="f-hints" style="display:grid;gap:10px"></div>
       <div id="f-lines"></div>
       <div>
-        <span class="label">Andrew's service</span>
-        <div class="segmented" role="group" aria-label="Andrew's military status" id="f-mil" style="margin-top:8px">
+        <span class="label">Your service</span>
+        <div class="segmented" role="group" aria-label="Your military status" id="f-mil" style="margin-top:8px">
           <button data-mil="none" aria-pressed="false">Off</button>
           <button data-mil="active" aria-pressed="false">Active</button>
           <button data-mil="retired" aria-pressed="false">Retired</button>
@@ -439,7 +465,7 @@ p{margin:0}
       <div class="fine">
         <p>Hotel rates, dinner costs and a few ticket prices are my estimates (typical rate plus the holiday premium, with tax). Check live prices before booking. Every Amex credit needs enrollment, and the restaurant must show the Amex badge on Resy.</p>
         <p>Credit rules used: Platinum hotel credit $300 Jul–Dec 2026 and $300 Jan–Jun 2027, for prepaid FHR or THC (THC needs 2 nights; from Jan 1, 2027 FHR also needs 2 nights). Each hotel earns its own $100 property credit; back-to-back bookings at the same hotel would count as one. Resy: Gold $50 per half-year, Platinum $100 per quarter. Uber Cash: $35 Platinum + $10 Gold in December, $25 in January. The Saks credit ended June 30, 2026, and the airline credit doesn't apply because this weekend has no flights.</p>
-        <p>Military: Surfliner 15% (code V780, active duty and spouses; veterans also 15% in California), $5 off Skating by the Sea, USS Midway free for active duty, Pandora 10% via ID.me (not 14k gold). "Andrew's own Platinum" assumes she's active duty and Amex waives the fee under the Military Lending Act; confirm with Amex.</p>
+        <p>Military: Surfliner 15% (code V780, active duty and spouses; veterans also 15% in California), $5 off Skating by the Sea, USS Midway free for active duty, Pandora 10% via ID.me (not 14k gold). "Tamar's own Platinum" assumes Amex waives her fee under the Military Lending Act, which covers active-duty members and their dependents; confirm with Amex.</p>
         <p>Home base: Park 12 in East Village, by Petco Park. Rides from home use about $10 to Santa Fe Depot; the trolley from 12th &amp; Imperial also reaches the depot and Old Town.</p>
         <p>Massages: resort couples treatments run about $500–$620 for two with service charges (Estancia's last published menu: $440 for 50 minutes; the Del's Ocean Wave from $620 on ResortPass). A day-spa couples massage in San Diego lists at about $190–$230 before tip. Wi Spa body scrubs start around $90 each.</p>
         <p>Left out on purpose: Disneyland (the most crowded weekend of the year) and Pasadena hotels (Rose Parade prices).</p>
@@ -495,7 +521,7 @@ p{margin:0}
 'use strict';
 
 /* ---------- helpers ---------- */
-var CAP = 1500, TAX = 0.0775, DAY = 86400000;
+var TAX = 0.0775, DAY = 86400000;
 function fmt(n){ var r = Math.round(Math.abs(n)); return (n < -0.5 ? '−' : '') + '$' + r.toLocaleString('en-US'); }
 function sum(a){ return a.reduce(function(x, y){ return x + y; }, 0); }
 function $(s){ return document.querySelector(s); }
@@ -574,13 +600,13 @@ var CRUISE = 395; /* Flagship Moonlight & Midnight: from $149.50 + 32% fees per 
    la-first / sd-first = [day, time, slot]; days: d1 Dec 31, d2 Jan 1, d3 Jan 2. null = doesn't fit that route. */
 var EXP = [
   { id:'spa-local', kind:'spa', city:'sd', name:'Side-by-side massage at a day spa', price:250, ride:{ gaslamp:0, coronado:0, strand:10, lajolla:0, baja:0 }, t:2, r:5,
-    route:{ 'la-first':['d3','13:00','afternoon'], 'sd-first':['d1','13:00','afternoon'] }, link:'https://www.groupon.com/local/san-diego-ca/couples-massage', booking:true, by:'2026-12-01',
+    route:{ 'la-first':['d3','14:00','afternoon'], 'sd-first':['d1','14:00','afternoon'] }, link:'https://www.groupon.com/local/san-diego-ca/couples-massage', booking:true, by:'2026-12-01',
     desc:'Sixty minutes side by side at a day spa near your hotel (at the hotel\'s own spa if you\'re in Rosarito). San Diego couples massages list at about $190–$230; I add a 20% tip.' },
   { id:'spa-estancia', kind:'spa', city:'sd', name:'Couples bungalow at Spa Estancia', price:530, ride:{ gaslamp:60, coronado:80, strand:80, lajolla:0 }, t:2, r:5,
-    route:{ 'la-first':['d3','13:00','afternoon'], 'sd-first':['d1','13:00','afternoon'] }, link:'https://www.estancialajolla.com/la-jolla-spa-specials/', booking:true, by:'2026-12-01',
+    route:{ 'la-first':['d3','14:00','afternoon'], 'sd-first':['d1','14:00','afternoon'] }, link:'https://www.estancialajolla.com/la-jolla-spa-specials/', booking:true, by:'2026-12-01',
     desc:'A private bungalow and a 50-minute massage for two. $440 on the last published menu, so expect more plus a service charge. Call 858-964-6590 and ask about resident rates.' },
   { id:'spa-del', kind:'spa', city:'sd', name:'Ocean Wave couples massage at the Del', price:620, ride:{ gaslamp:25, coronado:0, strand:15, lajolla:60 }, t:3, r:5,
-    route:{ 'la-first':['d3','13:00','afternoon'], 'sd-first':['d1','13:00','afternoon'] }, link:'https://www.resortpass.com/experiences/couples-spa-3233652', booking:true, by:'2026-12-01',
+    route:{ 'la-first':['d3','14:00','afternoon'], 'sd-first':['d1','14:00','afternoon'] }, link:'https://www.resortpass.com/experiences/couples-spa-3233652', booking:true, by:'2026-12-01',
     desc:'Fifty minutes in the couples suite, a spa pass and a bottle of Champagne. From $620 for two with the 20% service charge.' },
   { id:'spa-wi', kind:'spa', city:'la', name:'Korean spa morning in Koreatown', price:215, ride:{ dtla:15, west:30 }, t:5, r:2,
     route:{ 'la-first':['d2','09:00','morning'], 'sd-first':['d3','13:00','afternoon'] }, link:'https://wispausa.com/', booking:false,
@@ -622,10 +648,10 @@ var EXP = [
     route:{ 'la-first':['d4','19:00','evening'], 'sd-first':['d4','19:00','evening'] }, link:'https://www.opentable.com/r/noble-experiment-san-diego', booking:true, by:'2026-12-20',
     desc:'A real downtown speakeasy behind a wall of beer kegs inside Neighborhood at 777 G St, a few minutes\' walk from Park 12. No menu; the bartenders make drinks to your taste. Reserve up to two weeks ahead, and call 619-888-4713 to confirm Sunday hours.' },
   { id:'ferry', city:'sd', name:'Coronado Ferry at golden hour', price:36, ride:{ gaslamp:0, coronado:0, strand:15, lajolla:50 }, t:4, r:4,
-    route:{ 'la-first':['d3','12:00','midday'], 'sd-first':['d1','12:30','midday'] }, link:'https://flagshipsd.com/ferry-routes/broadway-pier', booking:false,
+    route:{ 'la-first':['d3','12:00','midday'], 'sd-first':['d1','12:00','midday'] }, link:'https://flagshipsd.com/ferry-routes/broadway-pier', booking:false, lunch:'Lunch on Orange Avenue before the ride back.',
     desc:'Fifteen minutes across the bay with the skyline behind you. $9 a ride; the Convention Center landing is a short walk from Park 12.' },
   { id:'skate', city:'sd', name:'Skating by the Sea at the Del', price:90, mil:10, ride:{ gaslamp:12, coronado:0, strand:15, lajolla:60 }, t:5, r:5,
-    route:{ 'la-first':['d3','15:00','afternoon'], 'sd-first':['d1','15:00','afternoon'] }, link:'https://hoteldel.com/events/skating', booking:true, by:'2026-12-01',
+    route:{ 'la-first':['d3','14:00','afternoon'], 'sd-first':['d1','14:00','afternoon'] }, link:'https://hoteldel.com/events/skating', booking:true, by:'2026-12-01',
     desc:'An ice rink on the beach in front of Hotel del, open through Jan 3. 90-minute sessions; they sell out.' },
   { id:'gondola', city:'sd', name:'Gondola in the Coronado Cays', price:160, ride:{ gaslamp:60, coronado:30, strand:10, lajolla:100 }, t:3, r:5,
     route:{ 'la-first':['d3','16:30','sunset'], 'sd-first':['d1','16:30','sunset'] }, link:'https://gondolacompany.com/', booking:true, by:'2026-12-01',
@@ -640,13 +666,13 @@ var EXP = [
     route:{ 'la-first':['d3','09:30','morning'], 'sd-first':['d1','09:30','morning'] }, link:'https://bikeandkayaktours.com/kayak-tours/la-jolla-kayak-tour-caves/', booking:true, by:'2026-12-15',
     desc:'Paddle into the seven caves with sea lions around you. Cold in January; rent wetsuits.' },
   { id:'torrey', city:'sd', name:'Torrey Pines cliffs at sunset', price:0, ride:{ gaslamp:60, coronado:80, strand:80, lajolla:10 }, t:3, r:5,
-    route:{ 'la-first':['d3','15:30','sunset'], 'sd-first':['d1','15:30','sunset'] }, link:'https://torreypine.org/', booking:false,
+    route:{ 'la-first':['d3','16:00','sunset'], 'sd-first':['d1','16:00','sunset'] }, link:'https://torreypine.org/', booking:false,
     desc:'Walk the Guy Fleming Trail, then watch the sun drop from the Gliderport cliffs. Free, and only a short ride if you stay in La Jolla.' },
   { id:'balboa', city:'sd', name:'Balboa Park gardens', price:0, ride:{ gaslamp:20, coronado:40, strand:45, lajolla:50 }, t:4, r:4,
-    route:{ 'la-first':['d3','12:30','midday'], 'sd-first':['d1','12:30','midday'] }, link:'https://www.balboapark.org/', booking:false,
+    route:{ 'la-first':['d3','12:15','midday'], 'sd-first':['d1','12:15','midday'] }, link:'https://www.balboapark.org/', booking:false, lunch:'Lunch at Panama 66 in the sculpture garden.',
     desc:'The Botanical Building, the lily pond and the Spanish arcades. Free to wander.' },
   { id:'oldtown', city:'sd', name:'Old Town San Diego', price:0, ride:{ gaslamp:20, coronado:40, strand:45, lajolla:40 }, t:5, r:2,
-    route:{ 'la-first':['d3','12:30','midday'], 'sd-first':['d2','10:30','morning'] }, link:'https://www.parks.ca.gov/?page_id=663', booking:false,
+    route:{ 'la-first':['d3','12:15','midday'], 'sd-first':['d2','10:30','morning'] }, link:'https://www.parks.ca.gov/?page_id=663', booking:false, lunch:'Make it lunch.',
     desc:'Where San Diego started, with fresh tortillas. The Green Line trolley runs straight there from 12th & Imperial, next to home.' }
 ];
 var EXPBY = {}; EXP.forEach(function(e){ EXPBY[e.id] = e; });
@@ -676,7 +702,8 @@ var GIFTBY = {}; GIFTS.forEach(function(g){ GIFTBY[g.id] = g; });
 var DEFAULT = {
   route:'la-first', la:'conrad', sd:'estancia', tier:'casual', tier2:'casual', nye:'restaurant',
   exp:['griffith','nyela','broad','torrey','spa-local','moi-sd','fof'], gifts:['heart','letters'],
-  mil:'active', meToo:false, andrew:false,
+  mil:'active', tamarMil:false, tamarCard:false, cap:2000,
+  must:{ spa:true, moi:true, fof:true, charm:true, california:true },
   cr:{ hotel:true, property:true, resyGold:true, resyPlat:true, uber:true, jan27:true, jan1:true },
   filter:'all'
 };
@@ -685,7 +712,11 @@ var DEFAULT = {
 var state = (function(){
   var s = clone(DEFAULT), saved = store.get('oyc.state.v2', null);
   if (saved && typeof saved === 'object'){
-    ['route','la','sd','tier','tier2','nye','mil','meToo','andrew','filter'].forEach(function(k){ if (saved[k] !== undefined) s[k] = saved[k]; });
+    ['route','la','sd','tier','tier2','nye','mil','tamarMil','tamarCard','cap','filter','optimizedV1'].forEach(function(k){ if (saved[k] !== undefined) s[k] = saved[k]; });
+    if (saved.meToo !== undefined && saved.tamarMil === undefined) s.tamarMil = !!saved.meToo;
+    if (saved.andrew !== undefined && saved.tamarCard === undefined) s.tamarCard = !!saved.andrew;
+    if (saved.must && typeof saved.must === 'object') Object.keys(s.must).forEach(function(k){ if (typeof saved.must[k] === 'boolean') s.must[k] = saved.must[k]; });
+    if (typeof s.cap !== 'number' || !isFinite(s.cap) || s.cap < 300) s.cap = 2000;
     if (Array.isArray(saved.exp)) s.exp = saved.exp.filter(function(id){ return EXPBY[id]; });
     if (Array.isArray(saved.gifts)) s.gifts = saved.gifts.filter(function(id){ return GIFTBY[id]; });
     if (saved.cr) Object.keys(s.cr).forEach(function(k){ if (typeof saved.cr[k] === 'boolean') s.cr[k] = saved.cr[k]; });
@@ -705,15 +736,16 @@ var booked = store.get('oyc.booked.v1', {}); if (!booked || typeof booked !== 'o
 function save(){ state.spaAdded = true; state.moiAdded = true; state.fofAdded = true; store.set('oyc.state.v2', state); }
 
 /* ---------- engine ---------- */
-function andrewOn(s){ return s.mil === 'active' && !!s.andrew; }
+function tamarEligible(s){ return s.mil === 'active' || !!s.tamarMil; }
+function andrewOn(s){ return !!s.tamarCard && tamarEligible(s); }
 function nyeCity(s){ return ROUTES[s.route].nye; }
 function otherCity(s){ return nyeCity(s) === 'la' ? 'sd' : 'la'; }
 function hotelFor(s, city){ return HOTEL[city][s[city]]; }
 function slotOf(e, s){ return e.route[s.route] || null; }
 function expPrice(e, s){
   if (e.id === 'midway'){
-    var her = s.mil === 'active' ? 0 : (s.mil === 'none' ? 39 : 26);
-    var you = (s.meToo && s.mil !== 'none') ? 0 : 39;
+    var you = s.mil === 'active' ? 0 : (s.mil === 'none' ? 39 : 26);
+    var her = s.tamarMil ? 0 : 39;
     return her + you;
   }
   return Math.max(0, e.price - (e.mil && s.mil !== 'none' ? e.mil : 0));
@@ -792,7 +824,7 @@ function compute(s){
   stays.forEach(function(st){
     var c = Math.min(300, st.cost);
     if (st.slot === 'you26') credit('Platinum hotel credit · ' + st.h.name, 'Platinum', c, 'Jul–Dec 2026. Prepay on Amex Travel by Dec 31.');
-    if (st.slot === 'partner') credit('Andrew\'s Platinum hotel credit · ' + st.h.name, 'Andrew', c, 'Booked now on her card, so it posts in 2026.');
+    if (st.slot === 'partner') credit('Tamar\'s Platinum hotel credit · ' + st.h.name, 'Tamar', c, 'Booked now on her card, so it posts in 2026.');
     if (st.slot === 'you27') credit('Platinum hotel credit · ' + st.h.name, 'Platinum', c, 'Jan–Jun 2027. Book the morning of Jan 1.');
   });
   var prop = 0;
@@ -803,20 +835,20 @@ function compute(s){
   pool(tot('resy-dec'), [
     { label:'Gold Resy credit · Jul–Dec', card:'Gold', cap:50, on:cr.resyGold, note:'Put $50 of the NYE bill on Gold.' },
     { label:'Platinum Resy credit · Oct–Dec', card:'Platinum', cap:100, on:cr.resyPlat, note:'Put $100 on Platinum.' },
-    { label:'Andrew\'s Platinum Resy · Oct–Dec', card:'Andrew', cap:100, on:P, note:'Put $100 on her card.' }
+    { label:'Tamar\'s Platinum Resy · Oct–Dec', card:'Tamar', cap:100, on:P, note:'Put $100 on her card.' }
   ]);
   if (cr.jan27) pool(tot('resy-jan'), [
     { label:'Platinum Resy · Jan–Mar 2027', card:'Platinum', cap:100, on:true, note:'Resets at midnight.' },
     { label:'Gold Resy · Jan–Jun 2027', card:'Gold', cap:50, on:true, note:'Resets at midnight.' },
-    { label:'Andrew\'s Platinum Resy · Jan–Mar 2027', card:'Andrew', cap:100, on:P, note:'Resets at midnight.' }
+    { label:'Tamar\'s Platinum Resy · Jan–Mar 2027', card:'Tamar', cap:100, on:P, note:'Resets at midnight.' }
   ]);
   pool(tot('uber-dec'), [
     { label:'December Uber Cash', card:'Gold + Platinum', cap:45, on:cr.uber, note:'$35 Platinum + $10 Gold; gone after Dec 31.' },
-    { label:'Andrew\'s December Uber Cash', card:'Andrew', cap:35, on:P, note:'On her own Uber account.' }
+    { label:'Tamar\'s December Uber Cash', card:'Tamar', cap:35, on:P, note:'On her own Uber account.' }
   ]);
   if (cr.jan27) pool(tot('uber-jan'), [
     { label:'January Uber Cash', card:'Gold + Platinum', cap:25, on:true, note:'Loads Jan 1.' },
-    { label:'Andrew\'s January Uber Cash', card:'Andrew', cap:15, on:P, note:'Loads Jan 1.' }
+    { label:'Tamar\'s January Uber Cash', card:'Tamar', cap:15, on:P, note:'Loads Jan 1.' }
   ]);
 
   var gross = sum(lines.map(function(l){ return l.amt; })), cred = sum(credits.map(function(c){ return c.amt; }));
@@ -824,9 +856,10 @@ function compute(s){
   /* conflicts */
   var seen = {};
   chosen.forEach(function(e){ var sl = slotOf(e, s), k = sl[0] + '|' + sl[2]; (seen[k] = seen[k] || []).push(e.name); });
-  Object.keys(seen).forEach(function(k){ if (seen[k].length > 1) warn.push(seen[k].join(' and ') + ' want the same ' + k.split('|')[1] + ' on ' + DAYNAME[k.split('|')[0]] + '. Keep one.'); });
+  var nConf = 0;
+  Object.keys(seen).forEach(function(k){ if (seen[k].length > 1) nConf++; if (seen[k].length > 1) warn.push(seen[k].join(' and ') + ' want the same ' + k.split('|')[1] + ' on ' + DAYNAME[k.split('|')[0]] + '. Keep one.'); });
 
-  return { A:A, B:B, stays:stays, lines:lines, credits:credits, gross:gross, cred:cred, net:gross - cred, warn:warn, chosen:chosen, cruise:cruise };
+  return { A:A, B:B, stays:stays, lines:lines, credits:credits, gross:gross, cred:cred, net:gross - cred, warn:warn, chosen:chosen, cruise:cruise, conflicts:nConf };
 }
 var DAYNAME = { d1:'Dec 31', d2:'Jan 1', d3:'Jan 2', d4:'Jan 3' };
 var TWEAKS = [];
@@ -837,7 +870,7 @@ function renderRoute(){
     var r = ROUTES[id], on = state.route === id, s2 = clone(state); s2.route = id; var c = compute(s2);
     return '<article class="card' + (on ? ' on' : '') + '"><div class="top"><span class="kicker">' + (r.nye === 'la' ? 'Option A' : 'Option B') + '</span><span class="score">' + r.score + '/10</span></div>' +
       '<h4>' + esc(r.title) + '</h4><p class="desc">' + esc(r.body) + '</p><ul class="perks">' + r.pros.map(function(p){ return '<li>' + esc(p) + '</li>'; }).join('') + '</ul>' +
-      '<div class="top" style="align-items:flex-end"><div><span class="label">Net with your picks</span><div class="price num" style="color:' + (c.net > CAP ? 'var(--over)' : 'var(--ivory)') + '">' + fmt(c.net) + '</div></div>' +
+      '<div class="top" style="align-items:flex-end"><div><span class="label">Net with your picks</span><div class="price num" style="color:' + (c.net > state.cap ? 'var(--over)' : 'var(--ivory)') + '">' + fmt(c.net) + '</div></div>' +
       '<button class="btn sm" type="button" data-route="' + id + '" aria-pressed="' + on + '">' + (on ? 'Chosen' : 'Choose') + '</button></div></article>';
   }).join('');
 }
@@ -905,7 +938,7 @@ function timeLabel(t){ var h = +t.split(':')[0], m = t.split(':')[1]; return (h 
 function expCard(e){
   var sl = slotOf(e, state), on = state.exp.indexOf(e.id) !== -1, p = expPrice(e, state);
   var whenTxt = sl ? '<span class="when"><b>' + DAYNAME[sl[0]] + '</b> · ' + timeLabel(sl[1]) + '</span>' : '<span class="conflict">' + esc(e.why || 'Doesn\'t fit this route.') + '</span>';
-  var milNote = (e.id === 'midway' && state.mil === 'active') ? ' · free for Andrew' : (e.mil && state.mil !== 'none') ? ' · military' : '';
+  var milNote = (e.id === 'midway' && state.mil === 'active') ? (state.tamarMil ? ' · free for both of you' : ' · free for you') : (e.mil && state.mil !== 'none') ? ' · military' : '';
   return '<article class="card' + (on && sl ? ' on' : '') + (sl ? '' : ' off') + '"><div class="top"><span class="badge ' + e.city + '">' + (e.city === 'la' ? 'Los Angeles' : 'San Diego') + '</span>' + whenTxt + '</div>' +
     '<h4>' + esc(e.name) + '</h4><p class="desc">' + esc(e.desc) + '</p><div class="meters">' + dotsHtml(e.r, 'Romance') + dotsHtml(e.t, 'Tourist') + '</div>' +
     '<div class="top" style="align-items:flex-end"><div><span class="label">For two' + milNote + '</span><div class="price num">' + (p ? fmt(p) : 'Free') + '</div></div>' +
@@ -944,8 +977,8 @@ function renderGifts(){
 
 /* ---------- render: folio ---------- */
 var SETTINGS = [
-  { k:'meToo', t:'I\'m active duty too', d:'USS Midway is free for both of you.', mil:true },
-  { k:'andrew', t:'Andrew opens her own Platinum', d:'No annual fee under the Military Lending Act while she\'s active duty; it adds a second set of credits.', mil:true },
+  { k:'tamarMil', t:'Tamar is active duty too', d:'USS Midway is free for her too, and her own Platinum can be fee-free.' },
+  { k:'tamarCard', t:'Tamar opens her own Platinum', d:'$0 annual fee under the Military Lending Act if she\'s active duty or your DEERS-listed spouse; confirm with Amex. Adds a second set of credits.', needsElig:true },
   { k:'cr.jan27', t:'Use the January resets', d:'Resy and Uber credits that reload at midnight on Jan 1.' },
   { k:'cr.jan1', t:'Book the second hotel on Jan 1', d:'Uses your Jan–Jun 2027 hotel credit. Hold a refundable backup now.' }
 ];
@@ -959,16 +992,16 @@ var WALLET = [
 function getK(k){ return k.indexOf('cr.') === 0 ? state.cr[k.slice(3)] : state[k]; }
 function swHtml(k, on, dis, label){ return '<span class="sw"><input type="checkbox" role="switch" data-set="' + k + '"' + (on ? ' checked' : '') + (dis ? ' disabled' : '') + ' aria-label="' + esc(label) + '"><span class="tr"></span><span class="kn"></span></span>'; }
 function renderFolio(c){
-  var over = c.net > CAP, max = Math.max(CAP * 1.3, c.gross * 1.04);
+  var over = c.net > state.cap, max = Math.max(state.cap * 1.3, c.gross * 1.04);
   $('#f-net').textContent = fmt(c.net); $('#f-net').style.color = over ? 'var(--over)' : 'var(--ivory)';
   $('#f-net2').textContent = fmt(c.net);
   $('#f-gross').textContent = fmt(c.gross); $('#f-cred').textContent = c.cred ? '−' + fmt(c.cred) : '$0';
-  $('#f-status').textContent = over ? 'Over the cap by ' + fmt(c.net - CAP) : fmt(CAP - c.net) + ' under your $1,500';
+  $('#f-status').textContent = over ? 'Over the cap by ' + fmt(c.net - state.cap) : fmt(state.cap - c.net) + ' under your ' + fmt(state.cap);
   $('#f-status').style.color = over ? 'var(--over)' : 'var(--ok)';
   $('#chip-net').textContent = fmt(c.net); $('#chip-net').style.color = over ? 'var(--over)' : 'var(--ivory)';
   $('#m-g').style.width = Math.min(100, c.gross / max * 100) + '%';
   $('#m-n').style.width = Math.max(0, Math.min(100, c.net / max * 100)) + '%'; $('#m-n').style.background = over ? 'var(--over)' : 'var(--gold)';
-  $('#m-cap').style.left = (CAP / max * 100) + '%';
+  $('#m-cap').style.left = (state.cap / max * 100) + '%';
   var groups = ['Stay','Travel','Table','Spa','Experiences','Gifts','On the house'], html = '';
   groups.forEach(function(g){
     var ls = c.lines.filter(function(l){ return l.group === g; }); if (!ls.length) return;
@@ -978,13 +1011,13 @@ function renderFolio(c){
   $('#f-lines').innerHTML = html;
   $$('#f-mil button').forEach(function(b){ b.setAttribute('aria-pressed', String(b.dataset.mil === state.mil)); });
   $('#f-settings').innerHTML = SETTINGS.map(function(st){
-    var dis = st.mil && state.mil !== 'active';
+    var dis = st.needsElig && !tamarEligible(state);
     return '<div class="setting' + (dis ? ' dis' : '') + '"><div class="t"><b>' + esc(st.t) + '</b><span>' + esc(st.d) + '</span></div>' + swHtml(st.k, !dis && getK(st.k), dis, st.t) + '</div>';
   }).join('');
   $('#f-wallet-list').innerHTML = WALLET.map(function(w){ return '<div class="setting"><div class="t"><b>' + esc(w.t) + '</b><span>' + esc(w.d) + '</span></div>' + swHtml('cr.' + w.k, state.cr[w.k], false, w.t) + '</div>'; }).join('');
   $('#f-wallet-n').textContent = WALLET.filter(function(w){ return state.cr[w.k]; }).length + ' of ' + WALLET.length + ' on';
   var hints = c.warn.map(function(w){ return '<p class="hint" style="border-color:var(--over)">' + esc(w) + '</p>'; });
-  if (!over && state.mil === 'active' && !state.andrew){ var s2 = clone(state); s2.andrew = true; var d = c.net - compute(s2).net; if (d >= 1) hints.push('<p class="hint">If Andrew opens <b>her own Platinum</b>, this weekend drops another ' + fmt(d) + '.</p>'); }
+  if (!over && tamarEligible(state) && !state.tamarCard){ var s2 = clone(state); s2.tamarCard = true; var d = c.net - compute(s2).net; if (d >= 1) hints.push('<p class="hint">If Tamar opens <b>her own Platinum</b>, this weekend drops another ' + fmt(d) + '.</p>'); }
   if (HOTEL.sd[state.sd].allInc) hints.push('<p class="hint">On the all-inclusive plan, your Jan–Jun hotel credit and January Resy credits go unused on this trip. They\'re still yours for later in 2027.</p>');
   if (state.sd === 'usgrant'){ var s3 = clone(state); s3.sd = 'estancia'; s3.exp = s3.exp.filter(function(id){ return EXPBY[id] && EXPBY[id].city !== 'sd'; }).concat(['torrey']); var d3 = compute(s3).net - c.net; hints.push('<p class="hint">The US Grant is a 20-minute walk from Park 12. For a San Diego half that feels like a trip, <b>Estancia La Jolla</b> with a Torrey Pines sunset costs ' + (d3 >= 0 ? fmt(d3) + ' more' : fmt(-d3) + ' less') + '.</p>'); }
   TWEAKS = [];
@@ -992,7 +1025,7 @@ function renderFolio(c){
     var cands = [];
     function cand(label, fn, hotel){ cands.push({ label:label, fn:fn, hotel:!!hotel }); }
     if (state.tier !== 'casual') cand('New Year\'s Eve dinner at Casual', function(s){ s.tier = 'casual'; });
-    if (state.mil === 'active' && !state.andrew) cand('Andrew opens her own Platinum', function(s){ s.andrew = true; });
+    if (tamarEligible(state) && !state.tamarCard) cand('Tamar opens her own Platinum', function(s){ s.tamarCard = true; });
     var spa = state.exp.filter(function(id){ return EXPBY[id] && EXPBY[id].kind === 'spa' && id !== 'spa-local'; })[0];
     if (spa) cand('Day-spa massage instead of ' + EXPBY[spa].name, function(s){ s.exp = s.exp.filter(function(id){ return id !== spa; }).concat(['spa-local']); });
     state.gifts.forEach(function(id){ var g = GIFTBY[id]; if (g && g.price >= 50) cand('Skip the gift: ' + g.name, function(s){ s.gifts = s.gifts.filter(function(x){ return x !== id; }); }); });
@@ -1002,11 +1035,11 @@ function renderFolio(c){
     var scored = all.slice(0, 5), pairs = [], pool2 = all.filter(function(x){ return !x.hotel; }).slice(0, 7);
     for (var i = 0; i < pool2.length; i++) for (var j = i + 1; j < pool2.length; j++){
       var s3 = clone(state); pool2[i].fn(s3); pool2[j].fn(s3); var n3 = compute(s3).net;
-      if (n3 <= CAP) pairs.push({ label:pool2[i].label + ' + ' + pool2[j].label, fns:[pool2[i].fn, pool2[j].fn], net:n3 });
+      if (n3 <= state.cap) pairs.push({ label:pool2[i].label + ' + ' + pool2[j].label, fns:[pool2[i].fn, pool2[j].fn], net:n3 });
     }
     pairs.sort(function(a, b){ return b.net - a.net; }); pairs = pairs.slice(0, 3);
     TWEAKS = scored.map(function(x){ return [x.fn]; }).concat(pairs.map(function(x){ return x.fns; }));
-    hints.push('<div class="fit"><p class="hint" style="border-color:var(--over)">Over by <b style="color:var(--over)">' + fmt(c.net - CAP) + '</b>. Each of these saves on its own:</p>' + scored.map(function(x, i){ return '<div class="setting"><div class="t"><b>' + esc(x.label) + '</b><span>Saves ' + fmt(x.save) + (c.net - x.save <= CAP ? ' · gets you under' : '') + '</span></div><button class="btn sm" type="button" data-tweak="' + i + '">Apply</button></div>'; }).join('') +
+    hints.push('<div class="fit"><p class="hint" style="border-color:var(--over)">Over by <b style="color:var(--over)">' + fmt(c.net - state.cap) + '</b>. Each of these saves on its own:</p>' + scored.map(function(x, i){ return '<div class="setting"><div class="t"><b>' + esc(x.label) + '</b><span>Saves ' + fmt(x.save) + (c.net - x.save <= state.cap ? ' · gets you under' : '') + '</span></div><button class="btn sm" type="button" data-tweak="' + i + '">Apply</button></div>'; }).join('') +
       (pairs.length ? '<p class="hint" style="margin-top:8px">Or two together, smallest change first:</p>' + pairs.map(function(x, k){ return '<div class="setting"><div class="t"><b>' + esc(x.label) + '</b><span>Lands at ' + fmt(x.net) + '</span></div><button class="btn sm" type="button" data-tweak="' + (scored.length + k) + '">Apply both</button></div>'; }).join('') : '') + '</div>');
   }
   $('#f-hints').innerHTML = hints.join('');
@@ -1030,10 +1063,11 @@ function renderItinerary(c){
     put(0, '12:00', 'Check in at ' + A.name, aFHR ? 'FHR asks for noon check-in when available.' : '', c.stays[0].slot ? '$300 hotel credit' : '');
     put(0, '13:00', 'Lunch near the hotel', A.zone === 'dtla' ? 'Grand Central Market is a short walk; check holiday hours.' : '');
   } else {
-    put(0, '11:00', 'Park 12 to ' + A.name, (A.fromHome || '') + '. Drop the bags; noon check-in when available.', c.stays[0].slot ? 'December Uber Cash · $300 hotel credit' : 'December Uber Cash');
+    var early = c.chosen.some(function(e){ var sl = slotOf(e, state); return sl[0] === 'd1' && sl[1] < '11:00'; });
+    put(0, early ? '08:00' : '11:00', 'Park 12 to ' + A.name, (A.fromHome || '') + '. Drop the bags' + (early ? ' before the day starts' : '') + '; noon check-in when available.', c.stays[0].slot ? 'December Uber Cash · $300 hotel credit' : 'December Uber Cash');
   }
   if (c.cruise) put(0, '21:00', 'Moonlight & Midnight cruise', 'From Broadway Pier: premium bar, hors d\'oeuvres, the skyline at midnight.');
-  else put(0, '19:30', 'New Year\'s Eve dinner', 'In ' + A.nb + ', on Resy. Put $100 on Platinum and $50 on Gold' + (andrewOn(state) ? ', $100 on Andrew\'s card' : '') + '; ask them to close the check before midnight.', fmt(Math.min(T.nye, 150 + (andrewOn(state) ? 100 : 0))) + ' Resy credits');
+  else put(0, '19:30', 'New Year\'s Eve dinner', 'In ' + A.nb + ', on Resy. Put $100 on Platinum and $50 on Gold' + (andrewOn(state) ? ', $100 on Tamar\'s card' : '') + '; ask them to close the check before midnight.', fmt(Math.min(T.nye, 150 + (andrewOn(state) ? 100 : 0))) + ' Resy credits');
   if (aFHR && state.cr.property) put(0, la ? '22:45' : '22:30', 'Champagne at the hotel', 'On the house: the FHR $100 property credit.', '$100 property credit');
   if (!(la && state.exp.indexOf('nyela') !== -1)) put(0, '23:55', 'Midnight', charm ? 'Give her the engraved charm.' : 'The two of you.');
   else if (charm) put(0, '23:58', 'Midnight at Grand Park', 'Give her the engraved charm.');
@@ -1041,7 +1075,7 @@ function renderItinerary(c){
   if (bSlot === 'you27') put(1, '08:00', 'Book ' + B.name + ' for Jan 1–3', 'Prepay a 2-night stay on Amex Travel; it uses your Jan–Jun credit. Then cancel the backup.', '$300 hotel credit');
   put(1, '13:00', 'Pacific Surfliner ' + (la ? 'south' : 'north'), la ? 'Sit on the right for the ocean.' : 'Sit on the left for the ocean.');
   if (B.allInc){ put(1, '15:45', 'Trolley to the border, then a taxi', 'Blue Line from Santa Fe Depot to San Ysidro, walk across with passports, then about 30 minutes by taxi.'); put(1, '17:00', 'Check in at ' + B.name, 'The all-inclusive plan starts tonight.', 'All-inclusive'); }
-  else put(1, '16:00', 'Check in at ' + B.name, B.zone === 'gaslamp' ? 'A ten-minute walk from Santa Fe Depot.' : B.station ? 'Get off at ' + B.station + '; the hotel is about 15 minutes away.' : '', bSlot === 'partner' ? '$300 credit on Andrew\'s card' : 'January Uber Cash');
+  else put(1, '16:00', 'Check in at ' + B.name, B.zone === 'gaslamp' ? 'A ten-minute walk from Santa Fe Depot.' : B.station ? 'Get off at ' + B.station + '; the hotel is about 15 minutes away.' : '', bSlot === 'partner' ? '$300 credit on Tamar\'s card' : 'January Uber Cash');
   if (B.allInc) put(1, '19:30', 'Dinner at the hotel', 'On the plan.', 'All-inclusive');
   else put(1, '19:30', 'Dinner on Resy', 'In ' + B.nb + '. The January credits reset at midnight.', state.cr.jan27 ? 'January Resy credits' : '');
   put(2, '09:00', 'Breakfast', bFHR ? 'Included with FHR.' : B.allInc ? 'On the plan.' : '', bFHR || B.allInc ? 'Included' : '');
@@ -1054,7 +1088,9 @@ function renderItinerary(c){
   else if (la && d4exp) put(3, '12:00', 'Check out, then home to Park 12', 'Drop the bags at home; the rest of the day is local.', B.zone === 'gaslamp' ? '' : 'January Uber Cash');
   else if (la) put(3, '16:00', 'Late checkout, then home to Park 12', (bFHR ? 'FHR guarantees 4 PM. ' : 'Checkout is usually noon. ') + (B.zone === 'gaslamp' ? 'It\'s a 20-minute walk.' : B.fromHome + '.'), B.zone === 'gaslamp' ? '' : 'January Uber Cash');
   else { put(3, '13:00', 'Pacific Surfliner south', 'Sit on the right for the ocean.'); put(3, '16:00', 'Santa Fe Depot to Park 12', 'Ten minutes by Uber, or the trolley.', 'January Uber Cash'); }
-  c.chosen.forEach(function(e){ var sl = slotOf(e, state), d = { d1:0, d2:1, d3:2, d4:3 }[sl[0]], atHotel = (e.id === 'spa-estancia' && state.sd === 'estancia') || (e.id === 'spa-del' && state.sd === 'del'); put(d, sl[1], e.name, e.desc.split('. ')[0] + '.' + (atHotel ? ' Charge it to the room; the $100 credit can go here instead of dinner, not both.' : ''), '', true); });
+  c.chosen.forEach(function(e){ var sl = slotOf(e, state), d = { d1:0, d2:1, d3:2, d4:3 }[sl[0]], atHotel = (e.id === 'spa-estancia' && state.sd === 'estancia') || (e.id === 'spa-del' && state.sd === 'del'); put(d, sl[1], e.name, e.desc.split('. ')[0] + '.' + (e.lunch ? ' ' + e.lunch : '') + (atHotel ? ' Charge it to the room; the $100 credit can go here instead of dinner, not both.' : ''), '', true); });
+  var midday = c.chosen.some(function(e){ var sl = slotOf(e, state); return sl[0] === (la ? 'd3' : 'd1') && sl[2] === 'midday'; });
+  if (!midday && !(la && B.allInc)) put(la ? 2 : 0, '12:30', 'Lunch', la ? 'Near the hotel, or wherever the morning ends.' : 'Near the hotel.');
   days.forEach(function(d){ d.items.sort(function(a, b){ return a.t < b.t ? -1 : a.t > b.t ? 1 : 0; }); });
   $('#it-warn').innerHTML = c.warn.map(function(w){ return '<p class="hint" style="border-color:var(--over);margin-bottom:10px">' + esc(w) + '</p>'; }).join('');
   $('#days').innerHTML = days.map(function(d){
@@ -1075,13 +1111,13 @@ function dueInfo(iso){
 function renderReservations(c){
   var la = nyeCity(state) === 'la', A = c.A, B = c.B, bSlot = c.stays[1].slot, items = [];
   items.push({ id:'enroll', due:'2026-11-15', t:'Enroll your Resy credits on both cards', d:'In the Amex app, under Benefits. The restaurant must show the Amex badge on Resy.' });
-  if (andrewOn(state)) items.push({ id:'andrew', due:'2026-11-14', t:'Andrew applies for her own Platinum', d:'Ask Amex to confirm the Military Lending Act fee waiver, then enroll its hotel, Resy and Uber benefits.' });
+  if (andrewOn(state)) items.push({ id:'andrew', due:'2026-11-14', t:'Tamar applies for her own Platinum', d:'Ask Amex to confirm the Military Lending Act fee waiver (active duty, or the DEERS-listed spouse of an active-duty member), then enroll its hotel, Resy and Uber benefits.' });
   items.push({ id:'hotelA', due:'2026-11-25', t:'Book ' + A.name + ' for Dec 31', d:A.program === 'FHR' ? 'Prepay on Amex Travel so the $300 credit applies; a 1-night stay only qualifies if it\'s charged in 2026.' : A.program === 'THC' ? 'The Hotel Collection pays no credit for one night; book the best rate you can find.' : 'Book direct.', link:A.book, lab:A.program === 'none' ? 'Hotel' : 'Amex Travel' });
   if (bSlot === 'you27'){
     items.push({ id:'hotelBhold', due:'2026-11-25', t:'Hold a refundable backup at ' + B.name + ', Jan 1–3', d:'Your safety net in case rates jump on Jan 1.', link:B.book, lab:'Hotel' });
     items.push({ id:'hotelB', due:'2027-01-01', t:'Book ' + B.name + ', Jan 1–3, on Amex Travel', d:'Do it that morning so it uses the Jan–Jun 2027 credit, then cancel the backup.', link:B.book, lab:'Amex Travel' });
   } else if (B.allInc) items.push({ id:'hotelB', due:'2026-11-25', t:'Book ' + B.name + ' for Jan 1–3 with the all-inclusive plan', d:'Add the plan when you book and get the real price; mine is a guess. Bring passports or passport cards.', link:B.book, lab:'Hotel' });
-  else items.push({ id:'hotelB', due:'2026-11-25', t:'Book ' + B.name + ' for Jan 1–3', d:bSlot === 'partner' ? 'On Andrew\'s Platinum through Amex Travel, so its credit posts in 2026.' : B.program === 'none' ? 'Book direct.' : 'Prepay on Amex Travel.', link:B.book, lab:B.program === 'none' ? 'Hotel' : 'Amex Travel' });
+  else items.push({ id:'hotelB', due:'2026-11-25', t:'Book ' + B.name + ' for Jan 1–3', d:bSlot === 'partner' ? 'On Tamar\'s Platinum through Amex Travel, so its credit posts in 2026.' : B.program === 'none' ? 'Book direct.' : 'Prepay on Amex Travel.', link:B.book, lab:B.program === 'none' ? 'Hotel' : 'Amex Travel' });
   var stn = HOTEL.sd[state.sd].station;
   items.push({ id:'train', due:'2026-11-25', t:'Pacific Surfliner: ' + (la ? 'north Dec 31, south Jan 1' : 'north Jan 1, south Jan 3'), d:'From Santa Fe Depot' + (stn ? '; use ' + stn + ' for the La Jolla end' : '') + '. ' + (state.mil !== 'none' ? 'Promo code V780 takes 15% off; carry military ID.' : 'Reserve coach seats.'), link:TRAIN, lab:'Pacific Surfliner' });
   if (c.cruise) items.push({ id:'nye', due:'2026-11-20', t:'Moonlight & Midnight cruise, Dec 31', d:'Flagship, from Broadway Pier.', link:'https://www.flagshipsd.com/cruises/new-year-cruises-san-diego-bay', lab:'Flagship' });
@@ -1089,7 +1125,7 @@ function renderReservations(c){
   if (!B.allInc){
     items.push({ id:'jan1', due:'2026-12-05', t:'Jan 1 dinner, ' + B.nb, d:'On Resy, with the Amex badge.', link:RESY[otherCity(state)], lab:'Resy' });
     items.push({ id:'jan2', due:'2026-12-15', t:'Jan 2 dinner at ' + B.dine, d:'Ask the hotel to charge it to the room so the $100 credit applies.', link:B.book, lab:'Hotel' });
-  } else if (state.mil !== 'none') items.push({ id:'baja', due:'2026-11-20', t:'Check Andrew\'s command rules for travel to Mexico', d:'Ask what she needs for leave or liberty in Baja before you book anything there.' });
+  } else if (state.mil !== 'none') items.push({ id:'baja', due:'2026-11-20', t:'Check your command\'s rules for travel to Mexico', d:'Ask what you (and Tamar, if she serves) need for leave or liberty in Baja before you book anything there.' });
   c.chosen.forEach(function(e){ if (e.booking) items.push({ id:'x-' + e.id, due:e.by, t:e.name + ' · ' + DAYNAME[slotOf(e, state)[0]] + ', ' + timeLabel(slotOf(e, state)[1]), d:e.id === 'skate' ? 'Choose the ' + timeLabel(slotOf(e, state)[1]) + ' session; it sells out.' : e.kind === 'spa' ? 'Holiday weekends book up early; ask for side-by-side tables.' : 'Reserve your time.', link:e.link, lab:'Book' }); });
   state.gifts.forEach(function(id){ var g = GIFTBY[id]; if (g) items.push({ id:'g-' + g.id, due:g.by, t:'Gift: ' + g.name, d:g.id === 'heart' ? 'Engraving makes it final sale; leave time for shipping.' : g.link ? 'Order with shipping time to spare.' : 'Your part; no link needed.', link:g.link, lab:'Shop' }); });
   items.push({ id:'uber', due:'2026-12-30', t:'Add both Amex cards to Uber', d:'The Uber Cash only applies when you pay with an Amex card.' });
@@ -1113,10 +1149,143 @@ function renderFigure(c){
   $('#svg-side').textContent = la ? 'North Dec 31 · sit on the left' : 'North Jan 1 · sit on the left';
 }
 
+/* ---------- the concierge: search every combination ---------- */
+var LUX = {
+  hotel:{ conrad:8, miramar:8.5, fsla:10, sixty:6.5, normandie:3, usgrant:3.5, del:9, estancia:8.5, shore:10, loews:6.5, navy:1, rosarito:5 },
+  nye:{ casual:1, date:7, splurge:11 }, other:{ casual:2, date:4, splurge:6.5 },
+  spa:{ 'spa-local':5, 'spa-wi':3, 'spa-estancia':8, 'spa-del':9 },
+  gift:{ heart:3, anniv:4, balloon:2, starmap:3, letters:3, photo:6, roses:4, ringgf:5, ringsolid:9 }
+};
+function luxRaw(s){
+  var A = hotelFor(s, nyeCity(s)), B = hotelFor(s, otherCity(s));
+  var x = LUX.hotel[A.id] * 1.5 + LUX.hotel[B.id] * 2.5 + LUX.nye[s.tier] + LUX.other[s.tier2] * 2 + (s.route === 'la-first' ? 1 : 0) + (s.nye === 'cruise' && nyeCity(s) === 'sd' ? 2 : 0);
+  var vals = [], perDay = {};
+  s.exp.forEach(function(id){
+    var e = EXPBY[id], sl = e && slotOf(e, s); if (!sl) return;
+    if (e.kind === 'spa') x += LUX.spa[e.id]; else vals.push((e.r - 1) * 0.9 + e.t * 0.15);
+    if (id !== 'nyela') perDay[sl[0]] = (perDay[sl[0]] || 0) + 1;
+  });
+  /* each extra counts a bit less than the last; a fourth activity in one day costs points */
+  vals.sort(function(a, b){ return b - a; }).forEach(function(v, i){ x += v * Math.pow(0.85, i); });
+  Object.keys(perDay).forEach(function(d){ if (perDay[d] > 3) x -= 4 * (perDay[d] - 3); });
+  s.gifts.forEach(function(id){ x += LUX.gift[id] || 0; });
+  return x;
+}
+function luxScore(s){ return Math.round(luxRaw(s)); }
+function planOK(c, cap){ return c.net <= cap && c.conflicts === 0 && !c.warn.some(function(w){ return /needs active-duty|an hour or more away/.test(w); }); }
+function enrich(s, cap){
+  var c = compute(s), guard = 0;
+  while (guard++ < 25){
+    var best = null;
+    EXP.forEach(function(e){
+      if (e.kind || s.exp.indexOf(e.id) !== -1 || !slotOf(e, s) || e.id === 'moi-sd' || e.id === 'moi-sm') return;
+      var s2 = clone(s); s2.exp.push(e.id); var c2 = compute(s2);
+      if (!planOK(c2, cap)) return;
+      var cost = c2.net - c.net, gain = luxRaw(s2) - luxRaw(s); if (gain < 0.5) return;
+      var ratio = cost <= 0 ? 1e6 + gain : gain / cost;
+      if (!best || ratio > best.ratio) best = { s:s2, c:c2, ratio:ratio };
+    });
+    GIFTS.forEach(function(g){
+      if (s.gifts.indexOf(g.id) !== -1) return;
+      var s2 = clone(s);
+      if (g.pandora){ var had = s.gifts.filter(function(x){ return GIFTBY[x].pandora; }); if (had.length && !(had[0] === 'heart' && g.id === 'anniv')) return; s2.gifts = s2.gifts.filter(function(x){ return !GIFTBY[x].pandora; }); }
+      if (g.id === 'ringgf' && s.gifts.indexOf('ringsolid') !== -1) return;
+      if (g.id === 'ringsolid'){ s2.gifts = s2.gifts.filter(function(x){ return x !== 'ringgf'; }); }
+      s2.gifts.push(g.id);
+      var c2 = compute(s2); if (!planOK(c2, cap)) return;
+      var gain = luxRaw(s2) - luxRaw(s), cost = c2.net - c.net; if (gain < 0.5) return;
+      var ratio = cost <= 0 ? 1e6 + gain : gain / cost;
+      if (!best || ratio > best.ratio) best = { s:s2, c:c2, ratio:ratio };
+    });
+    if (!best) break;
+    s = best.s; c = best.c;
+  }
+  return { s:s, c:c, score:luxScore(s) };
+}
+var CG = { plans:[], running:false, timer:null, saveCard:0 };
+function optimize(base){
+  var cap = base.cap, must = base.must, cores = [];
+  var spaOpts = must.spa ? ['spa-local','spa-estancia','spa-del','spa-wi'] : [null, 'spa-local', 'spa-estancia', 'spa-del'];
+  var moiOpts = must.moi ? ['moi-sd','moi-sm'] : [null];
+  var tiers = ['casual','date','splurge'];
+  Object.keys(ROUTES).forEach(function(route){
+    HOTELS.la.forEach(function(la){ HOTELS.sd.forEach(function(sd){
+      if (sd.requires && sd.requires.indexOf(base.mil) === -1) return;
+      if (sd.allInc && (must.california || route !== 'la-first')) return;
+      tiers.forEach(function(tier){ tiers.forEach(function(tier2){
+        (route === 'sd-first' ? ['restaurant','cruise'] : ['restaurant']).forEach(function(nye){
+          spaOpts.forEach(function(spa){ moiOpts.forEach(function(moi){
+            var s = clone(base); s.route = route; s.la = la.id; s.sd = sd.id; s.tier = tier; s.tier2 = tier2; s.nye = nye;
+            s.exp = []; if (spa) s.exp.push(spa); if (moi) s.exp.push(moi); if (must.fof) s.exp.push('fof');
+            if (route === 'la-first') s.exp.push('nyela');
+            s.gifts = must.charm ? ['heart'] : [];
+            var c = compute(s); if (!planOK(c, cap)) return;
+            cores.push({ s:s, score:luxScore(s), net:c.net });
+          }); });
+        });
+      }); });
+    }); });
+  });
+  cores.sort(function(a, b){ return b.score - a.score || a.net - b.net; });
+  var seen = {}, top = [];
+  cores.forEach(function(x){ var k = x.s.route + x.s.la + x.s.sd + x.s.tier + x.s.tier2; if (top.length < 30 && !seen[k]){ seen[k] = 1; top.push(x); } });
+  var done = top.map(function(x){ return enrich(x.s, cap); });
+  done.sort(function(a, b){ return b.score - a.score || a.c.net - b.c.net; });
+  var pairs = {}, out = [];
+  done.forEach(function(d){ var k = d.s.la + '|' + d.s.sd; if (out.length < 3 && !pairs[k]){ pairs[k] = 1; out.push(d); } });
+  return { plans:out, searched:cores.length };
+}
+var PLANKEYS = ['route','la','sd','tier','tier2','nye','exp','gifts'];
+function sameAsState(p){ return PLANKEYS.every(function(k){ return JSON.stringify(k === 'exp' || k === 'gifts' ? p.s[k].slice().sort() : p.s[k]) === JSON.stringify(k === 'exp' || k === 'gifts' ? state[k].slice().sort() : state[k]); }); }
+function runConcierge(){
+  CG.running = true; renderConcierge();
+  setTimeout(function(){
+    var t0 = Date.now(), base = clone(state), r = optimize(base);
+    CG.plans = r.plans; CG.searched = r.searched; CG.ms = Date.now() - t0; CG.running = false;
+    CG.saveCard = 0;
+    if (CG.plans[0] && tamarEligible(state) && !state.tamarCard){ var b2 = clone(CG.plans[0].s); b2.tamarCard = true; CG.saveCard = Math.max(0, CG.plans[0].c.net - compute(b2).net); }
+    if (!state.optimizedV1 && CG.plans[0]){ applyPlan(0); state.optimizedV1 = true; save(); }
+    render();
+  }, 30);
+}
+function scheduleConcierge(){ clearTimeout(CG.timer); CG.timer = setTimeout(runConcierge, 250); }
+function applyPlan(i){ var p = CG.plans[i]; if (!p) return; PLANKEYS.forEach(function(k){ state[k] = clone(p.s[k]); }); }
+function planLines(p){
+  var s = p.s, A = hotelFor(s, nyeCity(s)), B = hotelFor(s, otherCity(s));
+  var spa = s.exp.filter(function(id){ return EXPBY[id].kind === 'spa'; }).map(function(id){ return EXPBY[id].name; })[0] || 'No massage';
+  var extras = s.exp.filter(function(id){ return !EXPBY[id].kind && slotOf(EXPBY[id], s); }).map(function(id){ return EXPBY[id].name.replace(/, (Gaslamp|National City|East Village|Santa Monica Pier|Santa Monica)$/, ''); });
+  var gifts = s.gifts.map(function(id){ return GIFTBY[id].name; });
+  return [
+    ['Route', ROUTES[s.route].short],
+    ['NYE', A.name + (s.nye === 'cruise' ? ' · midnight bay cruise' : ' · ' + TIERS[s.tier].name.toLowerCase() + ' dinner')],
+    ['Jan 1–3', B.name + ' · ' + TIERS[s.tier2].name.toLowerCase() + ' dinners'],
+    ['Spa', spa],
+    ['Extras', extras.join(', ') || '—'],
+    ['Gifts', gifts.join(', ') || '—']
+  ];
+}
+function renderConcierge(){
+  $$('#cg-must .chip').forEach(function(b){ b.setAttribute('aria-pressed', String(!!state.must[b.dataset.must])); });
+  $$('.captxt').forEach(function(el){ el.textContent = fmt(state.cap); });
+  if (CG.running){ $('#cg-status').textContent = 'Pricing every combination…'; return; }
+  $('#cg-status').textContent = CG.searched ? CG.searched.toLocaleString('en-US') + ' combinations fit your cap · searched ' + (CG.ms < 1000 ? 'in under a second' : 'in ' + (CG.ms / 1000).toFixed(1) + 's') : '';
+  if (!CG.plans.length){ $('#cg-plans').innerHTML = '<p class="hint" style="border-color:var(--over)">Nothing fits ' + fmt(state.cap) + ' with these must-haves. Raise the cap or drop a must-have.</p>'; return; }
+  var ranks = ['The concierge\'s pick', 'Runner-up', 'Third'];
+  $('#cg-plans').innerHTML = CG.plans.map(function(p, i){
+    var loaded = sameAsState(p);
+    return '<article class="card' + (i === 0 ? ' best' : '') + (loaded ? ' on' : '') + '"><div class="top"><span class="plan-rank">' + ranks[i] + '</span><span class="badge ok">' + fmt(state.cap - p.c.net) + ' to spare</span></div>' +
+      '<div class="plan-score"><b>' + p.score + '</b><span class="label">luxury points</span></div>' +
+      '<div class="top" style="align-items:flex-end"><div><span class="label">Net to you</span><div class="price num">' + fmt(p.c.net) + '</div></div><div style="text-align:right"><span class="label">Credits</span><div class="price num" style="color:var(--ok);font-size:22px">−' + fmt(p.c.cred) + '</div></div></div>' +
+      '<ul class="plan-list">' + planLines(p).map(function(l){ return '<li><span>' + l[0] + '</span><span>' + esc(l[1]) + '</span></li>'; }).join('') + '</ul>' +
+      '<div class="actions"><button class="btn sm' + (loaded ? '' : ' solid') + '" type="button" data-plan="' + i + '" aria-pressed="' + loaded + '">' + (loaded ? 'Loaded' : 'Load this weekend') + '</button></div></article>';
+  }).join('') + (CG.saveCard >= 1 ? '<p class="hint" style="grid-column:1/-1">If Tamar opens her own Platinum, the top plan costs ' + fmt(CG.saveCard) + ' less, which buys another upgrade. Turn it on in the folio and the concierge re-plans.</p>' : '');
+}
+
 /* ---------- master render ---------- */
 function render(){
   var c = compute(state);
-  renderRoute(); renderHotels(); renderTable(); renderExp(); renderGifts(); renderFolio(c); renderItinerary(c); renderReservations(c); renderFigure(c);
+  renderConcierge(); renderRoute(); renderHotels(); renderTable(); renderExp(); renderGifts(); renderFolio(c); renderItinerary(c); renderReservations(c); renderFigure(c);
+  var ci = $('#f-cap'); if (ci && document.activeElement !== ci) ci.value = state.cap;
 }
 
 /* ---------- countdown ---------- */
@@ -1140,7 +1309,9 @@ document.addEventListener('click', function(e){
   else if (d.exp){ var i = state.exp.indexOf(d.exp); if (i === -1){ if (EXPBY[d.exp].kind === 'spa') state.exp = state.exp.filter(function(id){ return !EXPBY[id] || EXPBY[id].kind !== 'spa'; }); state.exp.push(d.exp); } else state.exp.splice(i, 1); }
   else if (d.gift){ var j = state.gifts.indexOf(d.gift); if (j === -1) state.gifts.push(d.gift); else state.gifts.splice(j, 1); }
   else if (d.filter){ state.filter = d.filter; }
-  else if (d.mil){ state.mil = d.mil; }
+  else if (d.mil){ state.mil = d.mil; save(); render(); scheduleConcierge(); return; }
+  else if (d.plan){ applyPlan(+d.plan); }
+  else if (d.must){ state.must[d.must] = !state.must[d.must]; save(); render(); scheduleConcierge(); return; }
   else if (d.tweak){ var tw = TWEAKS[+d.tweak]; if (tw) tw.forEach(function(fn){ fn(state); }); }
   else if (b.id === 'res-reset'){ $('#res-reset-yes').hidden = false; b.hidden = true; return; }
   else if (b.id === 'res-reset-yes'){ booked = {}; store.set('oyc.booked.v1', booked); b.hidden = true; $('#res-reset').hidden = false; }
@@ -1149,11 +1320,13 @@ document.addEventListener('click', function(e){
 });
 document.addEventListener('change', function(e){
   var t = e.target, d = t.dataset;
-  if (d.set){ if (d.set.indexOf('cr.') === 0) state.cr[d.set.slice(3)] = t.checked; else state[d.set] = t.checked; save(); render(); }
+  if (d.set){ if (d.set.indexOf('cr.') === 0) state.cr[d.set.slice(3)] = t.checked; else state[d.set] = t.checked; save(); render(); scheduleConcierge(); }
+  if (t.id === 'f-cap'){ var v = Math.round(Number(t.value)); if (isFinite(v) && v >= 500){ state.cap = Math.min(20000, v); save(); render(); scheduleConcierge(); } else t.value = state.cap; }
   if (d.booked){ if (t.checked) booked[d.booked] = true; else delete booked[d.booked]; store.set('oyc.booked.v1', booked); render(); }
 });
 
 render();
+runConcierge();
 tick(); setInterval(tick, 1000);
 setInterval(function(){ renderReservations(compute(state)); }, 60000);
 })();
