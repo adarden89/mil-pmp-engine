@@ -344,6 +344,7 @@ p{margin:0}
 
       <section class="chapter" id="stay" aria-labelledby="stay-h">
         <div class="chead"><span class="roman">II</span><h2 id="stay-h">Where you'll sleep</h2><p>One hotel in each city. Book Fine Hotels + Resorts (FHR) or The Hotel Collection (THC) on Amex Travel: each hotel then counts as its own stay and earns its own $300 credit and $100 property credit. Rates are my estimates with tax; check your dates on Amex Travel. ⌂ shows the distance from home at Park 12.</p></div>
+        <p class="hint"><b>All-inclusive, honestly:</b> there isn't a true all-inclusive resort in San Diego or LA. The closest is the Rosarito Beach Hotel in Baja, which sells an optional plan (last in the San Diego list). The real all-inclusives nearby are destination spas: Rancho La Puerta in Tecate from about $5,250 a person per week, and Golden Door at over $10,000. Your credits already make La Jolla close to all-inclusive: breakfast is included, Resy credits cover the Jan 1 dinner, and the hotel's $100 credit pays most of Jan 2.</p>
         <div class="cities">
           <div class="citycol"><div class="cityhead"><h3>Los Angeles</h3><span class="tag" style="color:var(--sunset)" id="la-role"></span></div><div class="grid" id="hotels-la"></div></div>
           <div class="citycol"><div class="cityhead"><h3>San Diego</h3><span class="tag" style="color:var(--pacific)" id="sd-role"></span></div><div class="grid" id="hotels-sd"></div></div>
@@ -463,6 +464,9 @@ p{margin:0}
         <li><a href="https://griffithobservatory.lacity.gov/visit/" target="_blank" rel="noopener">Griffith Observatory hours</a></li>
         <li><a href="https://www.theartnewspaper.com/2026/04/10/getty-center-to-undergo-major-renovations-close-for-a-year-beginning-march-2027" target="_blank" rel="noopener">Getty Center closure from March 2027</a></li>
         <li><a href="https://www.thebroad.org/" target="_blank" rel="noopener">The Broad</a></li>
+        <li><a href="https://www.rosaritobeachhotel.com/dining" target="_blank" rel="noopener">Rosarito Beach Hotel: all-inclusive plan</a></li>
+        <li><a href="https://passporttoadventure.travel/all-inclusive-resorts-ensenada-mexico/" target="_blank" rel="noopener">All-inclusives in northern Baja</a></li>
+        <li><a href="https://rancholapuerta.com/rates" target="_blank" rel="noopener">Rancho La Puerta rates</a></li>
         <li><a href="https://www.theinfatuation.com/san-diego/reviews/friends-of-friends-san-diego" target="_blank" rel="noopener">The Infatuation: Friends of Friends</a></li>
         <li><a href="https://joe.coffee/locations/ca/national-city/friends-of-friends-national-city-777bafcb-fce1-4bf9-b36a-be77e28e5b6c/" target="_blank" rel="noopener">Friends of Friends hours</a></li>
         <li><a href="https://www.opentable.com/r/noble-experiment-san-diego" target="_blank" rel="noopener">Noble Experiment reservations</a></li>
@@ -552,7 +556,9 @@ var HOTELS = {
     { id:'loews', nb:'Coronado', tag:'LOEWS CORONADO BAY', name:'Loews Coronado Bay', area:'Silver Strand · bay views', program:'THC', nye:360, jan:[260,230], tax:0.12, fee:40, zone:'strand', ride:30, home:25, away:4, fromHome:'Silver Strand · about 20 minutes from Park 12', dine:'the hotel\'s restaurant', score:6, book:AMEX.cor,
       desc:'Quiet bayfront resort. The Hotel Collection needs 2 nights for its credit, and there\'s no breakfast.' },
     { id:'navy', nb:'Coronado', tag:'NAVY LODGE', name:'Navy Lodge North Island', area:'Coronado · on base', program:'none', nye:160, jan:[160,160], tax:0, fee:0, zone:'coronado', ride:30, home:20, away:3, fromHome:'North Island · about 15 minutes from Park 12', dine:'a Coronado restaurant', score:4, requires:['active','retired'], book:'https://installations.militaryonesource.mil/military-installation/naval-base-coronado/housing/temporary-housing',
-      desc:'The budget backstop with base access. Rates aren\'t published, so call 800-628-9466. Not an anniversary hotel.' }
+      desc:'The budget backstop with base access. Rates aren\'t published, so call 800-628-9466. Not an anniversary hotel.' },
+    { id:'rosarito', nb:'Rosarito', tag:'ROSARITO BEACH HOTEL', name:'Rosarito Beach Hotel', area:'Rosarito, Baja California · on the beach', program:'none', allInc:true, aiPlan:100, janOnly:true, nye:150, jan:[130,130], tax:0.19, fee:0, zone:'baja', ride:45, home:45, away:5, fromHome:'Across the border · about 45 minutes, plus the crossing', dine:'the hotel (all-inclusive)', score:4, book:'https://www.rosaritobeachhotel.com/',
+      desc:'The closest thing to an all-inclusive near San Diego: a historic beachfront hotel that sells an optional all-inclusive plan. It\'s in Mexico, so bring passports; it\'s not in an Amex program, so the hotel credits sit unused; and the Sunday border wait home can run hours.' }
   ]
 };
 var HOTEL = { la:{}, sd:{} }; HOTELS.la.forEach(function(h){ HOTEL.la[h.id] = h; }); HOTELS.sd.forEach(function(h){ HOTEL.sd[h.id] = h; });
@@ -567,9 +573,9 @@ var CRUISE = 395; /* Flagship Moonlight & Midnight: from $149.50 + 32% fees per 
 /* Experiences. Price is for two before military discounts. ride = rough Uber cost for two, by hotel zone.
    la-first / sd-first = [day, time, slot]; days: d1 Dec 31, d2 Jan 1, d3 Jan 2. null = doesn't fit that route. */
 var EXP = [
-  { id:'spa-local', kind:'spa', city:'sd', name:'Side-by-side massage at a day spa', price:250, ride:{ gaslamp:0, coronado:0, strand:10, lajolla:0 }, t:2, r:5,
+  { id:'spa-local', kind:'spa', city:'sd', name:'Side-by-side massage at a day spa', price:250, ride:{ gaslamp:0, coronado:0, strand:10, lajolla:0, baja:0 }, t:2, r:5,
     route:{ 'la-first':['d3','13:00','afternoon'], 'sd-first':['d1','13:00','afternoon'] }, link:'https://www.groupon.com/local/san-diego-ca/couples-massage', booking:true, by:'2026-12-01',
-    desc:'Sixty minutes side by side at a day spa near your hotel. San Diego couples massages list at about $190–$230; I add a 20% tip.' },
+    desc:'Sixty minutes side by side at a day spa near your hotel (at the hotel\'s own spa if you\'re in Rosarito). San Diego couples massages list at about $190–$230; I add a 20% tip.' },
   { id:'spa-estancia', kind:'spa', city:'sd', name:'Couples bungalow at Spa Estancia', price:530, ride:{ gaslamp:60, coronado:80, strand:80, lajolla:0 }, t:2, r:5,
     route:{ 'la-first':['d3','13:00','afternoon'], 'sd-first':['d1','13:00','afternoon'] }, link:'https://www.estancialajolla.com/la-jolla-spa-specials/', booking:true, by:'2026-12-01',
     desc:'A private bungalow and a 50-minute massage for two. $440 on the last published menu, so expect more plus a service charge. Call 858-964-6590 and ask about resident rates.' },
@@ -750,23 +756,29 @@ function compute(s){
   var cruise = s.nye === 'cruise' && nyeCity(s) === 'sd';
   if (cruise) add('Table', 'New Year\'s Eve: Moonlight & Midnight bay cruise for two (est., fees in)', CRUISE, 'cruise');
   else add('Table', 'New Year\'s Eve dinner on Resy · ' + A.nb, T.nye, 'resy-dec');
-  add('Table', 'Jan 1 dinner on Resy · ' + B.nb, T2.jan, 'resy-jan');
+  var ai = !!B.allInc;
+  if (ai) add('Table', 'All-inclusive plan for two, Jan 1–3 (my guess; the hotel doesn\'t publish it)', B.aiPlan * 4, 'ai');
+  if (!ai) add('Table', 'Jan 1 dinner on Resy · ' + B.nb, T2.jan, 'resy-jan');
   var bEligProp = cr.property && stays[1].elig, aEligProp = cr.property && stays[0].elig;
-  add('Table', 'Jan 2 dinner at ' + B.dine, T2.hotel, 'hotel-dinner');
+  if (!ai) add('Table', 'Jan 2 dinner at ' + B.dine, T2.hotel, 'hotel-dinner');
   var fhrNights = (A.program === 'FHR' ? 1 : 0) + (B.program === 'FHR' ? 2 : 0);
-  add('Table', 'Lunches and coffee, 3 days', T2.lunch * 3, 'meals');
-  if (3 - fhrNights > 0) add('Table', 'Breakfasts (' + (3 - fhrNights) + ' not included by the hotel)', T2.bfast * (3 - fhrNights), 'meals');
+  add('Table', ai ? 'Lunch and coffee, Dec 31' : 'Lunches and coffee, 3 days', T2.lunch * (ai ? 1 : 3), 'meals');
+  var bfOpen = ai ? (A.program === 'FHR' ? 0 : 1) : 3 - fhrNights;
+  if (bfOpen > 0) add('Table', 'Breakfasts (' + bfOpen + ' not included by the hotel)', T2.bfast * bfOpen, 'meals');
   if (aEligProp) add('On the house', 'Midnight champagne at ' + A.name, 100, 'nightcap');
 
   /* experiences */
-  var chosen = s.exp.map(function(id){ return EXPBY[id]; }).filter(function(e){ return e && slotOf(e, s); });
+  var chosen = s.exp.map(function(id){ return EXPBY[id]; }).filter(function(e){ return e && slotOf(e, s); }), farFromBaja = [];
   var zone = { la:hotelFor(s, 'la').zone, sd:hotelFor(s, 'sd').zone };
   chosen.forEach(function(e){
     var p = expPrice(e, s); if (p > 0) add(e.kind === 'spa' ? 'Spa' : 'Experiences', e.name, p, 'exp');
-    var day = slotOf(e, s)[0], r = e.ride[zone[e.city]] || 0;
+    var day = slotOf(e, s)[0], rz = day === 'd4' ? 0 : e.ride[zone[e.city]], r = rz == null ? 80 : rz;
+    if (B.allInc && e.city === 'sd' && day === 'd3' && e.ride.baja == null) farFromBaja.push(e.name);
     if (day === 'd1') uberDec += r; else uberJan += r;
     if (e.transit) transit += e.transit;
   });
+  if (B.allInc) transit += 10;
+  if (farFromBaja.length) warn.push('You\'re in Rosarito on Jan 2, so ' + farFromBaja.join(' and ') + (farFromBaja.length > 1 ? ' are' : ' is') + ' an hour or more away with the border. Swap for the hotel\'s beach and spa.');
   if (transit) add('Travel', 'Transit fares (Metro, DASH, trolley)', transit, 'transit');
   add('Travel', 'Uber, December rides', uberDec, 'uber-dec');
   add('Travel', 'Uber, January rides', uberJan, 'uber-jan');
@@ -836,21 +848,24 @@ function hotelCard(city, h){
   var nights = role === 'nye' ? 1 : 2, cost = role === 'nye' ? h.nye * (1 + h.tax) + h.fee : (h.jan[0] + h.jan[1]) * (1 + h.tax) + 2 * h.fee;
   var elig = role === 'nye' ? h.program === 'FHR' : (h.program === 'FHR' || h.program === 'THC');
   var badge = h.program === 'FHR' ? '<span class="badge fhr">Fine Hotels + Resorts</span>' : h.program === 'THC' ? '<span class="badge thc">Hotel Collection</span>' : h.requires ? '<span class="badge mil">Military lodging</span>' : '<span class="badge">Independent</span>';
-  var perks = h.program === 'FHR' ? ['Breakfast for two','$100 property credit','4 PM checkout'] : h.program === 'THC' ? ['$100 credit (2+ nights)','Upgrade if available'] : [];
+  var perks = h.program === 'FHR' ? ['Breakfast for two','$100 property credit','4 PM checkout'] : h.program === 'THC' ? ['$100 credit (2+ nights)','Upgrade if available'] : h.allInc ? ['Meals and drinks on the plan','Beachfront','Spa on site'] : [];
   var noCredit = h.program !== 'none' && !elig ? '<span class="badge warn">No credit for 1 night</span>' : '';
   var lock = h.requires && h.requires.indexOf(state.mil) === -1 ? '<span class="badge warn">Needs military eligibility</span>' : '';
+  if (h.allInc){ lock += '<span class="badge ok">All-inclusive plan</span><span class="badge warn">Mexico · passports</span>'; if (role === 'jan') cost += h.aiPlan * 4; }
+  var nyeBlocked = h.janOnly && role === 'nye';
+  if (nyeBlocked) lock += '<span class="badge">Jan 1–3 only</span>';
   if (h.away === 1) lock += '<span class="badge sd">Your neighborhood</span>';
   if (h.away >= 5) lock += '<span class="badge ok">Feels like a trip</span>';
   return '<article class="card' + (on ? ' on' : '') + '"><div class="badges">' + badge + noCredit + lock + '</div>' +
     '<div><h4>' + esc(h.name) + '</h4><span class="where">' + esc(h.area) + '</span>' + (h.fromHome ? '<span class="where" style="display:block;color:var(--pacific);margin-top:4px">⌂ ' + esc(h.fromHome) + '</span>' : '') + '</div><p class="desc">' + esc(h.desc) + '</p>' +
     (perks.length ? '<ul class="perks">' + perks.map(function(p){ return '<li>' + p + '</li>'; }).join('') + '</ul>' : '') +
-    '<div class="top" style="align-items:flex-end"><div><span class="label">' + (role === 'nye' ? 'Dec 31 · 1 night' : 'Jan 1–3 · 2 nights') + ', est.</span><div class="price num">' + fmt(cost) + '</div></div><span class="score">' + h.score + '/10</span></div>' +
-    '<div class="actions"><button class="btn sm" type="button" data-hotel="' + city + ':' + h.id + '" aria-pressed="' + on + '">' + (on ? 'Selected' : 'Select') + '</button>' +
+    '<div class="top" style="align-items:flex-end"><div><span class="label">' + (role === 'nye' ? 'Dec 31 · 1 night' : 'Jan 1–3 · 2 nights') + (h.allInc && role === 'jan' ? ' + plan' : '') + ', est.</span><div class="price num">' + fmt(cost) + '</div></div><span class="score">' + h.score + '/10</span></div>' +
+    '<div class="actions">' + (nyeBlocked ? '<span class="tiny muted">Works only on the LA-first route</span>' : '<button class="btn sm" type="button" data-hotel="' + city + ':' + h.id + '" aria-pressed="' + on + '">' + (on ? 'Selected' : 'Select') + '</button>') +
     '<a class="btn quiet sm" href="' + h.book + '" target="_blank" rel="noopener">' + (h.program === 'none' ? 'Hotel site' : 'Book on Amex Travel') + ' ↗</a></div></article>';
 }
 function renderHotels(){
   $('#hotels-la').innerHTML = HOTELS.la.map(function(h){ return hotelCard('la', h); }).join('');
-  $('#hotels-sd').innerHTML = ['estancia','del','loews','usgrant','shore','navy'].map(function(id){ return hotelCard('sd', HOTEL.sd[id]); }).join('');
+  $('#hotels-sd').innerHTML = ['estancia','del','loews','usgrant','shore','navy','rosarito'].map(function(id){ return hotelCard('sd', HOTEL.sd[id]); }).join('');
   $('#la-role').textContent = nyeCity(state) === 'la' ? 'New Year\'s Eve · 1 night' : 'Jan 1–3 · 2 nights';
   $('#sd-role').textContent = nyeCity(state) === 'sd' ? 'New Year\'s Eve · 1 night' : 'Jan 1–3 · 2 nights';
 }
@@ -866,7 +881,7 @@ function renderTable(){
   var B2 = hotelFor(state, otherCity(state));
   $('#tiers2').innerHTML = Object.keys(TIERS).map(function(k){
     var t = TIERS[k], on = state.tier2 === k;
-    return '<article class="card' + (on ? ' on' : '') + '"><span class="kicker">' + (k === 'casual' ? 'Recommended' : k === 'date' ? 'Dressed up' : 'All in') + '</span><h4>' + t.name + '</h4><p class="desc">Jan 1 in ' + esc(B2.nb) + ', Jan 2 at ' + esc(B2.dine) + '. Lunches at the same level.</p>' +
+    return '<article class="card' + (on ? ' on' : '') + '"><span class="kicker">' + (k === 'casual' ? 'Recommended' : k === 'date' ? 'Dressed up' : 'All in') + '</span><h4>' + t.name + '</h4><p class="desc">' + (B2.allInc ? 'Both dinners are on the all-inclusive plan; this only sets lunch on Dec 31.' : 'Jan 1 in ' + esc(B2.nb) + ', Jan 2 at ' + esc(B2.dine) + '. Lunches at the same level.') + '</p>' +
       '<div class="top" style="align-items:flex-end"><div><span class="label">Two dinners for two</span><div class="price num">' + fmt(t.jan + t.hotel) + '</div></div>' +
       '<button class="btn sm" type="button" data-tier2="' + k + '" aria-pressed="' + on + '">' + (on ? 'Selected' : 'Select') + '</button></div></article>';
   }).join('');
@@ -970,6 +985,7 @@ function renderFolio(c){
   $('#f-wallet-n').textContent = WALLET.filter(function(w){ return state.cr[w.k]; }).length + ' of ' + WALLET.length + ' on';
   var hints = c.warn.map(function(w){ return '<p class="hint" style="border-color:var(--over)">' + esc(w) + '</p>'; });
   if (!over && state.mil === 'active' && !state.andrew){ var s2 = clone(state); s2.andrew = true; var d = c.net - compute(s2).net; if (d >= 1) hints.push('<p class="hint">If Andrew opens <b>her own Platinum</b>, this weekend drops another ' + fmt(d) + '.</p>'); }
+  if (HOTEL.sd[state.sd].allInc) hints.push('<p class="hint">On the all-inclusive plan, your Jan–Jun hotel credit and January Resy credits go unused on this trip. They\'re still yours for later in 2027.</p>');
   if (state.sd === 'usgrant'){ var s3 = clone(state); s3.sd = 'estancia'; s3.exp = s3.exp.filter(function(id){ return EXPBY[id] && EXPBY[id].city !== 'sd'; }).concat(['torrey']); var d3 = compute(s3).net - c.net; hints.push('<p class="hint">The US Grant is a 20-minute walk from Park 12. For a San Diego half that feels like a trip, <b>Estancia La Jolla</b> with a Torrey Pines sunset costs ' + (d3 >= 0 ? fmt(d3) + ' more' : fmt(-d3) + ' less') + '.</p>'); }
   TWEAKS = [];
   if (over){
@@ -1024,13 +1040,18 @@ function renderItinerary(c){
   put(1, '09:00', 'Breakfast', aFHR ? 'Included with FHR.' : '', aFHR ? 'Included' : '');
   if (bSlot === 'you27') put(1, '08:00', 'Book ' + B.name + ' for Jan 1–3', 'Prepay a 2-night stay on Amex Travel; it uses your Jan–Jun credit. Then cancel the backup.', '$300 hotel credit');
   put(1, '13:00', 'Pacific Surfliner ' + (la ? 'south' : 'north'), la ? 'Sit on the right for the ocean.' : 'Sit on the left for the ocean.');
-  put(1, '16:00', 'Check in at ' + B.name, B.zone === 'gaslamp' ? 'A ten-minute walk from Santa Fe Depot.' : B.station ? 'Get off at ' + B.station + '; the hotel is about 15 minutes away.' : '', bSlot === 'partner' ? '$300 credit on Andrew\'s card' : 'January Uber Cash');
-  put(1, '19:30', 'Dinner on Resy', 'In ' + B.nb + '. The January credits reset at midnight.', state.cr.jan27 ? 'January Resy credits' : '');
-  put(2, '09:00', 'Breakfast', bFHR ? 'Included with FHR.' : '', bFHR ? 'Included' : '');
-  put(2, '20:00', 'Dinner at ' + B.dine, c.stays[1].elig && state.cr.property ? 'The $100 property credit pays the first part.' : '', c.stays[1].elig && state.cr.property ? '$100 property credit' : '');
-  put(3, '09:30', 'Breakfast', bFHR ? 'Included.' : '', bFHR ? 'Included' : '');
+  if (B.allInc){ put(1, '15:45', 'Trolley to the border, then a taxi', 'Blue Line from Santa Fe Depot to San Ysidro, walk across with passports, then about 30 minutes by taxi.'); put(1, '17:00', 'Check in at ' + B.name, 'The all-inclusive plan starts tonight.', 'All-inclusive'); }
+  else put(1, '16:00', 'Check in at ' + B.name, B.zone === 'gaslamp' ? 'A ten-minute walk from Santa Fe Depot.' : B.station ? 'Get off at ' + B.station + '; the hotel is about 15 minutes away.' : '', bSlot === 'partner' ? '$300 credit on Andrew\'s card' : 'January Uber Cash');
+  if (B.allInc) put(1, '19:30', 'Dinner at the hotel', 'On the plan.', 'All-inclusive');
+  else put(1, '19:30', 'Dinner on Resy', 'In ' + B.nb + '. The January credits reset at midnight.', state.cr.jan27 ? 'January Resy credits' : '');
+  put(2, '09:00', 'Breakfast', bFHR ? 'Included with FHR.' : B.allInc ? 'On the plan.' : '', bFHR || B.allInc ? 'Included' : '');
+  if (B.allInc) put(2, '11:00', 'Beach, pools and the spa', 'Treatments cost extra; everything else is on the plan.');
+  if (B.allInc) put(2, '20:00', 'Dinner at the hotel', 'On the plan.', 'All-inclusive');
+  else put(2, '20:00', 'Dinner at ' + B.dine, c.stays[1].elig && state.cr.property ? 'The $100 property credit pays the first part.' : '', c.stays[1].elig && state.cr.property ? '$100 property credit' : '');
+  put(3, B.allInc ? '08:30' : '09:30', 'Breakfast', bFHR ? 'Included.' : B.allInc ? 'On the plan.' : '', bFHR || B.allInc ? 'Included' : '');
   var d4exp = c.chosen.some(function(e){ return slotOf(e, state)[0] === 'd4'; });
-  if (la && d4exp) put(3, '12:00', 'Check out, then home to Park 12', 'Drop the bags at home; the rest of the day is local.', B.zone === 'gaslamp' ? '' : 'January Uber Cash');
+  if (la && B.allInc) put(3, '10:00', 'Check out and head for the border', 'Sunday waits back into San Diego can run hours. From San Ysidro, the Blue Line runs to 12th & Imperial, next to home.');
+  else if (la && d4exp) put(3, '12:00', 'Check out, then home to Park 12', 'Drop the bags at home; the rest of the day is local.', B.zone === 'gaslamp' ? '' : 'January Uber Cash');
   else if (la) put(3, '16:00', 'Late checkout, then home to Park 12', (bFHR ? 'FHR guarantees 4 PM. ' : 'Checkout is usually noon. ') + (B.zone === 'gaslamp' ? 'It\'s a 20-minute walk.' : B.fromHome + '.'), B.zone === 'gaslamp' ? '' : 'January Uber Cash');
   else { put(3, '13:00', 'Pacific Surfliner south', 'Sit on the right for the ocean.'); put(3, '16:00', 'Santa Fe Depot to Park 12', 'Ten minutes by Uber, or the trolley.', 'January Uber Cash'); }
   c.chosen.forEach(function(e){ var sl = slotOf(e, state), d = { d1:0, d2:1, d3:2, d4:3 }[sl[0]], atHotel = (e.id === 'spa-estancia' && state.sd === 'estancia') || (e.id === 'spa-del' && state.sd === 'del'); put(d, sl[1], e.name, e.desc.split('. ')[0] + '.' + (atHotel ? ' Charge it to the room; the $100 credit can go here instead of dinner, not both.' : ''), '', true); });
@@ -1059,13 +1080,16 @@ function renderReservations(c){
   if (bSlot === 'you27'){
     items.push({ id:'hotelBhold', due:'2026-11-25', t:'Hold a refundable backup at ' + B.name + ', Jan 1–3', d:'Your safety net in case rates jump on Jan 1.', link:B.book, lab:'Hotel' });
     items.push({ id:'hotelB', due:'2027-01-01', t:'Book ' + B.name + ', Jan 1–3, on Amex Travel', d:'Do it that morning so it uses the Jan–Jun 2027 credit, then cancel the backup.', link:B.book, lab:'Amex Travel' });
-  } else items.push({ id:'hotelB', due:'2026-11-25', t:'Book ' + B.name + ' for Jan 1–3', d:bSlot === 'partner' ? 'On Andrew\'s Platinum through Amex Travel, so its credit posts in 2026.' : B.program === 'none' ? 'Book direct.' : 'Prepay on Amex Travel.', link:B.book, lab:B.program === 'none' ? 'Hotel' : 'Amex Travel' });
+  } else if (B.allInc) items.push({ id:'hotelB', due:'2026-11-25', t:'Book ' + B.name + ' for Jan 1–3 with the all-inclusive plan', d:'Add the plan when you book and get the real price; mine is a guess. Bring passports or passport cards.', link:B.book, lab:'Hotel' });
+  else items.push({ id:'hotelB', due:'2026-11-25', t:'Book ' + B.name + ' for Jan 1–3', d:bSlot === 'partner' ? 'On Andrew\'s Platinum through Amex Travel, so its credit posts in 2026.' : B.program === 'none' ? 'Book direct.' : 'Prepay on Amex Travel.', link:B.book, lab:B.program === 'none' ? 'Hotel' : 'Amex Travel' });
   var stn = HOTEL.sd[state.sd].station;
   items.push({ id:'train', due:'2026-11-25', t:'Pacific Surfliner: ' + (la ? 'north Dec 31, south Jan 1' : 'north Jan 1, south Jan 3'), d:'From Santa Fe Depot' + (stn ? '; use ' + stn + ' for the La Jolla end' : '') + '. ' + (state.mil !== 'none' ? 'Promo code V780 takes 15% off; carry military ID.' : 'Reserve coach seats.'), link:TRAIN, lab:'Pacific Surfliner' });
   if (c.cruise) items.push({ id:'nye', due:'2026-11-20', t:'Moonlight & Midnight cruise, Dec 31', d:'Flagship, from Broadway Pier.', link:'https://www.flagshipsd.com/cruises/new-year-cruises-san-diego-bay', lab:'Flagship' });
   else items.push({ id:'nye', due:'2026-11-20', t:'New Year\'s Eve table, ' + A.nb, d:'7:30 PM, on Resy with the Amex badge. A prepaid NYE menu locks the 2026 credits.', link:RESY[nyeCity(state)], lab:'Resy' });
-  items.push({ id:'jan1', due:'2026-12-05', t:'Jan 1 dinner, ' + B.nb, d:'On Resy, with the Amex badge.', link:RESY[otherCity(state)], lab:'Resy' });
-  items.push({ id:'jan2', due:'2026-12-15', t:'Jan 2 dinner at ' + B.dine, d:'Ask the hotel to charge it to the room so the $100 credit applies.', link:B.book, lab:'Hotel' });
+  if (!B.allInc){
+    items.push({ id:'jan1', due:'2026-12-05', t:'Jan 1 dinner, ' + B.nb, d:'On Resy, with the Amex badge.', link:RESY[otherCity(state)], lab:'Resy' });
+    items.push({ id:'jan2', due:'2026-12-15', t:'Jan 2 dinner at ' + B.dine, d:'Ask the hotel to charge it to the room so the $100 credit applies.', link:B.book, lab:'Hotel' });
+  } else if (state.mil !== 'none') items.push({ id:'baja', due:'2026-11-20', t:'Check Andrew\'s command rules for travel to Mexico', d:'Ask what she needs for leave or liberty in Baja before you book anything there.' });
   c.chosen.forEach(function(e){ if (e.booking) items.push({ id:'x-' + e.id, due:e.by, t:e.name + ' · ' + DAYNAME[slotOf(e, state)[0]] + ', ' + timeLabel(slotOf(e, state)[1]), d:e.id === 'skate' ? 'Choose the ' + timeLabel(slotOf(e, state)[1]) + ' session; it sells out.' : e.kind === 'spa' ? 'Holiday weekends book up early; ask for side-by-side tables.' : 'Reserve your time.', link:e.link, lab:'Book' }); });
   state.gifts.forEach(function(id){ var g = GIFTBY[id]; if (g) items.push({ id:'g-' + g.id, due:g.by, t:'Gift: ' + g.name, d:g.id === 'heart' ? 'Engraving makes it final sale; leave time for shipping.' : g.link ? 'Order with shipping time to spare.' : 'Your part; no link needed.', link:g.link, lab:'Shop' }); });
   items.push({ id:'uber', due:'2026-12-30', t:'Add both Amex cards to Uber', d:'The Uber Cash only applies when you pay with an Amex card.' });
@@ -1108,8 +1132,8 @@ function tick(){
 document.addEventListener('click', function(e){
   var b = e.target.closest('button'); if (!b) return;
   var d = b.dataset;
-  if (d.route){ state.route = d.route; if (nyeCity(state) === 'la') state.nye = 'restaurant'; }
-  else if (d.hotel){ var p = d.hotel.split(':'); state[p[0]] = p[1]; }
+  if (d.route){ state.route = d.route; if (nyeCity(state) === 'la') state.nye = 'restaurant'; if (nyeCity(state) === 'sd' && HOTEL.sd[state.sd].janOnly) state.sd = 'estancia'; }
+  else if (d.hotel){ var p = d.hotel.split(':'); state[p[0]] = p[1]; if (p[0] === 'sd' && HOTEL.sd[p[1]].janOnly) state.route = 'la-first'; }
   else if (d.tier){ state.tier = d.tier; }
   else if (d.tier2){ state.tier2 = d.tier2; }
   else if (d.nye){ state.nye = d.nye; }
