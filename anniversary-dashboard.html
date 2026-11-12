@@ -463,6 +463,9 @@ p{margin:0}
         <li><a href="https://griffithobservatory.lacity.gov/visit/" target="_blank" rel="noopener">Griffith Observatory hours</a></li>
         <li><a href="https://www.theartnewspaper.com/2026/04/10/getty-center-to-undergo-major-renovations-close-for-a-year-beginning-march-2027" target="_blank" rel="noopener">Getty Center closure from March 2027</a></li>
         <li><a href="https://www.thebroad.org/" target="_blank" rel="noopener">The Broad</a></li>
+        <li><a href="https://www.theinfatuation.com/san-diego/reviews/friends-of-friends-san-diego" target="_blank" rel="noopener">The Infatuation: Friends of Friends</a></li>
+        <li><a href="https://joe.coffee/locations/ca/national-city/friends-of-friends-national-city-777bafcb-fce1-4bf9-b36a-be77e28e5b6c/" target="_blank" rel="noopener">Friends of Friends hours</a></li>
+        <li><a href="https://www.opentable.com/r/noble-experiment-san-diego" target="_blank" rel="noopener">Noble Experiment reservations</a></li>
         <li><a href="https://www.sandiego.org/members/museum-of-illusions/6587" target="_blank" rel="noopener">Museum of Illusions San Diego</a></li>
         <li><a href="https://gocity.com/en/san-diego/attractions/museum-of-illusions-san-diego" target="_blank" rel="noopener">Museum of Illusions SD: holiday hours</a></li>
         <li><a href="https://kfiam640.iheart.com/content/2025-11-10-museum-of-illusions-opens-in-santa-monica-with-80-exhibits" target="_blank" rel="noopener">Museum of Illusions Santa Monica opening</a></li>
@@ -606,6 +609,12 @@ var EXP = [
   { id:'moi-sd', city:'sd', name:'Museum of Illusions, Gaslamp', price:70, ride:{ gaslamp:0, coronado:0, strand:0, lajolla:0 }, t:5, r:3,
     route:{ 'la-first':['d4','13:00','afternoon'], 'sd-first':['d1','10:00','morning'] }, link:'https://moisandiego.com/', booking:true, by:'2026-12-15',
     desc:'At Fifth and G, a 10-minute walk from Park 12. Over 80 hands-on illusions, including the vortex tunnel; plan 60–90 minutes. About $35 each, and it sells out. Hours are limited on Dec 31 and Jan 1.' },
+  { id:'fof', city:'sd', name:'Friends of Friends, National City', price:45, transit:10, ride:{ gaslamp:0, coronado:0, strand:0, lajolla:0 }, t:3, r:4,
+    route:{ 'la-first':['d4','15:00','late'], 'sd-first':['d1','08:30','breakfast'] }, link:'https://friendsoffriendssd.com/', booking:false,
+    desc:'Not a speakeasy: a café, coffee roaster and vinyl listening bar at 127 E 8th St, with coffee, smash burgers, beer and records. The Blue Line runs from 12th & Imperial to 8th Street in about 12 minutes. Open 7 AM–8 PM Friday to Sunday; holiday hours may change.' },
+  { id:'noble', city:'sd', name:'Noble Experiment, East Village', price:90, ride:{ gaslamp:0, coronado:0, strand:0, lajolla:0 }, t:3, r:5,
+    route:{ 'la-first':['d4','19:00','evening'], 'sd-first':['d4','19:00','evening'] }, link:'https://www.opentable.com/r/noble-experiment-san-diego', booking:true, by:'2026-12-20',
+    desc:'A real downtown speakeasy behind a wall of beer kegs inside Neighborhood at 777 G St, a few minutes\' walk from Park 12. No menu; the bartenders make drinks to your taste. Reserve up to two weeks ahead, and call 619-888-4713 to confirm Sunday hours.' },
   { id:'ferry', city:'sd', name:'Coronado Ferry at golden hour', price:36, ride:{ gaslamp:0, coronado:0, strand:15, lajolla:50 }, t:4, r:4,
     route:{ 'la-first':['d3','12:00','midday'], 'sd-first':['d1','12:30','midday'] }, link:'https://flagshipsd.com/ferry-routes/broadway-pier', booking:false,
     desc:'Fifteen minutes across the bay with the skyline behind you. $9 a ride; the Convention Center landing is a short walk from Park 12.' },
@@ -660,7 +669,7 @@ var GIFTBY = {}; GIFTS.forEach(function(g){ GIFTBY[g.id] = g; });
 
 var DEFAULT = {
   route:'la-first', la:'conrad', sd:'estancia', tier:'casual', tier2:'casual', nye:'restaurant',
-  exp:['griffith','nyela','broad','torrey','spa-local','moi-sd'], gifts:['heart','letters'],
+  exp:['griffith','nyela','broad','torrey','spa-local','moi-sd','fof'], gifts:['heart','letters'],
   mil:'active', meToo:false, andrew:false,
   cr:{ hotel:true, property:true, resyGold:true, resyPlat:true, uber:true, jan27:true, jan1:true },
   filter:'all'
@@ -676,6 +685,7 @@ var state = (function(){
     if (saved.cr) Object.keys(s.cr).forEach(function(k){ if (typeof saved.cr[k] === 'boolean') s.cr[k] = saved.cr[k]; });
     if (!saved.spaAdded){ if (!s.exp.some(function(id){ return EXPBY[id].kind === 'spa'; })) s.exp.push('spa-local'); }
     if (!saved.moiAdded){ if (s.exp.indexOf('moi-sd') === -1 && s.exp.indexOf('moi-sm') === -1) s.exp.push('moi-sd'); }
+    if (!saved.fofAdded){ if (s.exp.indexOf('fof') === -1) s.exp.push('fof'); }
   }
   if (!ROUTES[s.route]) s.route = DEFAULT.route;
   if (!HOTEL.la[s.la]) s.la = DEFAULT.la;
@@ -686,7 +696,7 @@ var state = (function(){
   return s;
 })();
 var booked = store.get('oyc.booked.v1', {}); if (!booked || typeof booked !== 'object') booked = {};
-function save(){ state.spaAdded = true; state.moiAdded = true; store.set('oyc.state.v2', state); }
+function save(){ state.spaAdded = true; state.moiAdded = true; state.fofAdded = true; store.set('oyc.state.v2', state); }
 
 /* ---------- engine ---------- */
 function andrewOn(s){ return s.mil === 'active' && !!s.andrew; }
@@ -757,7 +767,7 @@ function compute(s){
     if (day === 'd1') uberDec += r; else uberJan += r;
     if (e.transit) transit += e.transit;
   });
-  if (transit) add('Travel', 'LA Metro + DASH fares', transit, 'transit');
+  if (transit) add('Travel', 'Transit fares (Metro, DASH, trolley)', transit, 'transit');
   add('Travel', 'Uber, December rides', uberDec, 'uber-dec');
   add('Travel', 'Uber, January rides', uberJan, 'uber-jan');
 
@@ -964,16 +974,24 @@ function renderFolio(c){
   TWEAKS = [];
   if (over){
     var cands = [];
-    if (state.tier !== 'casual') cands.push(['New Year\'s Eve dinner at Casual', function(s){ s.tier = 'casual'; }]);
-    if (state.mil === 'active' && !state.andrew) cands.push(['Andrew opens her own Platinum', function(s){ s.andrew = true; }]);
+    function cand(label, fn, hotel){ cands.push({ label:label, fn:fn, hotel:!!hotel }); }
+    if (state.tier !== 'casual') cand('New Year\'s Eve dinner at Casual', function(s){ s.tier = 'casual'; });
+    if (state.mil === 'active' && !state.andrew) cand('Andrew opens her own Platinum', function(s){ s.andrew = true; });
     var spa = state.exp.filter(function(id){ return EXPBY[id] && EXPBY[id].kind === 'spa' && id !== 'spa-local'; })[0];
-    if (spa) cands.push(['Day-spa massage instead of ' + EXPBY[spa].name, function(s){ s.exp = s.exp.filter(function(id){ return id !== spa; }).concat(['spa-local']); }]);
-    state.gifts.forEach(function(id){ var g = GIFTBY[id]; if (g && g.price >= 50) cands.push(['Skip the gift: ' + g.name, function(s){ s.gifts = s.gifts.filter(function(x){ return x !== id; }); }]); });
-    c.chosen.forEach(function(e){ if (!e.kind && expPrice(e, state) > 0) cands.push(['Skip ' + e.name, function(s){ s.exp = s.exp.filter(function(x){ return x !== e.id; }); }]); });
-    ['loews','usgrant'].forEach(function(id){ if (state.sd !== id) cands.push(['Stay at ' + HOTEL.sd[id].name + (id === 'usgrant' ? ' (your neighborhood)' : ''), function(s){ s.sd = id; }]); });
-    var scored = cands.map(function(cd){ var s2 = clone(state); cd[1](s2); return { label:cd[0], fn:cd[1], save:c.net - compute(s2).net }; }).filter(function(x){ return x.save >= 5; }).sort(function(a, b){ return b.save - a.save; }).slice(0, 5);
-    TWEAKS = scored;
-    hints.push('<div class="fit"><p class="hint" style="border-color:var(--over)">Over by <b style="color:var(--over)">' + fmt(c.net - CAP) + '</b>. Each of these saves on its own:</p>' + scored.map(function(x, i){ return '<div class="setting"><div class="t"><b>' + esc(x.label) + '</b><span>Saves ' + fmt(x.save) + (c.net - x.save <= CAP ? ' · gets you under' : '') + '</span></div><button class="btn sm" type="button" data-tweak="' + i + '">Apply</button></div>'; }).join('') + '</div>');
+    if (spa) cand('Day-spa massage instead of ' + EXPBY[spa].name, function(s){ s.exp = s.exp.filter(function(id){ return id !== spa; }).concat(['spa-local']); });
+    state.gifts.forEach(function(id){ var g = GIFTBY[id]; if (g && g.price >= 50) cand('Skip the gift: ' + g.name, function(s){ s.gifts = s.gifts.filter(function(x){ return x !== id; }); }); });
+    c.chosen.forEach(function(e){ if (!e.kind && expPrice(e, state) > 0) cand('Skip ' + e.name, function(s){ s.exp = s.exp.filter(function(x){ return x !== e.id; }); }); });
+    ['loews','usgrant'].forEach(function(id){ if (state.sd !== id) cand('Stay at ' + HOTEL.sd[id].name + (id === 'usgrant' ? ' (your neighborhood)' : ''), function(s){ s.sd = id; }, true); });
+    var all = cands.map(function(cd){ var s2 = clone(state); cd.fn(s2); return { label:cd.label, fn:cd.fn, hotel:cd.hotel, save:c.net - compute(s2).net }; }).filter(function(x){ return x.save >= 5; }).sort(function(a, b){ return b.save - a.save; });
+    var scored = all.slice(0, 5), pairs = [], pool2 = all.filter(function(x){ return !x.hotel; }).slice(0, 7);
+    for (var i = 0; i < pool2.length; i++) for (var j = i + 1; j < pool2.length; j++){
+      var s3 = clone(state); pool2[i].fn(s3); pool2[j].fn(s3); var n3 = compute(s3).net;
+      if (n3 <= CAP) pairs.push({ label:pool2[i].label + ' + ' + pool2[j].label, fns:[pool2[i].fn, pool2[j].fn], net:n3 });
+    }
+    pairs.sort(function(a, b){ return b.net - a.net; }); pairs = pairs.slice(0, 3);
+    TWEAKS = scored.map(function(x){ return [x.fn]; }).concat(pairs.map(function(x){ return x.fns; }));
+    hints.push('<div class="fit"><p class="hint" style="border-color:var(--over)">Over by <b style="color:var(--over)">' + fmt(c.net - CAP) + '</b>. Each of these saves on its own:</p>' + scored.map(function(x, i){ return '<div class="setting"><div class="t"><b>' + esc(x.label) + '</b><span>Saves ' + fmt(x.save) + (c.net - x.save <= CAP ? ' · gets you under' : '') + '</span></div><button class="btn sm" type="button" data-tweak="' + i + '">Apply</button></div>'; }).join('') +
+      (pairs.length ? '<p class="hint" style="margin-top:8px">Or two together, smallest change first:</p>' + pairs.map(function(x, k){ return '<div class="setting"><div class="t"><b>' + esc(x.label) + '</b><span>Lands at ' + fmt(x.net) + '</span></div><button class="btn sm" type="button" data-tweak="' + (scored.length + k) + '">Apply both</button></div>'; }).join('') : '') + '</div>');
   }
   $('#f-hints').innerHTML = hints.join('');
 }
@@ -1012,7 +1030,7 @@ function renderItinerary(c){
   put(2, '20:00', 'Dinner at ' + B.dine, c.stays[1].elig && state.cr.property ? 'The $100 property credit pays the first part.' : '', c.stays[1].elig && state.cr.property ? '$100 property credit' : '');
   put(3, '09:30', 'Breakfast', bFHR ? 'Included.' : '', bFHR ? 'Included' : '');
   var d4exp = c.chosen.some(function(e){ return slotOf(e, state)[0] === 'd4'; });
-  if (la && d4exp) put(3, '12:00', 'Check out, then home to Park 12', 'Drop the bags at home, then walk over.', B.zone === 'gaslamp' ? '' : 'January Uber Cash');
+  if (la && d4exp) put(3, '12:00', 'Check out, then home to Park 12', 'Drop the bags at home; the rest of the day is local.', B.zone === 'gaslamp' ? '' : 'January Uber Cash');
   else if (la) put(3, '16:00', 'Late checkout, then home to Park 12', (bFHR ? 'FHR guarantees 4 PM. ' : 'Checkout is usually noon. ') + (B.zone === 'gaslamp' ? 'It\'s a 20-minute walk.' : B.fromHome + '.'), B.zone === 'gaslamp' ? '' : 'January Uber Cash');
   else { put(3, '13:00', 'Pacific Surfliner south', 'Sit on the right for the ocean.'); put(3, '16:00', 'Santa Fe Depot to Park 12', 'Ten minutes by Uber, or the trolley.', 'January Uber Cash'); }
   c.chosen.forEach(function(e){ var sl = slotOf(e, state), d = { d1:0, d2:1, d3:2, d4:3 }[sl[0]], atHotel = (e.id === 'spa-estancia' && state.sd === 'estancia') || (e.id === 'spa-del' && state.sd === 'del'); put(d, sl[1], e.name, e.desc.split('. ')[0] + '.' + (atHotel ? ' Charge it to the room; the $100 credit can go here instead of dinner, not both.' : ''), '', true); });
@@ -1099,7 +1117,7 @@ document.addEventListener('click', function(e){
   else if (d.gift){ var j = state.gifts.indexOf(d.gift); if (j === -1) state.gifts.push(d.gift); else state.gifts.splice(j, 1); }
   else if (d.filter){ state.filter = d.filter; }
   else if (d.mil){ state.mil = d.mil; }
-  else if (d.tweak){ var tw = TWEAKS[+d.tweak]; if (tw) tw.fn(state); }
+  else if (d.tweak){ var tw = TWEAKS[+d.tweak]; if (tw) tw.forEach(function(fn){ fn(state); }); }
   else if (b.id === 'res-reset'){ $('#res-reset-yes').hidden = false; b.hidden = true; return; }
   else if (b.id === 'res-reset-yes'){ booked = {}; store.set('oyc.booked.v1', booked); b.hidden = true; $('#res-reset').hidden = false; }
   else return;
