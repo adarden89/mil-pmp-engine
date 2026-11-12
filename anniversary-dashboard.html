@@ -289,6 +289,7 @@ footer{max-width:1320px;margin:8px auto 0}
       <span class="pill">Checked Nov 12, 2026</span>
     </div>
     <div class="facts">
+      <div class="fact"><span class="pill blue">New</span><p><b>Andrew is military, which changes several numbers.</b></p><p class="muted small">I assume active duty; change it under "5 · Military discounts". It means free checked bags with ID, $104 Disneyland tickets, 15% off the Surfliner, 10% off Pandora, USO lounges, and possibly a $0-fee Platinum of Andrew's own with a second set of credits.</p></div>
       <div class="fact"><span class="pill red">Wrong</span><p><b>The Platinum $50 Saks credit is gone.</b></p><p class="muted small">Amex ended it June 30, 2026, after Saks Global filed Chapter 11 in January 2026. The toggle below is locked at $0.</p></div>
       <div class="fact"><span class="pill green">Missing</span><p><b>Platinum also has a $100 Resy credit for Oct–Dec.</b></p><p class="muted small">Since the 2025 refresh it pays $100 every quarter. With Gold's $50, the NYE dinner can absorb $150 if you split the bill across both cards.</p></div>
       <div class="fact"><span class="pill red">Wrong</span><p><b>The Hotel Collection doesn't include breakfast or a 4 PM checkout.</b></p><p class="muted small">THC gives the $100 credit and an upgrade when available, with a 2-night minimum. Daily breakfast and the guaranteed 4 PM checkout are Fine Hotels + Resorts only.</p></div>
@@ -376,7 +377,19 @@ footer{max-width:1320px;margin:8px auto 0}
       </details>
 
       <div class="group">
-        <span class="grouplabel">5 · Amex credits you still have for 2026</span>
+        <span class="grouplabel" id="mil-lbl">5 · Military discounts (Andrew)</span>
+        <div class="seg small" role="tablist" aria-labelledby="mil-lbl" id="f-mil">
+          <button role="tab" data-v="none" aria-selected="false">Off</button>
+          <button role="tab" data-v="active" aria-selected="false">Active duty</button>
+          <button role="tab" data-v="retired" aria-selected="false">Retired</button>
+          <button role="tab" data-v="veteran" aria-selected="false">Veteran</button>
+        </div>
+        <div class="list" id="mil-toggles"></div>
+        <p class="tiny muted" id="mil-note"></p>
+      </div>
+
+      <div class="group">
+        <span class="grouplabel">6 · Amex credits you still have for 2026</span>
         <div class="list" id="credit-toggles"></div>
       </div>
 
@@ -429,7 +442,7 @@ footer{max-width:1320px;margin:8px auto 0}
             <tbody id="cmp-body"></tbody>
           </table>
         </div>
-        <div class="hint">The pattern: <b>$1,500 covers a 3-night NYE trip or a solid gold ring for two, not both.</b> The San Diego staycation is the only plan where solid 14k rings fit. At my estimates, SF and LA fit only with casual dining and no ring (SF also needs the Jan 1 split stay). Even gold-filled rings push them roughly $10–$200 over.</div>
+        <div class="hint">The pattern: <b>$1,500 covers a 3-night NYE trip or a solid gold ring for two, not both.</b> The San Diego staycation is the only plan where solid 14k rings fit. At my estimates, SF and LA fit only with casual dining and no ring (SF also needs the Jan 1 split stay or a Platinum of Andrew's own). Even gold-filled rings push them roughly $10–$200 over.</div>
       </section>
 
       <!-- SF -->
@@ -478,7 +491,8 @@ footer{max-width:1320px;margin:8px auto 0}
             <h3>Lounges</h3>
             <ul class="tight muted">
               <li><b style="color:var(--label)">SAN:</b> Every lounge is in Terminal 2. The new Terminal 1, opened Sept 2025, has none (an Escape Lounge is planned for about 2027). Use Priority Pass through Platinum and check the guest rules in its app. The Delta Sky Club only works when flying Delta: 10 visits a year, guests $50.</li>
-              <li><b style="color:var(--label)">SFO Centurion:</b> A temporary lounge in Terminal 2 near D12, open 5 AM–11 PM, with no full kitchen. You can enter within 3 hours of departure, on departures only, so plan it for Jan 3. Your partner pays $50 unless you spend $75k a year.</li>
+              <li><b style="color:var(--label)">SFO Centurion:</b> A temporary lounge in Terminal 2 near D12, open 5 AM–11 PM, with no full kitchen. You can enter within 3 hours of departure, on departures only, so plan it for Jan 3. Andrew pays $50 unless you spend $75k a year or Andrew has their own Platinum.</li>
+              <li><b style="color:var(--label)">USO (free with military ID):</b> SAN's Neil Ash Airport Center is landside across the Terminal 2 sky bridge. SFO's is in Terminal 1 on the landside mezzanine. Both are before security, and guides differ on hours and family access, so check before you go.</li>
             </ul>
           </div>
           <div class="plan">
@@ -506,6 +520,7 @@ footer{max-width:1320px;margin:8px auto 0}
             <thead><tr><th>Option</th><th class="n">For 2 (est.)</th><th>Time</th><th>Notes</th></tr></thead>
             <tbody>
               <tr><td><b>Amtrak Pacific Surfliner</b><br><span class="muted small">Santa Fe Depot → Union Station</span></td><td class="n">~$160 RT</td><td>~2h50</td><td class="small">13 daily round trips since early 2026. I estimate ~$40 per person each way; check <a href="https://www.pacificsurfliner.com/" target="_blank" rel="noopener">pacificsurfliner.com</a>. <b style="color:var(--orange)">San Clemente warning:</b> the coastal track closed again in Sept 2026 and OCTA declared an emergency on Sept 28, so watch <a href="https://blog.pacificsurfliner.com/plan-your-trip/alerts/travel-advisories" target="_blank" rel="noopener">travel advisories</a>.</td></tr>
+              <tr><td><b>Military Surfliner fare</b></td><td class="n">−15%</td><td>—</td><td class="small">Promo code V780 gives active duty, spouses and dependents 15% off California routes, including the Surfliner. Veterans and spouses also get 15%. Carry ID. The 2026 blackouts (Nov 24–25, Nov 29–Dec 1) miss your dates.</td></tr>
               <tr><td><b>LA Metro</b></td><td class="n">~$30</td><td>—</td><td class="small">TAP fares are $1.75 and cap at $5 a day. The D Line runs from Union Station to Koreatown (Wilshire/Normandie).</td></tr>
               <tr><td><b>Drive</b></td><td class="n">~$55 gas<br>+$105–$195 parking</td><td>2–3.5 h</td><td class="small">I-5 traffic on Jan 3 is bad. Getty parking is $25.</td></tr>
             </tbody>
@@ -550,11 +565,12 @@ footer{max-width:1320px;margin:8px auto 0}
         <h3>Theme park reality check</h3>
         <div class="grid-2">
           <div class="plan">
-            <div class="top"><h4>Disneyland on NYE</h4><span class="score">3/10</span></div>
+            <div class="top"><h4>Disneyland on NYE</h4><span class="score">4/10</span></div>
             <ul class="tight muted">
               <li>A 1-day, 1-park ticket costs <b style="color:var(--label)">$224 at the top tier</b> (unchanged in the Oct 6, 2026 price change), so $448 for two. A Park Hopper adds $75+ each.</li>
               <li>Parking is $40 standard or $60 preferred. Dec 31 is usually one of the year's most crowded days.</li>
               <li>No Amex credit applies except Uber Cash. Park food isn't on Resy, and Disney hotels aren't FHR.</li>
+              <li><b style="color:var(--label)">Military:</b> 1-day, 1-park tickets are $104 (child $98) for active and retired members through Dec 30, 2027, sold at base ticket offices and GOVX. They need a park reservation, so check Dec 31 now.</li>
               <li>Matching charm: Fantasyland Castle Dangle, $135.</li>
             </ul>
           </div>
@@ -563,6 +579,7 @@ footer{max-width:1320px;margin:8px auto 0}
             <ul class="tight muted">
               <li>Dated tickets run about $64–$69 online when bought ahead and more at the gate. Parking is $40.</li>
               <li>Its NYE event is a <b style="color:var(--label)">Kids' New Year's Eve</b> with early fireworks so children are in bed by midnight.</li>
+              <li>Military, veterans and families get up to 35% off per Legoland's military page; its help center says up to 10%.</li>
               <li>It's built for ages 2–12. It's cheap, but it's not an anniversary.</li>
             </ul>
           </div>
@@ -638,7 +655,7 @@ footer{max-width:1320px;margin:8px auto 0}
         <div class="grid-2">
           <div class="plan">
             <div class="top"><h3>The combo, priced live</h3><button class="btn primary" type="button" id="load-combo">Load in calculator</button></div>
-            <p class="small muted">US Grant (FHR) for Dec 31 · solid 14k rings for two at $500/pp · NYE dinner on Resy (Date Night) · heart dangle charm · January Uber Cash turned on.</p>
+            <p class="small muted">US Grant (FHR) for Dec 31 · solid 14k rings for two at $500/pp · NYE dinner on Resy (Date Night) · heart dangle charm · January Uber Cash turned on · your military settings.</p>
             <div class="list" id="combo-receipt"></div>
             <p class="small muted" id="combo-verdict"></p>
           </div>
@@ -682,9 +699,20 @@ footer{max-width:1320px;margin:8px auto 0}
             <ul class="tight muted">
               <li><b style="color:var(--label)">Moments or ME?</b> Moments bracelets don't take Pandora ME charms or clips. All six charms here are Moments-style dangles, so check which bracelet your partner wears.</li>
               <li><b style="color:var(--label)">Amex Offers:</b> A third-party tracker shows 4% back at us.pandora.net through Dec 1, 2026 (max $250). Check the Offers tab on <i>both</i> cards and add the offer before you pay.</li>
+              <li><b style="color:var(--label)">Military:</b> 10% off via ID.me for active, retired, veterans and families (one code per 24 hours). 14K gold is excluded, so the Happy Anniversary charm likely won't qualify.</li>
             </ul>
           </div>
         </div>
+      </section>
+
+      <!-- MILITARY -->
+      <section class="card stack" data-tabs="all wallet" aria-labelledby="mil-h">
+        <div class="section-head">
+          <span class="eyebrow">Andrew is military</span>
+          <h2 id="mil-h">Military benefits that change this trip</h2>
+          <p class="small muted">The calculator assumes Andrew is on active duty; change it under "5 · Military discounts". Most of these need a military ID at the counter, or ID.me online. I couldn't find official 2026 pages for several, so treat the amounts as unconfirmed.</p>
+        </div>
+        <div class="grid-2" id="mil-cards"></div>
       </section>
 
       <!-- WALLET -->
@@ -695,12 +723,13 @@ footer{max-width:1320px;margin:8px auto 0}
         </div>
         <div class="grid-2" id="wallet-cards"></div>
         <div class="plan">
-          <div class="top"><h3>The Jan 1 reset play</h3><span class="score">8/10</span></div>
-          <p class="small muted">Your trip crosses into a new credit period. Book Dec 31 now as its own 1-night FHR stay, which uses the H2 2026 $300. Then, on the morning of Jan 1, book Jan 1–3 as a separate 2-night FHR stay, which uses the H1 2027 $300. That's two $100 property credits and breakfast both days. Platinum Resy ($100 for Q1), Gold Resy ($50 for H1) and January Uber Cash ($25) also reset at midnight for your Jan 1 or 2 dinner.</p>
+          <div class="top"><h3>The Jan 1 reset play</h3><span class="score">6/10</span></div>
+          <p class="small muted">Your trip crosses into a new credit period. Book Dec 31 now as its own 1-night FHR stay, which uses the H2 2026 $300. Then, on the morning of Jan 1, book Jan 1–3 as a separate 2-night FHR stay, which uses the H1 2027 $300. Amex counts back-to-back stays at one hotel as a single stay, so you get one $100 property credit, though breakfast should still come every morning. Platinum Resy ($100 for Q1), Gold Resy ($50 for H1) and January Uber Cash ($25) also reset at midnight for your Jan 1 or 2 dinner.</p>
           <ul class="tight muted">
             <li><b style="color:var(--orange)">Risks:</b> rates and availability on Jan 1, a possible room change (ask the hotel to link the stays), and Amex reading the charge date (book the second stay after midnight Eastern to be safe).</li>
             <li>Protect yourself by holding a refundable direct booking for Jan 1–3 as a backup, then cancelling it once the FHR booking goes through.</li>
             <li>Using the January credits now means they won't cover a meal later in Q1. The calculator keeps them off by default for that reason.</li>
+            <li><b style="color:var(--label)">Better if Andrew is active duty:</b> book the January nights on Andrew's own Platinum <i>now</i>. Both $300 credits then post in 2026, with no Jan 1 gamble.</li>
           </ul>
         </div>
       </section>
@@ -779,6 +808,18 @@ footer{max-width:1320px;margin:8px auto 0}
         <li><a href="https://au.pandora.net/en/inspiration/bracelet-guide/moments-bracelets/" target="_blank" rel="noopener">Pandora: Moments vs ME compatibility</a></li>
         <li><a href="https://www.nextcard.com/tools/card-linked-offers/merchants/pandora-2" target="_blank" rel="noopener">NextCard: Pandora card-linked offers</a></li>
         <li><a href="https://www.mallsinamerica.com/california/fashion-valley-mall/pandora" target="_blank" rel="noopener">Pandora Fashion Valley</a></li>
+        <li><a href="https://militarymoneymanual.com/american-express-military/" target="_blank" rel="noopener">Military Money Manual: Amex MLA/SCRA fee waivers</a></li>
+        <li><a href="https://disneyland.disney.go.com/offers-discounts/military-tickets-discounts-2026/details" target="_blank" rel="noopener">Disneyland: 2026 military tickets</a></li>
+        <li><a href="https://mouseplanet.com/disneyland-resort-announces-2026-military-salute-ticket-deal/52607/" target="_blank" rel="noopener">MousePlanet: Disneyland $104 military ticket</a></li>
+        <li><a href="https://www.southwest.com/html/customer-service/travel-fees.html" target="_blank" rel="noopener">Southwest: optional travel charges (military)</a></li>
+        <li><a href="https://militarymoneymanual.com/military-bag-allowance/" target="_blank" rel="noopener">Military Money Manual: airline military bags</a></li>
+        <li><a href="https://www.amtrak.com/promotions/military-save-15-percent-in-california.html" target="_blank" rel="noopener">Amtrak: active military 15% in California</a></li>
+        <li><a href="https://www.legoland.com/california/offers/military-offers/" target="_blank" rel="noopener">Legoland California: military offers</a></li>
+        <li><a href="https://www.san.org/uso-facilities/" target="_blank" rel="noopener">SAN: USO facilities</a></li>
+        <li><a href="https://california.uso.org/sanfrancisco" target="_blank" rel="noopener">USO San Francisco</a></li>
+        <li><a href="https://shop.id.me/discounts/pandora/military" target="_blank" rel="noopener">ID.me: Pandora military discount</a></li>
+        <li><a href="https://installations.militaryonesource.mil/military-installation/naval-base-coronado/housing/temporary-housing" target="_blank" rel="noopener">Military OneSource: Naval Base Coronado lodging</a></li>
+        <li><a href="https://www.nerdwallet.com/travel/learn/military-discount-hotels" target="_blank" rel="noopener">NerdWallet: hotel military discounts</a></li>
       </ul>
     </details>
   </footer>
@@ -825,7 +866,7 @@ var CHARMS = [
     note:'Style 789435C01 is rose gold-plated. US retailers sell it for $68–$90, not $115.', link:'https://ca.pandora.net/en/jewellery/rose-gold-plated/airplane--globe-suitcase-triple-dangle-charm/789435C01.html' },
   { id:'castle',  short:'Disney Fantasyland Castle Dangle', name:'Disney Fantasyland Castle Dangle', price:135, finish:'Gold-plated (listings conflict)', match:'Disneyland', tag:'gold',
     note:'$135. One listing says 14k gold-plated and Disney Store says 14k rose gold-plated, so check the finish in person.', link:'https://disneystore.com/fantasyland-castle-dangle-charm-by-pandora-443003287199.html' },
-  { id:'anniv',   short:'Two-tone Happy Anniversary Dangle', name:'Two-tone Happy Anniversary Dangle', price:135, finish:'Sterling silver + solid 14k gold', match:'Any plan', tag:'gold',
+  { id:'anniv', gold14:true, short:'Two-tone Happy Anniversary Dangle', name:'Two-tone Happy Anniversary Dangle', price:135, finish:'Sterling silver + solid 14k gold', match:'Any plan', tag:'gold',
     note:'Style 799322C01 is $135 in the US, not $118. It has real 14k gold, not plating.', link:'https://us.pandora.net/en/charms/two-tone-happy-anniversary-dangle-charm/799322C01.html' }
 ];
 var CHARM = {}; CHARMS.forEach(function(c){ CHARM[c.id] = c; });
@@ -899,6 +940,11 @@ var TRANSPORT = {
       { label:'Uber: home → hotel + to dinner (Dec 31)', amt:35, cat:'uber-dec' },
       { label:'Uber: hotel → home (Jan)', amt:25, cat:'uber-jan' } ]; } }
   ],
+  sdBase: [
+    { id:'sd-base', label:'Drive on base (free parking)', lines:function(){ return [
+      { key:'fare', label:'Gas', amt:10, cat:'gas' },
+      { label:'Uber: NYE dinner ride (Dec 31)', amt:30, cat:'uber-dec' } ]; } }
+  ],
   none: [
     { id:'home', label:'Stay home · Uber to dinner', lines:function(){ return [
       { label:'Uber to and from NYE dinner (Dec 31)', amt:30, cat:'uber-dec' } ]; } }
@@ -939,11 +985,11 @@ var PLANS = [
     score:6, take:'The cheapest real 3-night trip. It fits the cap with casual dining and no ring, but the $300 hotel credit goes unused.' },
   { id:'disneyland', tab:'la', group:'Theme parks', name:'Disneyland NYE (1 day, 1 park)', short:'Disneyland NYE', days:2, nightsLabel:1,
     hotel:null, transport:'disney', resy:false, park:true, janDinner:false, mealDays:1,
-    extras:[{ label:'Disneyland 1-day 1-park tickets × 2 (top tier $224)', amt:448, cat:'tickets' }],
-    score:3, take:'$448 just to get in on the year\'s most crowded day, and only Uber Cash applies. One day costs nearly as much as an LA weekend.' },
+    extras:[{ key:'disney', label:'Disneyland 1-day 1-park tickets × 2 (top tier $224)', amt:448, cat:'tickets' }],
+    score:4, take:'Andrew\'s military 1-day tickets ($104) cut the gate to $208 for two, but they need a Dec 31 park reservation, which can sell out. It\'s still the year\'s most crowded day, and only Uber Cash applies.' },
   { id:'legoland', tab:'la', group:'Theme parks', name:'Legoland NYE + Resy dinner', short:'Legoland NYE', days:1, nightsLabel:0,
     hotel:null, transport:'lego', resy:true, janDinner:false, mealDays:0,
-    extras:[{ label:'Legoland 1-day tickets × 2 (dated, est.)', amt:190, cat:'tickets' }, { label:'Park lunch & snacks', amt:60, cat:'dining' }],
+    extras:[{ key:'lego', label:'Legoland 1-day tickets × 2 (dated, est.)', amt:190, cat:'tickets' }, { label:'Park lunch & snacks', amt:60, cat:'dining' }],
     score:1, take:'It\'s cheap, but it\'s a kids\' park with kids\' early fireworks. Skip it for an anniversary.' },
   { id:'sd-grant-1n', tab:'sd', group:'San Diego staycation', name:'SD · The US Grant, 1 night (FHR)', short:'SD · US Grant 1 night', days:2,
     hotel:{ name:'The US Grant (FHR)', program:'FHR', rates:[420], tax:0.13, fee:0, parking:60 },
@@ -965,6 +1011,10 @@ var PLANS = [
     hotel:{ name:'Estancia La Jolla (FHR)', program:'FHR', rates:[480], tax:0.13, fee:35, parking:40 },
     transport:'sdDrive', resy:true, janDinner:false, mealDays:1,
     score:6, take:'Quiet La Jolla resort with an FHR special offer. A good middle ground between the US Grant and The Del.' },
+  { id:'sd-navy-2n', tab:'sd', group:'San Diego staycation', name:'SD · Navy Lodge North Island, 2 nights (military)', short:'SD · Navy Lodge 2 nights', days:3, requires:['active','retired'],
+    hotel:{ name:'Navy Lodge North Island', program:'none', rates:[160,160], tax:0, fee:0, parking:0, estNote:'est.; rates not published, call 800-628-9466' },
+    transport:'sdBase', resy:true, janDinner:true, mealDays:2,
+    score:5, take:'The cheapest bed in Coronado, on base near the beach. It\'s a Navy Lodge, not an anniversary hotel, and the $300 credit goes unused. Rates aren\'t published, so call.' },
   { id:'none', tab:'sd', group:'No trip', name:'No trip · NYE dinner + ring only', short:'Dinner + ring only', days:1, nightsLabel:0,
     hotel:null, transport:'none', resy:true, janDinner:false, mealDays:0,
     score:6, take:'The simplest option, and solid gold fits easily. The $300 hotel credit goes unused unless you prepay a future FHR/THC trip by Dec 31.' }
@@ -974,6 +1024,7 @@ var GROUP_ORDER = ['San Diego staycation','No trip','San Francisco · 3 nights',
 
 var DEFAULT_STATE = {
   plan:'sd-grant-1n', transport:'sd-uber', ring:'solid', ringPP:500, charm:'heart', dining:'date', lounge:false, airRemain:200,
+  mil:'active', meToo:false, andrewPlat:false,
   cr:{ hotel:true, property:true, resyGold:true, resyPlat:true, uber:true, airline:true, jan27:false, split:false },
   ovr:{}
 };
@@ -981,25 +1032,42 @@ var DEFAULT_STATE = {
 /* ---------- engine ---------- */
 function nightsOf(p){ return p.hotel ? p.hotel.rates.length : (p.nightsLabel || 0); }
 function canSplit(p){ return !!(p.hotel && p.hotel.program === 'FHR' && p.hotel.rates.length >= 3); }
+function canAndrewSplit(p){ return !!(p.hotel && p.hotel.program === 'FHR' && p.hotel.rates.length >= 2); }
+function andrewOn(s){ return s.mil === 'active' && !!s.andrewPlat; }
+function milDisney(s){ return s.mil === 'active' || s.mil === 'retired'; }
+function eligible(p, s){ return !p.requires || p.requires.indexOf(s.mil) !== -1; }
 function transportFor(p, id){ var list = TRANSPORT[p.transport]; for (var i = 0; i < list.length; i++){ if (list[i].id === id) return list[i]; } return list[0]; }
+function planStays(p, s){
+  var h = p.hotel; if (!h) return [];
+  var all = h.rates.map(function(_, i){ return i; });
+  if (andrewOn(s) && canAndrewSplit(p)) return [{ idx:[0], who:'you', per:'2026' }, { idx:all.slice(1), who:'andrew', per:'2026' }];
+  if (s.cr.split && canSplit(p)) return [{ idx:[0], who:'you', per:'2026' }, { idx:all.slice(1), who:'you', per:'2027' }];
+  return [{ idx:all, who:'you', per:'2026' }];
+}
 
 function build(s){
   var p = PLAN[s.plan] || PLANS[0], t = transportFor(p, s.transport), d = DINING[s.dining] || DINING.date;
   var h = p.hotel, n = nightsOf(p), ov = s.ovr[p.id] || {}, tov = s.ovr[p.id + '|' + t.id] || {};
-  var lines = [], hotelNights = null, split = s.cr.split && canSplit(p);
+  var mil = s.mil || 'none', lines = [], hotelNights = null, stays = planStays(p, s);
   if (h){
     var est = h.rates.map(function(r){ return r * (1 + h.tax) + (h.fee || 0); });
     var estTotal = Math.round(sum(est));
     var total = (typeof ov.hotel === 'number') ? ov.hotel : estTotal;
     hotelNights = est.map(function(x){ return x / sum(est) * total; });
-    lines.push({ key:'hotel', label:h.name + ' · ' + n + ' night' + (n > 1 ? 's' : '') + (typeof ov.hotel === 'number' ? ' (your quote)' : ' (est. incl. tax/fees)'), amt:total, est:estTotal, cat: h.program === 'none' ? 'hotel' : 'hotel-amex' });
+    lines.push({ key:'hotel', label:h.name + ' · ' + n + ' night' + (n > 1 ? 's' : '') + (stays.length > 1 ? ', booked as 2 stays' : '') + (typeof ov.hotel === 'number' ? ' (your quote)' : ' (' + (h.estNote || 'est. incl. tax/fees') + ')'), amt:total, est:estTotal, cat: h.program === 'none' ? 'hotel' : 'hotel-amex' });
     if (h.program !== 'none' && s.cr.property && (h.program === 'FHR' || n >= 2)){
-      var stays = split ? 2 : 1;
-      lines.push({ key:'onprop', label:'On-property spend that uses the $100 credit' + (stays > 1 ? ' (2 stays)' : ''), amt:100 * stays, cat:'property' });
+      lines.push({ key:'onprop', label:'On-property spend that uses the $100 credit', amt:100, cat:'property' });
     }
   }
   var tl = t.lines(n, h).map(function(l){ return Object.assign({}, l); });
-  tl.forEach(function(l){ if (l.key === 'fare'){ l.est = l.amt; if (typeof tov.fare === 'number'){ l.amt = tov.fare; l.label += ' (your quote)'; } } });
+  tl.forEach(function(l){
+    if (l.cat === 'rail' && mil !== 'none' && typeof tov.fare !== 'number'){ l.amt = Math.round(l.amt * 0.85); l.label += ' · 15% military discount'; }
+    if (l.cat === 'airfees' && mil === 'active'){
+      if (s.meToo){ l.amt = 0; l.label = 'Checked bags: free for both of you with military ID'; }
+      else { l.amt = Math.max(0, l.amt - 90); l.label = 'Your checked bag both ways ($45 × 2) · Andrew\'s fly free with military ID'; }
+    }
+    if (l.key === 'fare'){ l.est = l.amt; if (typeof tov.fare === 'number'){ l.amt = tov.fare; l.label += ' (your quote)'; } }
+  });
   lines = lines.concat(tl);
   if (p.park) lines.push({ key:'nye', label:'Food in the park all day (not on Resy)', amt:d.park, cat:'dining' });
   else lines.push({ key:'nye', label:'NYE dinner for 2 on Resy (tax + tip)', amt:d.nye, cat:'resy-dec' });
@@ -1009,65 +1077,113 @@ function build(s){
     var m = Math.max(0, d.perDay * p.mealDays - 35 * bf);
     lines.push({ key:'meals', label:'Other meals & coffee, ' + p.mealDays + ' day' + (p.mealDays > 1 ? 's' : '') + (bf ? ' (FHR breakfast saves ' + fmt(35 * bf) + ')' : ''), amt:m, cat:'dining' });
   }
-  (p.extras || []).forEach(function(x){ lines.push(Object.assign({}, x)); });
+  (p.extras || []).forEach(function(x){
+    var l = Object.assign({}, x);
+    if (l.key === 'disney' && milDisney(s)){ l.amt = 208; l.label = 'Disneyland military 1-day tickets × 2 ($104; Dec 31 park reservation required)'; }
+    if (l.key === 'lego' && mil !== 'none'){ l.amt = Math.round(l.amt * 0.9); l.label += ' · ~10% military'; }
+    lines.push(l);
+  });
   if (s.ring !== 'none') lines.push({ key:'ring', label:RINGS[s.ring].label + ' ring workshop for 2 (' + fmt(s.ringPP) + '/person)', amt:s.ringPP * 2, cat:'ring' });
   var c = CHARM[s.charm];
-  if (c && c.price) lines.push({ key:'charm', label:c.short + ' + 7.75% tax', amt:Math.round(c.price * (1 + SALES_TAX)), cat:'charm' });
-  if (t.fly && s.lounge) lines.push({ key:'lounge', label:'SFO Centurion guest fee (Jan 3)', amt:50, cat:'lounge' });
-  return { p:p, t:t, lines:lines, hotelNights:hotelNights, n:n, split:split };
+  if (c && c.price){
+    var milC = mil !== 'none' && !c.gold14;
+    lines.push({ key:'charm', label:c.short + (milC ? ' · 10% military via ID.me' : '') + ' + 7.75% tax', amt:Math.round(c.price * (milC ? 0.9 : 1) * (1 + SALES_TAX)), cat:'charm' });
+  }
+  if (t.fly && s.lounge) lines.push(andrewOn(s) ? { key:'lounge', label:'SFO Centurion: no guest fee, Andrew has their own Platinum', amt:0, cat:'lounge' } : { key:'lounge', label:'SFO Centurion guest fee (Jan 3)', amt:50, cat:'lounge' });
+  return { p:p, t:t, lines:lines, hotelNights:hotelNights, n:n, stays:stays };
+}
+
+/* Apply credits in order against one pool of spending; each is capped by what's left. */
+function pool(amount, list){
+  var left = amount;
+  list.forEach(function(c){ c.amt = c.on ? Math.max(0, Math.min(c.cap, left)) : 0; c.max = c.cap; left -= c.amt; });
+  return list;
 }
 
 function computeCredits(s, b){
-  var p = b.p, lines = b.lines, n = b.n, cr = s.cr, prog = p.hotel ? p.hotel.program : 'none', split = b.split;
+  var p = b.p, lines = b.lines, n = b.n, cr = s.cr, prog = p.hotel ? p.hotel.program : 'none', stays = b.stays, A = andrewOn(s);
   function tot(cat){ return sum(lines.filter(function(l){ return l.cat === cat; }).map(function(l){ return l.amt; })); }
   var out = [], a, note;
 
-  a = 0;
-  if (!cr.hotel) note = 'Switched off.';
-  else if (prog === 'none') note = 'This plan has no prepaid FHR/THC stay. The $300 expires Dec 31; any FHR/THC booking charged by then uses it, even for later travel.';
-  else if (prog === 'THC' && n < 2) note = 'The Hotel Collection requires 2+ nights.';
-  else { a = Math.min(300, split ? b.hotelNights[0] : tot('hotel-amex')); note = split ? 'Dec 31 booked now as its own 1-night FHR stay.' : 'Prepay on Amex Travel; the charge must process by Dec 31.'; }
-  out.push({ id:'hotel', card:'plat', label:'Platinum hotel credit · Jul–Dec 2026', max:300, amt:a, note:note });
+  if (prog === 'none'){
+    out.push({ id:'hotel', card:'plat', label:'Platinum hotel credit · Jul–Dec 2026', max:300, amt:0, note: !cr.hotel ? 'Switched off.' : 'This plan has no prepaid FHR/THC stay. The $300 expires Dec 31; any FHR/THC booking charged by then uses it, even for later travel.' });
+  } else if (prog === 'THC' && n < 2){
+    out.push({ id:'hotel', card:'plat', label:'Platinum hotel credit · Jul–Dec 2026', max:300, amt:0, note:'The Hotel Collection requires 2+ nights.' });
+  } else {
+    stays.forEach(function(st){
+      var base = sum(st.idx.map(function(k){ return b.hotelNights[k]; })), len = st.idx.length + (st.idx.length > 1 ? ' nights' : ' night');
+      if (st.who === 'andrew') out.push({ id:'hotelA', card:'plat', label:'Andrew\'s Platinum hotel credit · Jul–Dec 2026', max:300, amt:Math.min(300, base), note:'Book the other ' + len + ' (from Jan 1) as a separate FHR stay on Andrew\'s card now, so it posts in 2026. The statement credit follows each card\'s charge, but verify with Amex.' });
+      else if (st.per === '2027') out.push({ id:'hotel27', card:'plat', label:'Platinum hotel credit · Jan–Jun 2027 (split stay)', max:300, amt:Math.min(300, base), note:'Book the Jan 1–3 nights as a separate 2-night FHR stay on or after Jan 1, 2027.' });
+      else out.push({ id:'hotel', card:'plat', label:'Platinum hotel credit · Jul–Dec 2026', max:300, amt: cr.hotel ? Math.min(300, base) : 0, note: !cr.hotel ? 'Switched off.' : (stays.length > 1 ? 'Dec 31 booked now as its own 1-night FHR stay.' : 'Prepay on Amex Travel; the charge must process by Dec 31.') });
+    });
+  }
+  if (cr.split && !stays.some(function(st){ return st.per === '2027'; })){
+    out.push({ id:'hotel27', card:'plat', label:'Platinum hotel credit · Jan–Jun 2027 (split stay)', max:300, amt:0, note: (A && canAndrewSplit(p)) ? 'Not needed: Andrew\'s card covers the January nights in 2026, with no Jan 1 risk.' : 'Needs a 3-night FHR plan (1 night + 2 nights).' });
+  }
 
   a = 0;
   if (!cr.property) note = 'Switched off.';
   else if (prog === 'none') note = 'Only FHR and THC stays include the $100 property credit.';
   else if (prog === 'THC' && n < 2) note = 'THC requires 2+ nights.';
-  else { a = Math.min(split ? 200 : 100, tot('property')); note = prog === 'FHR' ? 'Spend it at the hotel (bar, restaurant or spa). FHR also adds daily breakfast and a 4 PM checkout.' : 'THC: $100 credit + upgrade if available. No breakfast, no guaranteed 4 PM checkout.'; }
-  out.push({ id:'property', card:'plat', label:'FHR/THC $100 property credit' + (split ? ' × 2 stays' : ''), max:split ? 200 : 100, amt:a, note:note });
+  else { a = Math.min(100, tot('property')); note = stays.length > 1 ? 'Only one $100: Amex counts back-to-back bookings at the same hotel as one stay, even on two cards.' : prog === 'FHR' ? 'Spend it at the hotel (bar, restaurant or spa). FHR also adds daily breakfast and a 4 PM checkout.' : 'THC: $100 credit + upgrade if available. No breakfast, no guaranteed 4 PM checkout.'; }
+  out.push({ id:'property', card:'plat', label:'FHR/THC $100 property credit', max:100, amt:a, note:note });
 
   var nye = tot('resy-dec');
-  var g = cr.resyGold ? Math.min(50, nye) : 0;
-  var pl = cr.resyPlat ? Math.min(100, Math.max(0, nye - g)) : 0;
-  out.push({ id:'resyGold', card:'gold', label:'Gold Resy credit · Jul–Dec', max:50, amt:g,
-    note: !cr.resyGold ? 'Switched off.' : (nye ? 'Put $50+ of the NYE bill on Gold. The restaurant needs the Amex badge on Resy.' : 'No Resy dinner in this plan (theme-park food doesn\'t count).') });
-  out.push({ id:'resyPlat', card:'plat', label:'Platinum Resy credit · Oct–Dec', max:100, amt:pl,
-    note: !cr.resyPlat ? 'Switched off.' : (nye ? 'Put $100 on Platinum. Enroll first.' : 'No Resy dinner in this plan.') });
+  pool(nye, [
+    { id:'resyGold', card:'gold', label:'Gold Resy credit · Jul–Dec', cap:50, on:cr.resyGold, tip:'Put $50 of the NYE bill on Gold. The restaurant needs the Amex badge on Resy.' },
+    { id:'resyPlat', card:'plat', label:'Platinum Resy credit · Oct–Dec', cap:100, on:cr.resyPlat, tip:'Put $100 on your Platinum. Enroll first.' },
+    { id:'resyPlatA', card:'plat', label:'Andrew\'s Platinum Resy · Oct–Dec', cap:100, on:A, andrew:true, tip:'Put $100 on Andrew\'s Platinum (enroll it first). Ask the restaurant to split the check across three cards.' }
+  ]).forEach(function(c){
+    if (c.andrew && !A) return;
+    c.note = !c.on ? 'Switched off.' : !nye ? 'No Resy dinner in this plan (theme-park food doesn\'t count).' : c.amt === 0 ? 'The other credits already cover the bill.' : c.amt < c.cap ? 'Only ' + fmt(c.amt) + ' of the bill was left for this card.' : c.tip;
+    out.push(c);
+  });
 
-  var ud = tot('uber-dec'), u = cr.uber ? Math.min(45, ud) : 0;
-  out.push({ id:'uber', card:'both', label:'December Uber Cash ($35 Plat + $10 Gold)', max:45, amt:u,
-    note: !cr.uber ? 'Switched off.' : (ud >= 45 ? 'Pay with an Amex card. It expires 11:59 PM Hawaii time on Dec 31.' : 'This plan only has ' + fmt(ud) + ' of December rides. Spend the rest on Uber Eats.') });
+  var ud = tot('uber-dec');
+  pool(ud, [
+    { id:'uber', card:'both', label:'December Uber Cash ($35 Plat + $10 Gold)', cap:45, on:cr.uber, tip:'Pay with an Amex card. It expires 11:59 PM Hawaii time on Dec 31.' },
+    { id:'uberA', card:'plat', label:'Andrew\'s December Uber Cash ($35)', cap:35, on:A, andrew:true, tip:'It lands on Andrew\'s own Uber account, so Andrew books that ride.' }
+  ]).forEach(function(c){
+    if (c.andrew && !A) return;
+    c.note = !c.on ? 'Switched off.' : !ud ? 'No December rides in this plan. Use it on Uber Eats.' : c.amt === 0 ? 'Your Uber Cash already covers December rides. Use this on Uber Eats.' : c.amt < c.cap ? 'This plan only has ' + fmt(c.amt) + ' of December rides for it. Spend the rest on Uber Eats.' : c.tip;
+    out.push(c);
+  });
 
   var fees = tot('airfees'), rem = Math.max(0, Math.min(200, Number(s.airRemain) || 0));
-  var a26 = cr.airline ? Math.min(rem, fees) : 0;
-  out.push({ id:'airline', card:'plat', label:'Platinum airline fee credit · 2026', max:rem, amt:a26,
-    note: !cr.airline ? 'Switched off.' : (fees ? 'Bags and seats on your selected airline only. Prepay both directions now so they post in 2026.' : 'No airline fees in this plan, and fares themselves never qualify.') });
+  var hadAir = lines.some(function(l){ return l.cat === 'airfees'; });
+  pool(fees, [
+    { id:'airline', card:'plat', label:'Platinum airline fee credit · 2026', cap:rem, on:cr.airline, tip:'Bags and seats on your selected airline only. Prepay both directions now so they post in 2026.' },
+    { id:'airline27', card:'plat', label:'Platinum airline fee credit · 2027', cap:200, on:!!cr.jan27, jan:true, tip:'Covers fees charged on or after Jan 1.' },
+    { id:'airlineA', card:'plat', label:'Andrew\'s airline fee credit · 2026', cap:200, on:A, andrew:true, tip:'Pay the remaining fees with Andrew\'s card.' }
+  ]).forEach(function(c){
+    if (c.jan && !(cr.jan27 && hadAir)) return;
+    if (c.andrew && !A) return;
+    c.note = !c.on ? 'Switched off.' : !hadAir ? 'No airline fees in this plan, and fares themselves never qualify.' : fees === 0 ? 'Military ID makes the bags free, so this credit has nothing to cover.' : c.amt === 0 ? 'Other credits already cover the fees.' : c.tip;
+    out.push(c);
+  });
 
   out.push({ id:'saks', card:'plat', label:'Platinum $50 Saks credit', max:0, amt:0, ended:true, note:'Ended June 30, 2026. Nothing to apply.' });
 
   if (cr.jan27){
-    var jan = tot('resy-jan'), pq = Math.min(100, jan), gh = Math.min(50, Math.max(0, jan - pq));
-    out.push({ id:'resyPlat27', card:'plat', label:'Platinum Resy · Jan–Mar 2027', max:100, amt:pq, note: jan ? 'Resets Jan 1 and applies to your Jan 1/2 dinner.' : 'No Jan dinner in this plan.' });
-    out.push({ id:'resyGold27', card:'gold', label:'Gold Resy · Jan–Jun 2027', max:50, amt:gh, note: jan ? 'Resets Jan 1.' : 'No Jan dinner in this plan.' });
-    var uj = Math.min(25, tot('uber-jan'));
-    out.push({ id:'uber27', card:'both', label:'January Uber Cash ($15 Plat + $10 Gold)', max:25, amt:uj, note: uj ? 'Loads Jan 1 automatically.' : 'No January rides in this plan.' });
-    var a27 = Math.min(200, Math.max(0, fees - a26));
-    if (fees) out.push({ id:'airline27', card:'plat', label:'Platinum airline fee credit · 2027', max:200, amt:a27, note: a27 ? 'Covers the return-leg fees charged on Jan 3.' : 'The 2026 credit already covers all fees.' });
-  }
-  if (cr.split){
-    if (split){ a = Math.min(300, sum(b.hotelNights.slice(1))); note = 'Book Jan 1–3 as a separate 2-night FHR stay on or after Jan 1, 2027.'; }
-    else { a = 0; note = 'Needs a 3-night FHR plan (1 night + 2 nights).'; }
-    out.push({ id:'hotel27', card:'plat', label:'Platinum hotel credit · Jan–Jun 2027 (split stay)', max:300, amt:a, note:note });
+    var jan = tot('resy-jan');
+    pool(jan, [
+      { id:'resyPlat27', card:'plat', label:'Platinum Resy · Jan–Mar 2027', cap:100, on:true, tip:'Resets Jan 1 and applies to your Jan 1/2 dinner.' },
+      { id:'resyGold27', card:'gold', label:'Gold Resy · Jan–Jun 2027', cap:50, on:true, tip:'Resets Jan 1.' },
+      { id:'resyPlatA27', card:'plat', label:'Andrew\'s Platinum Resy · Jan–Mar 2027', cap:100, on:A, andrew:true, tip:'Resets Jan 1 on Andrew\'s card.' }
+    ]).forEach(function(c){
+      if (c.andrew && !A) return;
+      c.note = !jan ? 'No Jan dinner in this plan.' : c.amt === 0 ? 'The other credits already cover the bill.' : c.tip;
+      out.push(c);
+    });
+    var uj = tot('uber-jan');
+    pool(uj, [
+      { id:'uber27', card:'both', label:'January Uber Cash ($15 Plat + $10 Gold)', cap:25, on:true, tip:'Loads Jan 1 automatically.' },
+      { id:'uberA27', card:'plat', label:'Andrew\'s January Uber Cash ($15)', cap:15, on:A, andrew:true, tip:'Loads Jan 1 on Andrew\'s Uber account.' }
+    ]).forEach(function(c){
+      if (c.andrew && !A) return;
+      c.note = !uj ? 'No January rides in this plan.' : c.amt === 0 ? 'Your Uber Cash already covers January rides.' : c.tip;
+      out.push(c);
+    });
   }
   return out;
 }
@@ -1087,7 +1203,7 @@ function stateFor(planId, base){
 var state = (function(){
   var saved = store.get('anniv.calc.v1', null), s = clone(DEFAULT_STATE);
   if (saved && typeof saved === 'object'){
-    ['plan','transport','ring','ringPP','charm','dining','lounge','airRemain'].forEach(function(k){ if (saved[k] !== undefined) s[k] = saved[k]; });
+    ['plan','transport','ring','ringPP','charm','dining','lounge','airRemain','mil','meToo','andrewPlat'].forEach(function(k){ if (saved[k] !== undefined) s[k] = saved[k]; });
     if (saved.cr) Object.keys(s.cr).forEach(function(k){ if (typeof saved.cr[k] === 'boolean') s.cr[k] = saved.cr[k]; });
     if (saved.ovr && typeof saved.ovr === 'object') s.ovr = saved.ovr;
   }
@@ -1095,6 +1211,7 @@ var state = (function(){
   if (!RINGS[s.ring]) s.ring = 'solid';
   if (!CHARM[s.charm]) s.charm = 'heart';
   if (!DINING[s.dining]) s.dining = 'date';
+  if (['none','active','retired','veteran'].indexOf(s.mil) === -1) s.mil = 'active';
   return s;
 })();
 function save(){ store.set('anniv.calc.v1', state); }
@@ -1111,7 +1228,7 @@ var TOGGLES = [
 ];
 var TOGGLES_27 = [
   { id:'jan27', card:'both', title:'Count January 2027 resets', sub:'Q1 Plat Resy $100 · H1 Gold Resy $50 · Jan Uber $25 · 2027 airline $200' },
-  { id:'split', card:'plat', title:'Split stay: rebook Jan 1–3 as FHR', sub:'Uses the Jan–Jun 2027 $300 + a 2nd $100 credit (3-night FHR plans)' }
+  { id:'split', card:'plat', title:'Split stay: rebook Jan 1–3 as FHR', sub:'Uses the Jan–Jun 2027 $300 (3-night FHR plans only)' }
 ];
 function badge(card){ return card === 'both' ? '<span class="cardbadge both">Gold+Plat</span>' : card === 'gold' ? '<span class="cardbadge gold">Gold</span>' : '<span class="cardbadge plat">Platinum</span>'; }
 function toggleRow(t){
@@ -1121,7 +1238,22 @@ function toggleRow(t){
     (t.remain ? '<span class="inline-num" style="margin-top:4px"><input type="number" id="f-airremain" min="0" max="200" step="5" value="' + esc(state.airRemain) + '" aria-label="Airline credit left for 2026"><span>left for 2026</span></span>' : '') +
     '</div><div class="switch"><input type="checkbox" role="switch" id="t-' + t.id + '" data-cr="' + t.id + '"' + (checked ? ' checked' : '') + (t.disabled ? ' disabled' : '') + ' aria-label="' + esc(t.title) + '"><span class="track"></span><span class="knob"></span></div></div>';
 }
+var MIL_LABEL = { none:'Off', active:'Active duty', retired:'Retired', veteran:'Veteran' };
+var MIL_NOTE = {
+  none:'Military discounts are off.',
+  active:'Applied: Andrew\'s checked bags free with ID, 15% off the Surfliner, $104 Disneyland tickets, ~10% off Legoland and 10% off Pandora via ID.me (not 14K gold).',
+  retired:'Applied: $104 Disneyland tickets, 15% off the Surfliner, ~10% off Legoland and 10% off Pandora. Retirees don\'t get free airline bags or the MLA card-fee waiver.',
+  veteran:'Applied: 15% off the Surfliner, ~10% off Legoland and 10% off Pandora. Disneyland\'s military tickets are for active and retired members.'
+};
+var MIL_TOGGLES = [
+  { id:'meToo', title:'I\'m active duty too', sub:'Free checked bags for both of you' },
+  { id:'andrewPlat', title:'Andrew opens their own Platinum', sub:'$0 annual fee under MLA while on active duty · a 2nd set of credits' }
+];
+function milToggleRow(t){
+  return '<div class="li"><div class="txt"><b>' + esc(t.title) + '</b><span>' + esc(t.sub) + '</span></div><div class="switch"><input type="checkbox" role="switch" id="m-' + t.id + '" data-st="' + t.id + '" aria-label="' + esc(t.title) + '"><span class="track"></span><span class="knob"></span></div></div>';
+}
 function buildStaticCalc(){
+  $('#mil-toggles').innerHTML = MIL_TOGGLES.map(milToggleRow).join('');
   var sel = $('#f-plan'), html = '';
   GROUP_ORDER.forEach(function(g){
     var ps = PLANS.filter(function(p){ return p.group === g; });
@@ -1152,6 +1284,9 @@ function syncControls(){
   $$('#f-dining button').forEach(function(bt){ bt.setAttribute('aria-selected', String(bt.dataset.v === state.dining)); });
   $('#dine-note').textContent = DINING[state.dining].note;
   $$('[data-cr]').forEach(function(inp){ if (!inp.disabled) inp.checked = !!state.cr[inp.dataset.cr]; });
+  $$('#f-mil button').forEach(function(bt){ bt.setAttribute('aria-selected', String(bt.dataset.v === state.mil)); });
+  $$('[data-st]').forEach(function(inp){ var on = state.mil === 'active'; inp.disabled = !on; inp.checked = on && !!state[inp.dataset.st]; inp.closest('.li').classList.toggle('disabled', !on); });
+  $('#mil-note').textContent = MIL_NOTE[state.mil];
   var r = evaluate(state), hl = r.b.lines.filter(function(l){ return l.key === 'hotel'; })[0], fl = r.b.lines.filter(function(l){ return l.key === 'fare'; })[0];
   $('#hotel-field').hidden = !hl; if (hl) { $('#f-hotel').value = Math.round(hl.amt); $('#f-hotel').placeholder = hl.est; }
   $('#fare-field').hidden = !fl; if (fl) { $('#f-fare').value = Math.round(fl.amt); $('#f-fare').placeholder = fl.est; }
@@ -1182,6 +1317,8 @@ function renderCalc(){
   var hints = [];
   if (!state.cr.jan27){ var s2 = clone(state); s2.cr.jan27 = true; var d2 = r.net - evaluate(s2).net; if (d2 >= 1) hints.push('Turning on <b>January 2027 resets</b> saves another ' + fmt(d2) + ' (net ' + fmt(r.net - d2) + ').'); }
   if (!state.cr.split && canSplit(r.b.p)){ var s3 = clone(state); s3.cr.split = true; var d3 = r.net - evaluate(s3).net; if (d3 >= 1) hints.push('The <b>split stay</b> saves ' + fmt(d3) + ' more on this FHR plan.'); }
+  if (state.mil === 'active' && !state.andrewPlat){ var s4 = clone(state); s4.andrewPlat = true; var d4 = r.net - evaluate(s4).net; if (d4 >= 1) hints.push('If Andrew opens <b>their own Platinum</b> ($0 fee under MLA), this plan drops another ' + fmt(d4) + '.'); }
+  if (!eligible(r.b.p, state)) hints.push('<b>' + esc(r.b.p.short) + '</b> needs active-duty or retired eligibility.');
   if (r.b.p.hotel && r.b.p.hotel.program === 'none' && state.cr.hotel) hints.push('This plan leaves the <b>$300 hotel credit unused</b>. Compare the FHR/THC version.');
   var hint = $('#r-hint'); hint.hidden = !hints.length; hint.innerHTML = hints.join('<br>');
 
@@ -1200,7 +1337,7 @@ function renderHero(r){
   $('#hero-cap').style.left = 'calc(' + (CAP / max * 100) + '% - 1px)';
   var hb = $('#hero-badge'); hb.className = 'pill ' + (over ? 'red' : 'green'); hb.textContent = over ? 'Over Budget by ' + fmt(r.net - CAP) : 'Under $1,500 Net';
   var rn = RINGS[state.ring], ch = CHARM[state.charm];
-  $('#hero-bundle').textContent = r.b.p.short + ' · ' + (state.ring === 'none' ? 'no ring' : rn.label + ' rings') + ' · ' + (ch.price ? ch.short : 'no charm') + ' · ' + DINING[state.dining].label;
+  $('#hero-bundle').textContent = r.b.p.short + ' · ' + (state.ring === 'none' ? 'no ring' : rn.label + ' rings') + ' · ' + (ch.price ? ch.short : 'no charm') + ' · ' + DINING[state.dining].label + (state.mil !== 'none' ? ' · Military: ' + MIL_LABEL[state.mil] + (andrewOn(state) ? ' + Andrew\'s Platinum' : '') : '');
   $('#hero-meter-aria').setAttribute('aria-label', 'Net ' + fmt(r.net) + ' against a $1,500 cap; gross ' + fmt(r.gross) + ', credits ' + fmt(r.cred));
 }
 
@@ -1217,7 +1354,7 @@ function planCard(p){
 
 function renderComparisons(){
   // comparison table
-  var order = ['sd-grant-1n','sd-grant-2n','sd-estancia-1n','sd-loews-2n','sd-del-1n','none','sf-fhr','sf-thc','sf-boutique','la-fhr','la-thc','la-boutique','disneyland','legoland'];
+  var order = ['sd-grant-1n','sd-grant-2n','sd-estancia-1n','sd-loews-2n','sd-del-1n','sd-navy-2n','none','sf-fhr','sf-thc','sf-boutique','la-fhr','la-thc','la-boutique','disneyland','legoland'];
   $('#cmp-body').innerHTML = order.map(function(id){
     var p = PLAN[id], r = evaluate(stateFor(id));
     return '<tr class="clickable' + (id === state.plan ? ' current' : '') + '" data-load="' + id + '" tabindex="0"><td><b>' + esc(p.name) + '</b><br><span class="small muted">' + esc(TRANSPORT[p.transport][0].label) + '</span></td><td class="n">' + nightsOf(p) + '</td><td class="n">' + fmt(r.gross) + '</td><td class="n credit-amt">' + credFmt(r.cred) + '</td><td class="n"><b style="color:' + (r.net > CAP ? 'var(--red)' : 'var(--green)') + '">' + fmt(r.net) + '</b></td><td>' + statusPill(r.net) + '</td><td class="n">' + p.score + '/10</td></tr>';
@@ -1225,7 +1362,7 @@ function renderComparisons(){
   // plan cards per tab
   $('#sf-plans').innerHTML = PLANS.filter(function(p){ return p.tab === 'sf'; }).map(planCard).join('');
   $('#la-plans').innerHTML = ['la-fhr','la-thc','la-boutique'].map(function(id){ return planCard(PLAN[id]); }).join('');
-  $('#sd-plans').innerHTML = ['sd-grant-2n','sd-estancia-1n','sd-loews-2n','sd-del-1n','none'].map(function(id){ return planCard(PLAN[id]); }).join('');
+  $('#sd-plans').innerHTML = ['sd-grant-2n','sd-estancia-1n','sd-loews-2n','sd-del-1n','sd-navy-2n','none'].map(function(id){ return planCard(PLAN[id]); }).join('');
   // reality check
   $('#reality-body').innerHTML = ['disneyland','legoland','la-boutique','sf-fhr','sd-grant-1n'].map(function(id){
     var p = PLAN[id], r = evaluate(stateFor(id));
@@ -1241,7 +1378,7 @@ function renderComparisons(){
 }
 function comboState(){
   var s = clone(DEFAULT_STATE); s.plan = 'sd-grant-1n'; s.transport = 'sd-uber'; s.ring = 'solid'; s.ringPP = 500; s.charm = 'heart'; s.dining = 'date'; s.cr.jan27 = true;
-  s.ovr = clone(state.ovr); s.airRemain = state.airRemain; return s;
+  s.ovr = clone(state.ovr); s.airRemain = state.airRemain; s.mil = state.mil; s.meToo = state.meToo; s.andrewPlat = state.andrewPlat; return s;
 }
 
 /* ---------- static cards: charms + wallet ---------- */
@@ -1267,12 +1404,39 @@ var WALLET = [
   { card:'plat', title:'Airline Fee Credit', amt:'$200', when:'Calendar 2026 · resets Jan 1', status:['green','Active'],
     body:'Covers incidentals on one selected airline: checked bags, seat selection and inflight purchases. Fares never count. Eligible airlines are Alaska, American, Delta, JetBlue, Southwest and United; Frontier isn\'t on the list. Check your 2026 selection and how much you\'ve used.' },
   { card:'plat', title:'Lounge Access', amt:'Guest $50', when:'Within 3 hrs of departure', status:['orange','Changed'],
-    body:'SFO: a temporary Centurion in Terminal 2 near D12, open 5 AM–11 PM. SAN: lounges are only in Terminal 2, with Priority Pass through Platinum (enroll and check guest rules in the app). The Delta Sky Club only works when flying Delta, 10 visits a year. An additional Platinum card for your partner gives them their own access but has its own annual fee.' },
+    body:'SFO: a temporary Centurion in Terminal 2 near D12, open 5 AM–11 PM. SAN: lounges are only in Terminal 2, with Priority Pass through Platinum (enroll and check guest rules in the app). The Delta Sky Club only works when flying Delta, 10 visits a year. USO lounges at SAN and SFO are free with military ID. A Platinum of Andrew\'s own, fee-free under MLA, ends the $50 guest fee.' },
   { card:'plat', title:'Saks Fifth Avenue Credit', amt:'$0', when:'Ended Jun 30, 2026', status:['red','Discontinued'],
     body:'Amex dropped it after Saks Global\'s January 2026 bankruptcy. For a gift credit, check your Benefits tab for any other Q4 retail credit on Platinum, and check Gold\'s monthly $10 dining credit (Wine.com could cover anniversary wine).' },
   { card:'both', title:'Amex Offers check', amt:'Varies', when:'Before every purchase', status:['blue','Do it today'],
     body:'Open the Offers tab on both cards and add any Pandora, Marriott/Hilton or airline offers before paying. One tracker shows 4% back at us.pandora.net through Dec 1, 2026 (max $250), but it\'s unconfirmed, so look in your app.' }
 ];
+var MILITARY = [
+  { title:'Amex annual fees waived (MLA / SCRA)', amt:'$0 fees', status:['blue','Biggest lever'],
+    body:'Amex waives annual fees for covered servicemembers. Accounts opened on active duty fall under the Military Lending Act automatically, and older accounts can request SCRA benefits. That\'s $895 a year on Platinum and $325 on Gold. If you\'re married and listed in DEERS, ask whether your own new cards qualify; sources are mixed, and accounts opened before you were a covered dependent may not.' },
+  { title:'Andrew\'s own Platinum: a 2nd set of credits', amt:'Up to ~$435', status:['green','Apply this week'],
+    body:'With no fee, Andrew\'s own card adds another $300 hotel credit, $100 Q4 Resy, $35 December Uber Cash, and Centurion access with no guest fee. Book Dec 31 on your card and the January nights as a separate FHR stay on Andrew\'s card now, so both post in 2026 with no Jan 1 risk. The hotel will treat it as one stay, so expect one $100 property credit, not two. Expect a hard credit check and no guaranteed approval, and the waiver lasts only while Andrew is covered. Any welcome bonus isn\'t counted here.' },
+  { title:'Disneyland military tickets', amt:'$104', status:['green','Active + retired'],
+    body:'1-day, 1-park tickets are $104 (child $98) through Dec 30, 2027, sold at base ticket offices and GOVX. They need a park reservation, and Dec 31 is the date most likely to sell out, so check now. The 2026 3-day ($314) and 4-day ($369) Park Hoppers expire Dec 31, 2026.' },
+  { title:'Free checked bags', amt:'$90–$180', status:['green','Active duty'],
+    body:'Southwest\'s fee table lists active-duty members as free for the first and second checked bags with a valid military ID. Alaska (up to 5) and United (up to 3 on personal travel) also waive bags, per third-party guides. Retirees and veterans don\'t get this. With Andrew\'s bags free, your $200 airline credit covers yours.' },
+  { title:'Pacific Surfliner 15% off', amt:'15%', status:['green','Active · spouse · vets'],
+    body:'Promo code V780 gives active duty, spouses and dependents 15% off California routes, including the Surfliner. Veterans and spouses also get 15% in California. It doesn\'t combine with other discounts. Amtrak also has 10% nationwide.' },
+  { title:'USO lounges', amt:'Free', status:['blue','Before security'],
+    body:'SAN: Neil Ash Airport Center, landside across the Terminal 2 sky bridge (one guide lists 6 AM–10 PM weekdays, 8 AM–5 PM weekends). SFO: Terminal 1, landside mezzanine. Free with military ID for active and retired members, and families per most guides. Both are before security, so leave time to clear it.' },
+  { title:'Pandora via ID.me', amt:'10%', status:['green','Active · vets · family'],
+    body:'Verify in the cart for a code (one per 24 hours, no stacking with other codes). 14K gold is excluded, so the Happy Anniversary charm likely won\'t qualify. An Amex Offer is a separate statement credit; check its terms.' },
+  { title:'Legoland', amt:'10–35%', status:['orange','Sources differ'],
+    body:'Legoland\'s military page says up to 35% off for active, retired, veterans, spouses and dependents; its help center says up to 10%. The calculator uses 10%.' },
+  { title:'Military lodging & hotel rates', amt:'Varies', status:['orange','Backup'],
+    body:'Navy Lodge North Island (Coronado): 800-628-9466; Military OneSource says San Diego demand far exceeds availability. Hilton\'s Military Family Rate is about 10% off leisure stays, and Hyatt\'s 10–15% offer ended Feb 26, 2026, so ask. Military rates don\'t stack with FHR, and the $300 credit is usually worth more.' },
+  { title:'Base ticket offices (ITT)', amt:'Discounts', status:['blue','Compare'],
+    body:'The ITT/MWR offices at Naval Base San Diego, NAS North Island and MCAS Miramar sell discounted Disneyland, Legoland, SeaWorld and Zoo tickets. Compare their prices with GOVX before buying.' }
+];
+function renderMilitary(){
+  $('#mil-cards').innerHTML = MILITARY.map(function(w){
+    return '<div class="plan"><div class="top"><div class="stack-sm"><div class="row" style="gap:8px"><span class="pill ' + w.status[0] + '">' + esc(w.status[1]) + '</span></div><h3>' + esc(w.title) + '</h3></div><b class="num" style="font-size:20px;color:var(--plat)">' + esc(w.amt) + '</b></div><p class="small muted">' + esc(w.body) + '</p></div>';
+  }).join('');
+}
 function renderWallet(){
   $('#wallet-cards').innerHTML = WALLET.map(function(w){
     return '<div class="plan"><div class="top"><div class="stack-sm"><div class="row" style="gap:8px">' + badge(w.card) + '<span class="pill ' + w.status[0] + '">' + esc(w.status[1]) + '</span></div><h3>' + esc(w.title) + '</h3></div><b class="num" style="font-size:20px;color:' + (w.card === 'gold' ? 'var(--gold)' : 'var(--plat)') + '">' + esc(w.amt) + '</b></div>' +
@@ -1282,13 +1446,17 @@ function renderWallet(){
 
 /* ---------- checklist ---------- */
 var TASKS = [
+  { id:'mla',      due:'2026-11-14', t:'Andrew: ask Amex about the military fee waiver', d:'On active duty, a Platinum of Andrew\'s own should carry no annual fee under the Military Lending Act. Apply this week and enroll its benefits so its credits post in 2026. If you\'re married and listed in DEERS, ask about your own cards too.', tags:['plat'] },
+  { id:'disneyres', due:'2026-11-15', t:'Disneyland only: check Dec 31 reservations for military tickets', d:'The $104 military 1-day ticket needs a park reservation, and NYE fills first. Buy at a base ticket office (ITT) or GOVX.', tags:[] },
+  { id:'navylodge', due:'2026-11-18', t:'Backup bed: call Navy Lodge North Island', d:'800-628-9466. Military OneSource says San Diego demand far exceeds availability.', tags:[] },
+  { id:'idme',     due:'2026-11-20', t:'Verify on ID.me for Pandora\'s 10% military discount', d:'Covers active, retired, veterans and families. 14K gold pieces are excluded.', tags:['charm'] },
   { id:'offers',   due:'2026-11-15', t:'Check Amex Offers on both cards', d:'Look for Pandora, Marriott/Hilton and airline offers. A Pandora online offer (4%, max $250) reportedly ends Dec 1.', tags:['both'] },
   { id:'enroll',   due:'2026-11-15', t:'Enroll in the Gold Resy credit before dining', d:'Also enroll the Platinum Resy credit ($100 for Oct–Dec) on its Benefits tab. Both need enrollment before you pay.', tags:['gold','plat'] },
   { id:'airsel',   due:'2026-11-15', t:'Confirm your Platinum airline selection', d:'Choose from Alaska, American, Delta, JetBlue, Southwest or United (not Frontier), and check how much of the $200 is left. You can only change the airline in January.', tags:['plat'] },
   { id:'resy',     due:'2026-11-20', t:'Book the NYE dinner on Resy (with the Amex badge)', d:'A prepaid or ticketed NYE menu charges now, which locks the 2026 credits.', tags:['gold','plat'] },
   { id:'studio',   due:'2026-11-20', t:'Call ring studios for dates and a solid-gold quote', d:'Try SD Jewelry Academy / Whaley Studios (Hillcrest), ember&onyx (public pop-ups only) and Ing Art (Fremont, SF trip only). Ask for Dec 19 or 20 so the rings are ready by NYE.', tags:['ring'] },
   { id:'hotel',    due:'2026-11-25', t:'Book the FHR/THC stay before Dec 31 to trigger the 2026 credit', d:'Prepay through Amex Travel. Book in November so the charge can\'t slip into 2027, especially for a 1-night FHR stay.', tags:['plat'] },
-  { id:'fares',    due:'2026-11-25', t:'Book flights (SF) or Surfliner seats (LA)', d:'Sunday Jan 3 is a peak return day. Prepay checked bags now so the 2026 airline credit covers them.', tags:['plat'] },
+  { id:'fares',    due:'2026-11-25', t:'Book flights (SF) or Surfliner seats (LA)', d:'Sunday Jan 3 is a peak return day. Andrew\'s bags fly free with military ID, so prepay only yours on the 2026 airline credit. Surfliner: promo code V780 takes 15% off for active duty and spouses.', tags:['plat'] },
   { id:'bracelet', due:'2026-11-30', t:'Confirm Pandora Moments vs. ME bracelet', d:'Moments bracelets don\'t take ME charms. Check your partner\'s bracelet before buying.', tags:['charm'] },
   { id:'charm',    due:'2026-12-01', t:'Buy the charm (online offer ends Dec 1)', d:'Use the Amex Offer if it\'s on your card. Engraved items are final sale.', tags:['charm'] },
   { id:'horses',   due:'2026-12-03', t:'LA only: Horses releases Dec 31 tables', d:'Reservations open 4 weeks ahead at midnight on Resy. Verify the current window.', tags:['gold','plat'] },
@@ -1301,7 +1469,8 @@ var TASKS = [
   { id:'split',    due:'2026-12-31', t:'Pay NYE dinner across both cards', d:'Put $100 on Platinum and $50+ on Gold, and ask them to close the check before midnight.', tags:['gold','plat'] },
   { id:'jan1',     due:'2027-01-01', t:'Split stay only: book Jan 1–3 as a new 2-night FHR stay', d:'This uses the Jan–Jun 2027 $300 credit. Ask the hotel to keep you in the same room.', tags:['plat'] },
   { id:'jan2',     due:'2027-01-02', t:'Use the January resets at dinner', d:'Platinum Resy $100 (Q1) and Gold Resy $50 (H1) reset Jan 1, and $25 of Uber Cash loads. In LA, the Getty is open Saturday.', tags:['gold','plat'] },
-  { id:'lounge',   due:'2027-01-03', t:'SF return: Centurion Lounge, T2 near D12', d:'Entry is within 3 hours of departure, and your partner\'s guest fee is $50.', tags:['plat'] }
+  { id:'milid',    due:'2026-12-30', t:'Pack both military IDs', d:'You need them for free bags at check-in, USO lounges, the Surfliner discount and military park tickets.', tags:[] },
+  { id:'lounge',   due:'2027-01-03', t:'SF return: Centurion (T2, near D12) or the USO (T1)', d:'Centurion entry is within 3 hours of departure, and Andrew\'s guest fee is $50 unless they have their own Platinum. The USO is free with military ID but sits before security.', tags:['plat'] }
 ];
 var TAGCHIP = { gold:'<span class="cardbadge gold">Gold</span>', plat:'<span class="cardbadge plat">Platinum</span>', both:'<span class="cardbadge both">Gold+Plat</span>', ring:'<span class="pill gold">Ring</span>', charm:'<span class="pill gold">Charm</span>' };
 var done = store.get('anniv.tasks.v1', {});
@@ -1383,6 +1552,7 @@ function wire(){
   document.addEventListener('change', function(e){
     var t = e.target;
     if (t.dataset && t.dataset.cr){ state.cr[t.dataset.cr] = t.checked; save(); renderCalc(); }
+    if (t.dataset && t.dataset.st){ state[t.dataset.st] = t.checked; save(); syncControls(); renderCalc(); }
     if (t.id === 'f-airremain'){ var v = Math.max(0, Math.min(200, Number(t.value) || 0)); state.airRemain = v; t.value = v; save(); renderCalc(); }
     if (t.dataset && t.dataset.task){ if (t.checked) done[t.dataset.task] = true; else delete done[t.dataset.task]; store.set('anniv.tasks.v1', done); renderChecklist(); }
   });
@@ -1392,6 +1562,7 @@ function wire(){
     var c = e.target.closest('[data-charm]'); if (c){ state.charm = c.dataset.charm; save(); syncControls(); renderCalc(); return; }
   });
   document.addEventListener('keydown', function(e){ if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('tr[data-load]')){ e.preventDefault(); loadPlan(e.target.dataset.load); } });
+  $('#f-mil').addEventListener('click', function(e){ var b = e.target.closest('button'); if (!b) return; state.mil = b.dataset.v; save(); syncControls(); renderCalc(); });
   $('#tabs').addEventListener('click', function(e){ var b = e.target.closest('button'); if (b) setTab(b.dataset.tab); });
   $('#load-combo').addEventListener('click', function(){ var s = comboState(); state.plan = s.plan; state.transport = s.transport; state.ring = s.ring; state.ringPP = s.ringPP; state.charm = s.charm; state.dining = s.dining; state.cr.jan27 = true; save(); syncControls(); renderCalc(); if (window.matchMedia('(max-width:1099px)').matches) $('#calc').scrollIntoView({ block:'start' }); });
   $('#ck-reset').addEventListener('click', function(){ $('#ck-reset-confirm').hidden = false; $('#ck-reset').hidden = true; });
@@ -1402,6 +1573,7 @@ function wire(){
 buildStaticCalc();
 renderCharms();
 renderWallet();
+renderMilitary();
 syncControls();
 renderCalc();
 renderChecklist();
