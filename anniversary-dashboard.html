@@ -199,6 +199,8 @@ p{margin:0}
 .fline.credit b{color:var(--ok)}
 .hint{font-size:12.5px;color:var(--ivory);border-left:1px solid var(--gold);padding:4px 0 4px 12px}
 .hint b{color:var(--gold);font-weight:600}
+.fit{display:grid;gap:4px}
+.fit .setting .btn{flex:0 0 auto}
 .setting{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:10px 0;border-top:1px solid var(--hair)}
 .setting .t{min-width:0}
 .setting .t b{display:block;font-weight:500;font-size:13.5px}
@@ -349,7 +351,7 @@ p{margin:0}
       </section>
 
       <section class="chapter" id="table" aria-labelledby="table-h">
-        <div class="chead"><span class="roman">III</span><h2 id="table-h">The table</h2><p>Three dinners: New Year's Eve, the 1st (when your January Resy credits reset), and the 2nd at your hotel, where the $100 property credit pays the first part of the bill. Splurge on the first and keep the other two relaxed; that's what lets La Jolla fit.</p></div>
+        <div class="chead"><span class="roman">III</span><h2 id="table-h">The table</h2><p>Three dinners: New Year's Eve, the 1st (when your January Resy credits reset), and the 2nd at your hotel, where the $100 property credit pays the first part of the bill. With the massage in the plan, Casual keeps you under $1,500; if Andrew opens her own Platinum, New Year's Eve can go back to Date night.</p></div>
         <div class="sub-head"><h3>New Year's Eve <i>dinner</i></h3><span class="label">The one to splurge on</span></div>
         <div class="grid" id="tiers"></div>
         <div class="sub-head"><h3>The other <i>two nights</i></h3><span class="label">Jan 1 on Resy · Jan 2 at your hotel</span></div>
@@ -359,7 +361,9 @@ p{margin:0}
       </section>
 
       <section class="chapter" id="experiences" aria-labelledby="exp-h">
-        <div class="chead"><span class="roman">IV</span><h2 id="exp-h">Experiences</h2><p>The tourist list a local never does. Each one lands on a day and time that fits your route; if two want the same slot, I'll say so.</p></div>
+        <div class="chead"><span class="roman">IV</span><h2 id="exp-h">Experiences</h2><p>A massage for two, then the tourist list a local never does. Each one lands on a day and time that fits your route; if two want the same slot, I'll say so.</p></div>
+        <div class="sub-head"><h3>The <i>spa</i></h3><span class="label">Massages for two · pick one</span></div>
+        <div class="grid two" id="spa-cards"></div>
         <div class="filters" role="group" aria-label="Filter experiences" id="exp-filters">
           <button class="chip" data-filter="all" aria-pressed="true">All</button>
           <button class="chip" data-filter="romance" aria-pressed="false">Most romantic</button>
@@ -436,6 +440,7 @@ p{margin:0}
         <p>Credit rules used: Platinum hotel credit $300 Jul–Dec 2026 and $300 Jan–Jun 2027, for prepaid FHR or THC (THC needs 2 nights; from Jan 1, 2027 FHR also needs 2 nights). Each hotel earns its own $100 property credit; back-to-back bookings at the same hotel would count as one. Resy: Gold $50 per half-year, Platinum $100 per quarter. Uber Cash: $35 Platinum + $10 Gold in December, $25 in January. The Saks credit ended June 30, 2026, and the airline credit doesn't apply because this weekend has no flights.</p>
         <p>Military: Surfliner 15% (code V780, active duty and spouses; veterans also 15% in California), $5 off Skating by the Sea, USS Midway free for active duty, Pandora 10% via ID.me (not 14k gold). "Andrew's own Platinum" assumes she's active duty and Amex waives the fee under the Military Lending Act; confirm with Amex.</p>
         <p>Home base: Park 12 in East Village, by Petco Park. Rides from home use about $10 to Santa Fe Depot; the trolley from 12th &amp; Imperial also reaches the depot and Old Town.</p>
+        <p>Massages: resort couples treatments run about $500–$620 for two with service charges (Estancia's last published menu: $440 for 50 minutes; the Del's Ocean Wave from $620 on ResortPass). A day-spa couples massage in San Diego lists at about $190–$230 before tip. Wi Spa body scrubs start around $90 each.</p>
         <p>Left out on purpose: Disneyland (the most crowded weekend of the year) and Pasadena hotels (Rose Parade prices).</p>
       </div>
       <ul style="margin-top:18px">
@@ -462,6 +467,10 @@ p{margin:0}
         <li><a href="https://www.visitpasadena.com/events/annual-events/floatfest" target="_blank" rel="noopener">Rose Parade Floatfest</a></li>
         <li><a href="https://whichmuseum.co.uk/museum/warner-bros-studio-tour-hollywood-burbank-11109/tickets-prices" target="_blank" rel="noopener">Warner Bros. Studio Tour prices</a></li>
         <li><a href="https://www.flytographer.com/san-diego" target="_blank" rel="noopener">Flytographer San Diego</a></li>
+        <li><a href="https://meritagecollection.com/application/files/5915/9554/1797/ELJ-SPA-MENU07232020-ADA.pdf" target="_blank" rel="noopener">Spa Estancia menu (2020)</a></li>
+        <li><a href="https://www.resortpass.com/experiences/couples-spa-3233652" target="_blank" rel="noopener">Hotel del Ocean Wave couples massage</a></li>
+        <li><a href="https://www.atly.com/united-states/california/san-diego/best-affordable-couples-massage" target="_blank" rel="noopener">San Diego couples massage prices</a></li>
+        <li><a href="https://thepointsguy.com/guide/best-korean-spas-us" target="_blank" rel="noopener">Korean spas: Wi Spa prices</a></li>
         <li><a href="https://www.thenightsky.com/gifts/the-night-we-met-print" target="_blank" rel="noopener">The Night Sky star maps</a></li>
         <li><a href="https://us.pandora.net/en/charms/two-tone-happy-anniversary-dangle-charm/799322C01.html" target="_blank" rel="noopener">Pandora Happy Anniversary charm</a></li>
         <li><a href="https://shop.id.me/discounts/pandora/military" target="_blank" rel="noopener">Pandora military discount (ID.me)</a></li>
@@ -552,6 +561,18 @@ var CRUISE = 395; /* Flagship Moonlight & Midnight: from $149.50 + 32% fees per 
 /* Experiences. Price is for two before military discounts. ride = rough Uber cost for two, by hotel zone.
    la-first / sd-first = [day, time, slot]; days: d1 Dec 31, d2 Jan 1, d3 Jan 2. null = doesn't fit that route. */
 var EXP = [
+  { id:'spa-local', kind:'spa', city:'sd', name:'Side-by-side massage at a day spa', price:250, ride:{ gaslamp:0, coronado:0, strand:10, lajolla:0 }, t:2, r:5,
+    route:{ 'la-first':['d3','13:00','afternoon'], 'sd-first':['d1','13:00','afternoon'] }, link:'https://www.groupon.com/local/san-diego-ca/couples-massage', booking:true, by:'2026-12-01',
+    desc:'Sixty minutes side by side at a day spa near your hotel. San Diego couples massages list at about $190–$230; I add a 20% tip.' },
+  { id:'spa-estancia', kind:'spa', city:'sd', name:'Couples bungalow at Spa Estancia', price:530, ride:{ gaslamp:60, coronado:80, strand:80, lajolla:0 }, t:2, r:5,
+    route:{ 'la-first':['d3','13:00','afternoon'], 'sd-first':['d1','13:00','afternoon'] }, link:'https://www.estancialajolla.com/la-jolla-spa-specials/', booking:true, by:'2026-12-01',
+    desc:'A private bungalow and a 50-minute massage for two. $440 on the last published menu, so expect more plus a service charge. Call 858-964-6590 and ask about resident rates.' },
+  { id:'spa-del', kind:'spa', city:'sd', name:'Ocean Wave couples massage at the Del', price:620, ride:{ gaslamp:25, coronado:0, strand:15, lajolla:60 }, t:3, r:5,
+    route:{ 'la-first':['d3','13:00','afternoon'], 'sd-first':['d1','13:00','afternoon'] }, link:'https://www.resortpass.com/experiences/couples-spa-3233652', booking:true, by:'2026-12-01',
+    desc:'Fifty minutes in the couples suite, a spa pass and a bottle of Champagne. From $620 for two with the 20% service charge.' },
+  { id:'spa-wi', kind:'spa', city:'la', name:'Korean spa morning in Koreatown', price:215, ride:{ dtla:15, west:30 }, t:5, r:2,
+    route:{ 'la-first':['d2','09:00','morning'], 'sd-first':['d3','13:00','afternoon'] }, link:'https://wispausa.com/', booking:false,
+    desc:'Wi Spa: body scrubs from about $90 each, then the co-ed saunas together; the baths are separate. Very LA, less romantic.' },
   { id:'griffith', city:'la', name:'Griffith Observatory at sunset', price:0, transit:10, ride:{ dtla:0, west:30 }, t:5, r:5,
     route:{ 'la-first':['d1','15:30','sunset'], 'sd-first':['d3','15:30','sunset'] }, link:'https://griffithobservatory.lacity.gov/visit/', booking:false,
     desc:'The city lights come on below you. Metro to Vermont/Sunset, then the DASH bus up. Sunset is about 4:55.' },
@@ -629,8 +650,8 @@ var GIFTS = [
 var GIFTBY = {}; GIFTS.forEach(function(g){ GIFTBY[g.id] = g; });
 
 var DEFAULT = {
-  route:'la-first', la:'conrad', sd:'estancia', tier:'date', tier2:'casual', nye:'restaurant',
-  exp:['griffith','nyela','broad','torrey'], gifts:['heart','starmap','letters'],
+  route:'la-first', la:'conrad', sd:'estancia', tier:'casual', tier2:'casual', nye:'restaurant',
+  exp:['griffith','nyela','broad','torrey','spa-local'], gifts:['heart','letters'],
   mil:'active', meToo:false, andrew:false,
   cr:{ hotel:true, property:true, resyGold:true, resyPlat:true, uber:true, jan27:true, jan1:true },
   filter:'all'
@@ -644,6 +665,7 @@ var state = (function(){
     if (Array.isArray(saved.exp)) s.exp = saved.exp.filter(function(id){ return EXPBY[id]; });
     if (Array.isArray(saved.gifts)) s.gifts = saved.gifts.filter(function(id){ return GIFTBY[id]; });
     if (saved.cr) Object.keys(s.cr).forEach(function(k){ if (typeof saved.cr[k] === 'boolean') s.cr[k] = saved.cr[k]; });
+    if (!saved.spaAdded){ if (!s.exp.some(function(id){ return EXPBY[id].kind === 'spa'; })) s.exp.push('spa-local'); }
   }
   if (!ROUTES[s.route]) s.route = DEFAULT.route;
   if (!HOTEL.la[s.la]) s.la = DEFAULT.la;
@@ -654,7 +676,7 @@ var state = (function(){
   return s;
 })();
 var booked = store.get('oyc.booked.v1', {}); if (!booked || typeof booked !== 'object') booked = {};
-function save(){ store.set('oyc.state.v2', state); }
+function save(){ state.spaAdded = true; store.set('oyc.state.v2', state); }
 
 /* ---------- engine ---------- */
 function andrewOn(s){ return s.mil === 'active' && !!s.andrew; }
@@ -720,7 +742,7 @@ function compute(s){
   var chosen = s.exp.map(function(id){ return EXPBY[id]; }).filter(function(e){ return e && slotOf(e, s); });
   var zone = { la:hotelFor(s, 'la').zone, sd:hotelFor(s, 'sd').zone };
   chosen.forEach(function(e){
-    var p = expPrice(e, s); if (p > 0) add('Experiences', e.name, p, 'exp');
+    var p = expPrice(e, s); if (p > 0) add(e.kind === 'spa' ? 'Spa' : 'Experiences', e.name, p, 'exp');
     var day = slotOf(e, s)[0], r = e.ride[zone[e.city]] || 0;
     if (day === 'd1') uberDec += r; else uberJan += r;
     if (e.transit) transit += e.transit;
@@ -775,6 +797,7 @@ function compute(s){
   return { A:A, B:B, stays:stays, lines:lines, credits:credits, gross:gross, cred:cred, net:gross - cred, warn:warn, chosen:chosen, cruise:cruise };
 }
 var DAYNAME = { d1:'Dec 31', d2:'Jan 1', d3:'Jan 2' };
+var TWEAKS = [];
 
 /* ---------- render: route ---------- */
 function renderRoute(){
@@ -864,7 +887,8 @@ function passFilter(e){
 }
 function renderExp(){
   $$('#exp-filters .chip').forEach(function(b){ b.setAttribute('aria-pressed', String(b.dataset.filter === state.filter)); });
-  var la = EXP.filter(function(e){ return e.city === 'la' && passFilter(e); }), sd = EXP.filter(function(e){ return e.city === 'sd' && passFilter(e); });
+  $('#spa-cards').innerHTML = EXP.filter(function(e){ return e.kind === 'spa'; }).map(expCard).join('');
+  var la = EXP.filter(function(e){ return e.city === 'la' && !e.kind && passFilter(e); }), sd = EXP.filter(function(e){ return e.city === 'sd' && !e.kind && passFilter(e); });
   $('#exp-la').innerHTML = la.length ? la.map(expCard).join('') : '<p class="muted small">Nothing here for this filter.</p>';
   $('#exp-sd').innerHTML = sd.length ? sd.map(expCard).join('') : '<p class="muted small">Nothing here for this filter.</p>';
   $('#la-days').textContent = nyeCity(state) === 'la' ? 'Dec 31 – Jan 1 morning' : 'Jan 1 evening – Jan 3';
@@ -910,7 +934,7 @@ function renderFolio(c){
   $('#m-g').style.width = Math.min(100, c.gross / max * 100) + '%';
   $('#m-n').style.width = Math.max(0, Math.min(100, c.net / max * 100)) + '%'; $('#m-n').style.background = over ? 'var(--over)' : 'var(--gold)';
   $('#m-cap').style.left = (CAP / max * 100) + '%';
-  var groups = ['Stay','Travel','Table','Experiences','Gifts','On the house'], html = '';
+  var groups = ['Stay','Travel','Table','Spa','Experiences','Gifts','On the house'], html = '';
   groups.forEach(function(g){
     var ls = c.lines.filter(function(l){ return l.group === g; }); if (!ls.length) return;
     html += '<details class="fgroup"><summary>' + g + ' <b>' + fmt(sum(ls.map(function(l){ return l.amt; }))) + '</b></summary>' + ls.map(function(l){ return '<div class="fline"><span>' + esc(l.label) + '</span><b>' + fmt(l.amt) + '</b></div>'; }).join('') + '</details>';
@@ -927,9 +951,19 @@ function renderFolio(c){
   var hints = c.warn.map(function(w){ return '<p class="hint" style="border-color:var(--over)">' + esc(w) + '</p>'; });
   if (state.mil === 'active' && !state.andrew){ var s2 = clone(state); s2.andrew = true; var d = c.net - compute(s2).net; if (d >= 1) hints.push('<p class="hint">If Andrew opens <b>her own Platinum</b>, this weekend drops another ' + fmt(d) + '.</p>'); }
   if (state.sd === 'usgrant'){ var s3 = clone(state); s3.sd = 'estancia'; s3.exp = s3.exp.filter(function(id){ return EXPBY[id] && EXPBY[id].city !== 'sd'; }).concat(['torrey']); var d3 = compute(s3).net - c.net; hints.push('<p class="hint">The US Grant is a 20-minute walk from Park 12. For a San Diego half that feels like a trip, <b>Estancia La Jolla</b> with a Torrey Pines sunset costs ' + (d3 >= 0 ? fmt(d3) + ' more' : fmt(-d3) + ' less') + '.</p>'); }
+  TWEAKS = [];
   if (over){
-    var big = c.lines.filter(function(l){ return l.group === 'Gifts' || l.group === 'Experiences'; }).sort(function(a, b){ return b.amt - a.amt; })[0];
-    if (big) hints.push('<p class="hint">Over by ' + fmt(c.net - CAP) + '. The biggest optional line is <b>' + esc(big.label) + '</b> (' + fmt(big.amt) + ').</p>');
+    var cands = [];
+    if (state.tier !== 'casual') cands.push(['New Year\'s Eve dinner at Casual', function(s){ s.tier = 'casual'; }]);
+    if (state.mil === 'active' && !state.andrew) cands.push(['Andrew opens her own Platinum', function(s){ s.andrew = true; }]);
+    var spa = state.exp.filter(function(id){ return EXPBY[id] && EXPBY[id].kind === 'spa' && id !== 'spa-local'; })[0];
+    if (spa) cands.push(['Day-spa massage instead of ' + EXPBY[spa].name, function(s){ s.exp = s.exp.filter(function(id){ return id !== spa; }).concat(['spa-local']); }]);
+    state.gifts.forEach(function(id){ var g = GIFTBY[id]; if (g && g.price >= 50) cands.push(['Skip the gift: ' + g.name, function(s){ s.gifts = s.gifts.filter(function(x){ return x !== id; }); }]); });
+    c.chosen.forEach(function(e){ if (!e.kind && expPrice(e, state) > 0) cands.push(['Skip ' + e.name, function(s){ s.exp = s.exp.filter(function(x){ return x !== e.id; }); }]); });
+    ['loews','usgrant'].forEach(function(id){ if (state.sd !== id) cands.push(['Stay at ' + HOTEL.sd[id].name + (id === 'usgrant' ? ' (your neighborhood)' : ''), function(s){ s.sd = id; }]); });
+    var scored = cands.map(function(cd){ var s2 = clone(state); cd[1](s2); return { label:cd[0], fn:cd[1], save:c.net - compute(s2).net }; }).filter(function(x){ return x.save >= 5; }).sort(function(a, b){ return b.save - a.save; }).slice(0, 5);
+    TWEAKS = scored;
+    hints.push('<div class="fit"><p class="hint" style="border-color:var(--over)">Over by <b style="color:var(--over)">' + fmt(c.net - CAP) + '</b>. Each of these saves on its own:</p>' + scored.map(function(x, i){ return '<div class="setting"><div class="t"><b>' + esc(x.label) + '</b><span>Saves ' + fmt(x.save) + (c.net - x.save <= CAP ? ' · gets you under' : '') + '</span></div><button class="btn sm" type="button" data-tweak="' + i + '">Apply</button></div>'; }).join('') + '</div>');
   }
   $('#f-hints').innerHTML = hints.join('');
 }
@@ -969,7 +1003,7 @@ function renderItinerary(c){
   put(3, '09:30', 'Breakfast', bFHR ? 'Included.' : '', bFHR ? 'Included' : '');
   if (la) put(3, '16:00', 'Late checkout, then home to Park 12', (bFHR ? 'FHR guarantees 4 PM. ' : 'Checkout is usually noon. ') + (B.zone === 'gaslamp' ? 'It\'s a 20-minute walk.' : B.fromHome + '.'), B.zone === 'gaslamp' ? '' : 'January Uber Cash');
   else { put(3, '13:00', 'Pacific Surfliner south', 'Sit on the right for the ocean.'); put(3, '16:00', 'Santa Fe Depot to Park 12', 'Ten minutes by Uber, or the trolley.', 'January Uber Cash'); }
-  c.chosen.forEach(function(e){ var sl = slotOf(e, state), d = { d1:0, d2:1, d3:2 }[sl[0]]; put(d, sl[1], e.name, e.desc.split('. ')[0] + '.', '', true); });
+  c.chosen.forEach(function(e){ var sl = slotOf(e, state), d = { d1:0, d2:1, d3:2 }[sl[0]], atHotel = (e.id === 'spa-estancia' && state.sd === 'estancia') || (e.id === 'spa-del' && state.sd === 'del'); put(d, sl[1], e.name, e.desc.split('. ')[0] + '.' + (atHotel ? ' Charge it to the room; the $100 credit can go here instead of dinner, not both.' : ''), '', true); });
   days.forEach(function(d){ d.items.sort(function(a, b){ return a.t < b.t ? -1 : a.t > b.t ? 1 : 0; }); });
   $('#it-warn').innerHTML = c.warn.map(function(w){ return '<p class="hint" style="border-color:var(--over);margin-bottom:10px">' + esc(w) + '</p>'; }).join('');
   $('#days').innerHTML = days.map(function(d){
@@ -1002,7 +1036,7 @@ function renderReservations(c){
   else items.push({ id:'nye', due:'2026-11-20', t:'New Year\'s Eve table, ' + A.nb, d:'7:30 PM, on Resy with the Amex badge. A prepaid NYE menu locks the 2026 credits.', link:RESY[nyeCity(state)], lab:'Resy' });
   items.push({ id:'jan1', due:'2026-12-05', t:'Jan 1 dinner, ' + B.nb, d:'On Resy, with the Amex badge.', link:RESY[otherCity(state)], lab:'Resy' });
   items.push({ id:'jan2', due:'2026-12-15', t:'Jan 2 dinner at ' + B.dine, d:'Ask the hotel to charge it to the room so the $100 credit applies.', link:B.book, lab:'Hotel' });
-  c.chosen.forEach(function(e){ if (e.booking) items.push({ id:'x-' + e.id, due:e.by, t:e.name + ' · ' + DAYNAME[slotOf(e, state)[0]], d:e.id === 'skate' ? 'Choose the ' + timeLabel(slotOf(e, state)[1]) + ' session; it sells out.' : 'Reserve your time.', link:e.link, lab:'Book' }); });
+  c.chosen.forEach(function(e){ if (e.booking) items.push({ id:'x-' + e.id, due:e.by, t:e.name + ' · ' + DAYNAME[slotOf(e, state)[0]] + ', ' + timeLabel(slotOf(e, state)[1]), d:e.id === 'skate' ? 'Choose the ' + timeLabel(slotOf(e, state)[1]) + ' session; it sells out.' : e.kind === 'spa' ? 'Holiday weekends book up early; ask for side-by-side tables.' : 'Reserve your time.', link:e.link, lab:'Book' }); });
   state.gifts.forEach(function(id){ var g = GIFTBY[id]; if (g) items.push({ id:'g-' + g.id, due:g.by, t:'Gift: ' + g.name, d:g.id === 'heart' ? 'Engraving makes it final sale; leave time for shipping.' : g.link ? 'Order with shipping time to spare.' : 'Your part; no link needed.', link:g.link, lab:'Shop' }); });
   items.push({ id:'uber', due:'2026-12-30', t:'Add both Amex cards to Uber', d:'The Uber Cash only applies when you pay with an Amex card.' });
   items.sort(function(a, b){ return a.due < b.due ? -1 : a.due > b.due ? 1 : 0; });
@@ -1049,10 +1083,11 @@ document.addEventListener('click', function(e){
   else if (d.tier){ state.tier = d.tier; }
   else if (d.tier2){ state.tier2 = d.tier2; }
   else if (d.nye){ state.nye = d.nye; }
-  else if (d.exp){ var i = state.exp.indexOf(d.exp); if (i === -1) state.exp.push(d.exp); else state.exp.splice(i, 1); }
+  else if (d.exp){ var i = state.exp.indexOf(d.exp); if (i === -1){ if (EXPBY[d.exp].kind === 'spa') state.exp = state.exp.filter(function(id){ return !EXPBY[id] || EXPBY[id].kind !== 'spa'; }); state.exp.push(d.exp); } else state.exp.splice(i, 1); }
   else if (d.gift){ var j = state.gifts.indexOf(d.gift); if (j === -1) state.gifts.push(d.gift); else state.gifts.splice(j, 1); }
   else if (d.filter){ state.filter = d.filter; }
   else if (d.mil){ state.mil = d.mil; }
+  else if (d.tweak){ var tw = TWEAKS[+d.tweak]; if (tw) tw.fn(state); }
   else if (b.id === 'res-reset'){ $('#res-reset-yes').hidden = false; b.hidden = true; return; }
   else if (b.id === 'res-reset-yes'){ booked = {}; store.set('oyc.booked.v1', booked); b.hidden = true; $('#res-reset').hidden = false; }
   else return;
