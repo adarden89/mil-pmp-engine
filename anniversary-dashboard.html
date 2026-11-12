@@ -1,0 +1,1415 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Anniversary Weekend Planner</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: iOS inset-grouped dashboard. Hero + fact-check span the width; below 1100px everything is one column (calculator first), above it the research column sits left of a sticky calculator. */
+:root{
+  color-scheme: dark;
+  --bg:#000000;
+  --card:#1C1C1E;
+  --fill:#2C2C2E;
+  --fill-2:#3A3A3C;
+  --thumb:#636366;
+  --hair:rgba(255,255,255,0.1);
+  --label:#FFFFFF;
+  --label-2:rgba(235,235,245,0.64);
+  --label-3:rgba(235,235,245,0.40);
+  --gold:#FFD60A;
+  --plat:#E5E5EA;
+  --blue:#0A84FF;
+  --green:#30D158;
+  --red:#FF453A;
+  --orange:#FF9F0A;
+  --on-light:#1C1C1E;
+  --gold-tint:rgba(255,214,10,0.14);
+  --green-tint:rgba(48,209,88,0.15);
+  --red-tint:rgba(255,69,58,0.16);
+  --blue-tint:rgba(10,132,255,0.16);
+  --orange-tint:rgba(255,159,10,0.16);
+  --plat-tint:rgba(229,229,234,0.12);
+  --shadow:rgba(0,0,0,0.35);
+  --font:-apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", system-ui, "Segoe UI", Roboto, Arial, sans-serif;
+  --mono:ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --r:20px;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--bg);color:var(--label);
+  font-family:var(--font);font-size:16px;line-height:1.45;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));
+  padding-right:max(16px, env(safe-area-inset-right, 0px));
+  padding-block:20px 48px;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:var(--blue);text-decoration:none}
+a:hover{text-decoration:underline}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px;border-radius:8px}
+.wrap{max-width:1320px;margin:0 auto;display:grid;gap:16px;grid-template-columns:minmax(0,1fr)}
+.stack,.stack-sm,main,.calc,.calc .group,.plan,.section-head,.hero .titleblock,.meterbox{grid-template-columns:minmax(0,1fr)}
+.card{background:var(--card);border:1px solid var(--hair);border-radius:var(--r);padding:20px;min-width:0}
+h1,h2,h3,h4{margin:0;text-wrap:balance}
+h1{font-size:clamp(28px,5vw,40px);line-height:1.1;font-weight:700;letter-spacing:-0.02em}
+h2{font-size:22px;line-height:1.2;font-weight:700;letter-spacing:-0.01em}
+h3{font-size:17px;line-height:1.3;font-weight:600}
+h4{font-size:15px;font-weight:600}
+p{margin:0}
+.muted{color:var(--label-2)}
+.faint{color:var(--label-3)}
+.small{font-size:13px}
+.tiny{font-size:12px}
+.num{font-variant-numeric:tabular-nums}
+.eyebrow{font-size:13px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--label-2)}
+.stack{display:grid;gap:12px}
+.stack-sm{display:grid;gap:6px}
+.row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.spread{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:12px}
+.grid-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:12px}
+.section-head{display:grid;gap:4px;margin-bottom:4px}
+
+/* Pills & badges */
+.pill{display:inline-flex;align-items:center;gap:6px;background:var(--fill);color:var(--label-2);border:1px solid var(--hair);border-radius:999px;padding:3px 10px;font-size:12px;font-weight:600;white-space:nowrap}
+.pill.gold{background:var(--gold-tint);color:var(--gold);border-color:transparent}
+.pill.green{background:var(--green-tint);color:var(--green);border-color:transparent}
+.pill.red{background:var(--red-tint);color:var(--red);border-color:transparent}
+.pill.blue{background:var(--blue-tint);color:var(--blue);border-color:transparent}
+.pill.orange{background:var(--orange-tint);color:var(--orange);border-color:transparent}
+.pill.plat{background:var(--plat-tint);color:var(--plat);border-color:transparent}
+.cardbadge{display:inline-flex;align-items:center;font-size:11px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;border-radius:6px;padding:2px 7px;white-space:nowrap}
+.cardbadge.gold{background:var(--gold);color:var(--on-light)}
+.cardbadge.plat{background:var(--plat);color:var(--on-light)}
+.cardbadge.both{background:linear-gradient(90deg,var(--gold) 0 50%,var(--plat) 50% 100%);color:var(--on-light)}
+
+/* Hero */
+.hero{display:grid;gap:20px;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);align-items:start}
+.hero .titleblock{display:grid;gap:10px}
+.hero .sub{color:var(--label-2);font-size:15px}
+.gold-text{color:var(--gold)}
+.countdown{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;max-width:440px}
+.cd{background:var(--fill);border:1px solid var(--hair);border-radius:14px;padding:10px 6px;text-align:center}
+.cd b{display:block;font-size:clamp(24px,4vw,32px);font-weight:700;letter-spacing:-0.02em;font-variant-numeric:tabular-nums;line-height:1.1}
+.cd span{font-size:11px;color:var(--label-2);text-transform:uppercase;letter-spacing:0.06em;font-weight:600}
+.meterbox{background:var(--fill);border:1px solid var(--hair);border-radius:16px;padding:16px;display:grid;gap:12px}
+.meter{position:relative;height:16px;border-radius:8px;background:var(--bg);overflow:hidden;border:1px solid var(--hair)}
+.meter .gross{position:absolute;inset:0 auto 0 0;background:rgba(255,255,255,0.16);border-radius:8px;transition:width .35s ease}
+.meter .net{position:absolute;inset:0 auto 0 0;border-radius:8px;transition:width .35s ease,background .35s}
+.meter .cap{position:absolute;top:-2px;bottom:-2px;width:2px;background:var(--label);opacity:.9}
+.meterlegend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--label-2)}
+.meterlegend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.bignet{font-size:clamp(30px,5vw,40px);font-weight:700;letter-spacing:-0.02em;font-variant-numeric:tabular-nums;line-height:1}
+
+/* Fact check */
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:0 24px}
+.fact{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 10px;padding:12px 0;border-top:1px solid var(--hair);align-items:start;align-content:start}
+.fact .pill{grid-row:span 2;margin-top:1px;min-width:74px;justify-content:center}
+.fact p{font-size:14px}
+.fact b{font-weight:600}
+.deadlines{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:10px}
+.dl{background:var(--fill);border:1px solid var(--hair);border-radius:14px;padding:12px;display:grid;gap:4px}
+.dl .when{font-size:12px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase}
+
+/* Layout */
+.layout{display:grid;gap:16px;grid-template-columns:minmax(0,1fr)}
+@media (min-width:1100px){
+  .layout{grid-template-columns:minmax(0,1fr) 400px;align-items:start}
+  .layout > main{grid-column:1;grid-row:1}
+  .layout > aside{grid-column:2;grid-row:1;position:sticky;top:calc(env(safe-area-inset-top, 0px) + 12px);max-height:calc(100vh - 24px);overflow:auto;overscroll-behavior:contain}
+  .hero{grid-template-columns:minmax(0,1.2fr) minmax(0,1fr)}
+}
+@media (max-width:760px){ .hero{grid-template-columns:minmax(0,1fr)} }
+main{display:grid;gap:16px;min-width:0}
+
+/* Segmented control */
+.segwrap{position:sticky;top:env(safe-area-inset-top, 0px);z-index:5;background:var(--bg);padding-block:8px;margin-block:-8px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top, 0px);z-index:10;background:var(--bg)}
+.seg{display:flex;gap:2px;background:var(--fill);border:1px solid var(--hair);border-radius:12px;padding:3px;overflow-x:auto;scrollbar-width:none;scroll-snap-type:x proximity}
+.seg::-webkit-scrollbar{display:none}
+.seg button{flex:1 0 auto;scroll-snap-align:start;appearance:none;border:0;background:transparent;color:var(--label-2);font:600 13px/1 var(--font);padding:9px 10px;border-radius:9px;cursor:pointer;white-space:nowrap;transition:background .2s,color .2s}
+.seg button:hover{color:var(--label)}
+.seg button[aria-selected="true"]{background:var(--thumb);color:var(--label);box-shadow:0 2px 6px var(--shadow)}
+.seg.small button{font-size:13px;padding:8px 10px}
+
+/* Inset grouped list */
+.list{background:var(--fill);border:1px solid var(--hair);border-radius:14px;overflow:hidden}
+.li{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 14px;border-top:1px solid var(--hair);min-width:0}
+.li:first-child{border-top:0}
+.li .txt{min-width:0;display:grid;gap:2px}
+.li .txt b{font-weight:500;font-size:15px}
+.li .txt > span{font-size:12.5px;color:var(--label-2)}
+.li .txt > span.catchip{font-size:10.5px;color:var(--label-3)}
+.li .val{font-variant-numeric:tabular-nums;font-weight:600;white-space:nowrap}
+.li.disabled{opacity:.55}
+
+/* iOS switch */
+.switch{position:relative;flex:0 0 auto;width:51px;height:31px}
+.switch input{position:absolute;inset:0;opacity:0;margin:0;cursor:pointer;z-index:2}
+.switch .track{position:absolute;inset:0;border-radius:16px;background:var(--fill-2);border:1px solid var(--hair);transition:background .2s}
+.switch .knob{position:absolute;top:2px;left:2px;width:27px;height:27px;border-radius:50%;background:var(--label);box-shadow:0 2px 4px var(--shadow);transition:transform .2s}
+.switch input:checked + .track{background:var(--green);border-color:transparent}
+.switch input:checked + .track + .knob{transform:translateX(20px)}
+.switch input:focus-visible + .track{outline:2px solid var(--blue);outline-offset:2px}
+.switch input:disabled{cursor:not-allowed}
+
+/* Form controls */
+label.field{display:grid;gap:6px;font-size:13px;color:var(--label-2);font-weight:600}
+select,input[type="number"]{
+  appearance:none;-webkit-appearance:none;width:100%;
+  background:var(--fill);color:var(--label);border:1px solid var(--hair);border-radius:12px;
+  font:500 15px/1.2 var(--font);padding:11px 36px 11px 12px;
+}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M3 4.5 6 7.5 9 4.5' fill='none' stroke='%23EBEBF5' stroke-opacity='.6' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;cursor:pointer}
+select option,select optgroup{background:var(--card);color:var(--label)}
+input[type="number"]{padding-right:12px;font-variant-numeric:tabular-nums}
+.inline-num{display:flex;align-items:center;gap:8px}
+.inline-num input{width:110px}
+.btn{appearance:none;border:1px solid var(--hair);background:var(--fill);color:var(--blue);font:600 14px/1 var(--font);padding:10px 14px;border-radius:12px;cursor:pointer;white-space:nowrap}
+.btn:hover{background:var(--fill-2)}
+.btn.primary{background:var(--blue);color:var(--label);border-color:transparent}
+.btn.ghost{background:transparent}
+.linkbtn{appearance:none;border:0;background:none;color:var(--blue);font:600 13px/1.2 var(--font);padding:0;cursor:pointer}
+
+/* Calculator */
+.calc{display:grid;gap:16px}
+.calc .group{display:grid;gap:8px}
+.calc .grouplabel{font-size:12px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--label-2);padding-left:2px}
+.totals{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.tot{background:var(--fill);border:1px solid var(--hair);border-radius:14px;padding:10px 12px;display:grid;gap:2px}
+.tot span{font-size:11.5px;color:var(--label-2);font-weight:600;text-transform:uppercase;letter-spacing:0.05em}
+.tot b{font-size:20px;font-variant-numeric:tabular-nums;letter-spacing:-0.01em}
+.status{display:flex;align-items:center;justify-content:space-between;gap:10px;border-radius:14px;padding:12px 14px;font-weight:600}
+.status.ok{background:var(--green-tint);color:var(--green)}
+.status.bad{background:var(--red-tint);color:var(--red)}
+.hint{background:var(--blue-tint);color:var(--label);border-radius:12px;padding:10px 12px;font-size:13px}
+.hint b{color:var(--blue)}
+details.drawer{border:1px solid var(--hair);border-radius:14px;background:var(--fill)}
+details.drawer > summary{list-style:none;cursor:pointer;padding:12px 14px;font-weight:600;font-size:14px;display:flex;justify-content:space-between;gap:8px}
+details.drawer > summary::-webkit-details-marker{display:none}
+details.drawer > summary::after{content:"›";color:var(--label-3);transform:rotate(90deg);transition:transform .2s;font-size:18px;line-height:1}
+details.drawer[open] > summary::after{transform:rotate(270deg)}
+details.drawer .list{border:0;border-top:1px solid var(--hair);border-radius:0;background:transparent}
+.catchip{font-size:10.5px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;color:var(--label-3)}
+.credit-amt{color:var(--green)}
+
+/* Plan cards */
+.plan{background:var(--fill);border:1px solid var(--hair);border-radius:16px;padding:16px;display:grid;gap:10px;align-content:start}
+.plan .top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.plan .nums{display:flex;gap:16px;flex-wrap:wrap;font-variant-numeric:tabular-nums}
+.plan .nums div{display:grid}
+.plan .nums span{font-size:11px;color:var(--label-2);text-transform:uppercase;letter-spacing:0.05em;font-weight:600}
+.plan .nums b{font-size:18px}
+.score{display:inline-grid;place-items:center;min-width:44px;height:28px;border-radius:9px;background:var(--bg);border:1px solid var(--hair);font-weight:700;font-size:13px;font-variant-numeric:tabular-nums}
+ul.tight{margin:0;padding-left:18px;display:grid;gap:4px;font-size:14px}
+ul.tight li::marker{color:var(--label-3)}
+
+/* Tables */
+.tablewrap{overflow-x:auto;border:1px solid var(--hair);border-radius:14px;background:var(--fill)}
+table{border-collapse:collapse;width:100%;font-size:14px;min-width:620px}
+th,td{text-align:left;padding:10px 12px;border-top:1px solid var(--hair);vertical-align:top}
+thead th{border-top:0;font-size:11.5px;text-transform:uppercase;letter-spacing:0.05em;color:var(--label-2);font-weight:700;white-space:nowrap}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+tr.clickable{cursor:pointer}
+tr.clickable:hover td{background:rgba(255,255,255,0.03)}
+tr.current td{background:var(--blue-tint)}
+
+/* Checklist */
+.task{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:4px 12px;padding:12px 14px;border-top:1px solid var(--hair);align-items:start}
+.task:first-child{border-top:0}
+.task input{appearance:none;-webkit-appearance:none;width:24px;height:24px;border-radius:50%;border:2px solid var(--thumb);margin:1px 0 0;cursor:pointer;display:grid;place-items:center;background:transparent}
+.task input:checked{background:var(--blue);border-color:var(--blue)}
+.task input:checked::after{content:"";width:6px;height:11px;border:solid var(--label);border-width:0 2.5px 2.5px 0;transform:translateY(-1px) rotate(45deg)}
+.task .tt b{font-weight:600;font-size:15px}
+.task .tt p{font-size:13px;color:var(--label-2);margin-top:2px}
+.task.done .tt b{color:var(--label-3);text-decoration:line-through}
+.task .due{display:grid;justify-items:end;gap:4px;text-align:right}
+.task .due .date{font-size:12px;color:var(--label-2);font-variant-numeric:tabular-nums;white-space:nowrap}
+.progress{height:6px;border-radius:3px;background:var(--fill);overflow:hidden}
+.progress > div{height:100%;background:var(--blue);transition:width .3s}
+
+/* Footer */
+footer{max-width:1320px;margin:8px auto 0}
+.sources{columns:2 320px;column-gap:28px;font-size:13px;margin:12px 0 0;padding-left:18px}
+.sources li{break-inside:avoid;margin-bottom:6px;color:var(--label-2)}
+
+[hidden]{display:none!important}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HERO -->
+  <header class="card hero" id="top">
+    <div class="titleblock">
+      <span class="eyebrow">San Diego · Thu Dec 31, 2026 → Sun Jan 3, 2027</span>
+      <h1>1st Anniversary <span class="gold-text">•</span> Dec 31, 2026</h1>
+      <p class="sub">A $1,500 net out-of-pocket cap, Amex Gold + Platinum credits, a gold ring for two and a gold Pandora charm. Prices are November 2026 research plus my estimates. Edit them in the calculator.</p>
+      <div class="countdown" aria-live="polite" aria-label="Countdown to December 31, 2026">
+        <div class="cd"><b id="cd-d">--</b><span>Days</span></div>
+        <div class="cd"><b id="cd-h">--</b><span>Hours</span></div>
+        <div class="cd"><b id="cd-m">--</b><span>Min</span></div>
+        <div class="cd"><b id="cd-s">--</b><span>Sec</span></div>
+      </div>
+      <p class="small muted" id="cd-note">Counting down to 12:00 AM Pacific, Thursday Dec 31, 2026.</p>
+    </div>
+    <div class="meterbox" aria-label="Net out-of-pocket budget meter">
+      <div class="spread">
+        <span class="eyebrow">$1,500 Net Out-of-Pocket Budget Meter</span>
+        <span id="hero-badge" class="pill green">Under $1,500 Net</span>
+      </div>
+      <div class="row" style="align-items:baseline;gap:10px">
+        <span class="bignet" id="hero-net">$0</span>
+        <span class="muted num" id="hero-of">of $1,500 net</span>
+      </div>
+      <div class="meter" role="img" id="hero-meter-aria" aria-label="">
+        <div class="gross" id="hero-gross-bar"></div>
+        <div class="net" id="hero-net-bar"></div>
+        <div class="cap" id="hero-cap"></div>
+      </div>
+      <div class="meterlegend">
+        <span><i style="background:rgba(255,255,255,0.16)"></i>Gross <b class="num" id="hero-gross">$0</b></span>
+        <span><i style="background:var(--green)"></i>Credits <b class="num credit-amt" id="hero-credits">$0</b></span>
+        <span><i style="background:var(--label)"></i>Cap $1,500</span>
+      </div>
+      <p class="small muted">Current bundle: <b id="hero-bundle" style="color:var(--label)">—</b></p>
+    </div>
+  </header>
+
+  <!-- FACT CHECK + DEADLINES -->
+  <section class="card stack" aria-labelledby="fc-h">
+    <div class="spread">
+      <div class="section-head">
+        <span class="eyebrow">Read this first</span>
+        <h2 id="fc-h">Your brief vs. what I verified</h2>
+      </div>
+      <span class="pill">Checked Nov 12, 2026</span>
+    </div>
+    <div class="facts">
+      <div class="fact"><span class="pill red">Wrong</span><p><b>The Platinum $50 Saks credit is gone.</b></p><p class="muted small">Amex ended it June 30, 2026, after Saks Global filed Chapter 11 in January 2026. The toggle below is locked at $0.</p></div>
+      <div class="fact"><span class="pill green">Missing</span><p><b>Platinum also has a $100 Resy credit for Oct–Dec.</b></p><p class="muted small">Since the 2025 refresh it pays $100 every quarter. With Gold's $50, the NYE dinner can absorb $150 if you split the bill across both cards.</p></div>
+      <div class="fact"><span class="pill red">Wrong</span><p><b>The Hotel Collection doesn't include breakfast or a 4 PM checkout.</b></p><p class="muted small">THC gives the $100 credit and an upgrade when available, with a 2-night minimum. Daily breakfast and the guaranteed 4 PM checkout are Fine Hotels + Resorts only.</p></div>
+      <div class="fact"><span class="pill orange">Changed</span><p><b>FHR needs 2 nights from Jan 1, 2027.</b></p><p class="muted small">Amex confirmed it. A 1-night NYE FHR stay still qualifies only if the prepaid charge processes in 2026, so book in November or early December.</p></div>
+      <div class="fact"><span class="pill red">Wrong</span><p><b>Ing Art Studio is in Fremont, not Kearny Mesa.</b></p><p class="muted small">It's at 1205 Fulton Pl, Fremont, in the Bay Area. Its $138–$178 ring classes are where your gold-filled price range came from. It only works as an add-on to the SF trip.</p></div>
+      <div class="fact"><span class="pill orange">Unverified</span><p><b>ember&amp;onyx: no NYE-week pop-up found.</b></p><p class="muted small">Private workshops need 8 or more people ($90–$125/pp). As a couple you'd need a public pop-up, and I couldn't confirm any Pigment or La Mesa Wine Works dates.</p></div>
+      <div class="fact"><span class="pill red">Wrong</span><p><b>Airplane, Globe &amp; Suitcase is rose gold, not yellow gold.</b></p><p class="muted small">Style 789435C01 is 14k <i>rose</i> gold-plated and sells for about $75–$90 in the US, not $115. The yellow-gold travel pick is the Hot Air Balloon charm ($100).</p></div>
+      <div class="fact"><span class="pill orange">Changed</span><p><b>The Happy Anniversary charm costs $135, not $118.</b></p><p class="muted small">Style 799322C01 is sterling silver with <i>solid</i> 14k gold, not plating, so it beats your plated options.</p></div>
+      <div class="fact"><span class="pill orange">Changed</span><p><b>Uber Cash expires at 11:59 PM <i>Hawaii</i> time.</b></p><p class="muted small">That's 1:59 AM Pacific on Jan 1. Both cards' Uber Cash lands in one balance, and you must pay with an Amex card.</p></div>
+      <div class="fact"><span class="pill red">Wrong</span><p><b>Frontier isn't an eligible airline for the credit.</b></p><p class="muted small">Eligible airlines are Alaska, American, Delta, JetBlue, Southwest and United. The credit covers bags and seats, never fares. Southwest's first bag is now $45, and Alaska's is reportedly $45 too.</p></div>
+      <div class="fact"><span class="pill orange">Changed</span><p><b>The SFO Centurion Lounge is a temporary, smaller space.</b></p><p class="muted small">It's in Terminal 2 near gate D12, and the Terminal 3 lounge reopens around 2027. Guests cost $50 each. SAN's new Terminal 1 has no lounges at all.</p></div>
+      <div class="fact"><span class="pill orange">Changed</span><p><b>Grand Park's NYELA has no fireworks.</b></p><p class="muted small">It's a projection countdown on City Hall. For fireworks in LA, go to Marina del Rey.</p></div>
+      <div class="fact"><span class="pill orange">Changed</span><p><b>The Resy credit needs the Amex badge.</b></p><p class="muted small">Since Aug 1, 2026, the restaurant must show the Amex credit badge on Resy. Bestia and Bavel turn up on OpenTable, so they're unlikely to qualify.</p></div>
+      <div class="fact"><span class="pill orange">Unverified</span><p><b>I couldn't confirm free Pandora engraving.</b></p><p class="muted small">US product pages mention an engraving fee, and engraved items are final sale. Pandora's US loyalty program is called Pandora Club.</p></div>
+    </div>
+    <div class="stack-sm" style="margin-top:4px">
+      <span class="eyebrow">Next deadlines</span>
+      <div class="deadlines" id="next-deadlines"></div>
+    </div>
+  </section>
+
+  <div class="layout">
+
+    <!-- CALCULATOR -->
+    <aside class="card calc" id="calc" aria-labelledby="calc-h">
+      <div class="section-head">
+        <span class="eyebrow">Interactive</span>
+        <h2 id="calc-h">$1,500 Bundle &amp; Amex Credit Calculator</h2>
+        <p class="small muted">Each credit only offsets spending it actually covers. When a credit doesn't apply, the reason is listed under Credits applied.</p>
+      </div>
+
+      <div class="group">
+        <label class="field" for="f-plan">1 · Experience / trip
+          <select id="f-plan"></select>
+        </label>
+        <label class="field" for="f-transport">Getting there
+          <select id="f-transport"></select>
+        </label>
+        <div class="row" id="lounge-row" style="gap:10px">
+          <div class="switch"><input type="checkbox" id="f-lounge" role="switch" aria-label="Include SFO Centurion guest fee"><span class="track"></span><span class="knob"></span></div>
+          <label for="f-lounge" class="small muted">SFO Centurion Lounge on the way home (+$50 guest fee)</label>
+        </div>
+      </div>
+
+      <div class="group">
+        <span class="grouplabel" id="ring-lbl">2 · Gold ring for two</span>
+        <div class="seg small" role="tablist" aria-labelledby="ring-lbl" id="f-ring">
+          <button role="tab" data-v="none" aria-selected="false">None</button>
+          <button role="tab" data-v="filled" aria-selected="false">14k Gold-Filled</button>
+          <button role="tab" data-v="solid" aria-selected="false">Solid 14k Gold</button>
+        </div>
+        <div class="inline-num" id="ringpp-row">
+          <input type="number" id="f-ringpp" min="0" step="5" inputmode="numeric" aria-label="Ring price per person">
+          <span class="small muted" id="ringpp-note">per person · use your studio's quote</span>
+        </div>
+      </div>
+
+      <div class="group">
+        <label class="field" for="f-charm">3 · Gold Pandora charm
+          <select id="f-charm"></select>
+        </label>
+      </div>
+
+      <div class="group">
+        <span class="grouplabel" id="dine-lbl">4 · Dining tier</span>
+        <div class="seg small" role="tablist" aria-labelledby="dine-lbl" id="f-dining">
+          <button role="tab" data-v="casual" aria-selected="false">Casual</button>
+          <button role="tab" data-v="date" aria-selected="false">Date Night</button>
+          <button role="tab" data-v="splurge" aria-selected="false">Splurge</button>
+        </div>
+        <p class="tiny muted" id="dine-note"></p>
+      </div>
+
+      <details class="drawer" id="est-drawer">
+        <summary>Swap in your real quotes</summary>
+        <div class="stack" style="padding:0 14px 14px">
+          <label class="field" for="f-hotel" id="hotel-field">Hotel total, all nights incl. tax &amp; fees
+            <input type="number" id="f-hotel" min="0" step="10" inputmode="numeric">
+          </label>
+          <label class="field" for="f-fare" id="fare-field">Flights / train / gas total
+            <input type="number" id="f-fare" min="0" step="10" inputmode="numeric">
+          </label>
+          <button class="btn ghost" id="f-reset-est" type="button">Reset to my estimates</button>
+        </div>
+      </details>
+
+      <div class="group">
+        <span class="grouplabel">5 · Amex credits you still have for 2026</span>
+        <div class="list" id="credit-toggles"></div>
+      </div>
+
+      <div class="group">
+        <span class="grouplabel">Advanced · after the Jan 1 reset</span>
+        <div class="list" id="credit-toggles-27"></div>
+      </div>
+
+      <div class="totals">
+        <div class="tot"><span>Gross sticker</span><b id="r-gross">$0</b></div>
+        <div class="tot"><span>Amex credits</span><b id="r-credits" class="credit-amt">$0</b></div>
+        <div class="tot"><span>Net out-of-pocket</span><b id="r-net">$0</b></div>
+      </div>
+      <div class="status ok" id="r-status"><span id="r-status-txt">Under $1,500 Net</span><span class="num" id="r-status-amt"></span></div>
+      <div class="hint" id="r-hint" hidden></div>
+
+      <details class="drawer" open>
+        <summary>Line items <span class="faint num" id="r-lines-count"></span></summary>
+        <div class="list" id="r-lines"></div>
+      </details>
+      <details class="drawer" open>
+        <summary>Credits applied <span class="faint num" id="r-credits-count"></span></summary>
+        <div class="list" id="r-credit-list"></div>
+      </details>
+    </aside>
+
+    <main>
+      <div class="segwrap">
+        <nav class="seg" role="tablist" aria-label="Plan categories" id="tabs">
+          <button role="tab" data-tab="all" aria-selected="true">All Plans</button>
+          <button role="tab" data-tab="sf" aria-selected="false">SF Weekend</button>
+          <button role="tab" data-tab="la" aria-selected="false">LA &amp; Theme Parks</button>
+          <button role="tab" data-tab="rings" aria-selected="false">Gold Ring Workshops</button>
+          <button role="tab" data-tab="sd" aria-selected="false">SD Staycation</button>
+          <button role="tab" data-tab="charms" aria-selected="false">Gold Pandora Charms</button>
+          <button role="tab" data-tab="wallet" aria-selected="false">Amex Perks Wallet</button>
+        </nav>
+      </div>
+
+      <!-- ALL PLANS COMPARISON -->
+      <section class="card stack" data-tabs="all" aria-labelledby="cmp-h">
+        <div class="section-head">
+          <span class="eyebrow">All plans, live</span>
+          <h2 id="cmp-h">Every plan with your current ring, charm, dining &amp; credit picks</h2>
+          <p class="small muted">Each row uses its default way of getting there. Tap a row to load it into the calculator. Scores are my own take, out of 10.</p>
+        </div>
+        <div class="tablewrap">
+          <table>
+            <thead><tr><th>Plan</th><th class="n">Nights</th><th class="n">Gross</th><th class="n">Credits</th><th class="n">Net</th><th>vs $1,500</th><th class="n">My score</th></tr></thead>
+            <tbody id="cmp-body"></tbody>
+          </table>
+        </div>
+        <div class="hint">The pattern: <b>$1,500 covers a 3-night NYE trip or a solid gold ring for two, not both.</b> The San Diego staycation is the only plan where solid 14k rings fit. At my estimates, SF and LA fit only with casual dining and no ring (SF also needs the Jan 1 split stay). Even gold-filled rings push them roughly $10–$200 over.</div>
+      </section>
+
+      <!-- SF -->
+      <section class="card stack" data-tabs="all sf" aria-labelledby="sf-h">
+        <div class="section-head">
+          <span class="eyebrow">B · San Francisco · 3 nights</span>
+          <h2 id="sf-h">SF Weekend: Dec 31 – Jan 3</h2>
+        </div>
+        <div class="grid-3" id="sf-plans"></div>
+
+        <h3>Getting there</h3>
+        <div class="tablewrap">
+          <table>
+            <thead><tr><th>Option</th><th class="n">For 2 (est.)</th><th>Time</th><th>Notes</th></tr></thead>
+            <tbody>
+              <tr><td><b>Fly SAN → SFO</b><br><span class="muted small">Alaska · United · Southwest</span></td><td class="n">$440 fares<br>+$180 bags</td><td>1h30 flight + BART</td><td class="small">Route lows run $78–$131 round trip, and Booking.com's typical fare is $257. Your Sunday Jan 3 return is a peak day, so I use $220/pp. First bag is $45 on Southwest (and reportedly Alaska) after the April 2026 hikes; the airline credit covers bags.</td></tr>
+              <tr><td><b>Fly SAN → OAK</b><br><span class="muted small">Southwest</span></td><td class="n">$380 fares<br>+$180 bags</td><td>1h25 + BART ~35 min</td><td class="small">Often cheaper than SFO. Take BART from OAK into downtown SF.</td></tr>
+              <tr><td><b>Drive</b></td><td class="n">~$190 gas<br>+$195 parking</td><td>8–9 h each way</td><td class="small">About 1,050 miles round trip, which burns roughly 17 hours of a 4-day trip. SF hotels charge $55–$75 a night to park, and car break-ins are common, so never leave bags visible.</td></tr>
+              <tr><td><b>Frontier</b></td><td class="n">—</td><td>—</td><td class="small">I couldn't verify a nonstop SAN–SFO, and Frontier isn't eligible for the Amex airline credit.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <ul class="tight muted">
+          <li><b style="color:var(--label)">Transit:</b> BART from SFO to Powell or Montgomery is about $11.15 each way per person (check bart.gov). Muni Visitor Passports run $15 for 1 day, $35 for 3 days and $47 for 7 days, cable cars included. A single cable car ride is $9.</li>
+          <li><b style="color:var(--label)">NYE Muni:</b> In 2025, Muni was free from 8 PM to 5 AM. The 2026 plan isn't announced yet, so check sfmta.com in December.</li>
+        </ul>
+
+        <h3>Hotels in walkable areas</h3>
+        <div class="tablewrap">
+          <table>
+            <thead><tr><th>Area</th><th>Pick</th><th>Amex program</th><th>NYE reality</th></tr></thead>
+            <tbody>
+              <tr><td>Financial District / SoMa</td><td>Palace Hotel (Luxury Collection), The Jay (Autograph)</td><td><span class="pill plat">FHR</span></td><td class="small">About 15 minutes' walk to the Embarcadero fireworks. Breakfast, the $100 credit and a 4 PM checkout come with the booking.</td></tr>
+              <tr><td>Embarcadero</td><td>1 Hotel San Francisco, Four Seasons SF</td><td><span class="pill plat">FHR</span></td><td class="small">The closest hotels to the fireworks, at the highest rates. Expect them to blow the cap.</td></tr>
+              <tr><td>Nob Hill</td><td>The Huntington Hotel (added Aug 2026)</td><td><span class="pill plat">FHR</span></td><td class="small">Quiet and classic, on a cable car line.</td></tr>
+              <tr><td>Fisherman's Wharf</td><td>Argonaut, Hyatt Centric Fisherman's Wharf</td><td><span class="pill blue">THC</span></td><td class="small">Credit + upgrade only, with a 2-night minimum. The Wharf is touristy but makes a good base for walks.</td></tr>
+              <tr><td>Union Square</td><td>InterContinental SF (THC); boutiques like The Marker, Handlery, Chancellor</td><td><span class="pill blue">THC</span> / none</td><td class="small">Regular rates run $154–$182, but SF hotels average about 125% more on NYE.</td></tr>
+              <tr><td>Japantown</td><td>Hotel Kabuki (JdV by Hyatt)</td><td>none</td><td class="small">Usually $205–$296 plus a $35 nightly destination fee. It's a Hyatt Category 5, so a points stay is another option. State Bird Provisions is a short walk away.</td></tr>
+              <tr><td>Marina / Cow Hollow</td><td>Small inns</td><td>none</td><td class="small">One survey found an $89 room priced at $449 on NYE (+404%). Skip it for NYE.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="grid-2">
+          <div class="plan">
+            <h3>Lounges</h3>
+            <ul class="tight muted">
+              <li><b style="color:var(--label)">SAN:</b> Every lounge is in Terminal 2. The new Terminal 1, opened Sept 2025, has none (an Escape Lounge is planned for about 2027). Use Priority Pass through Platinum and check the guest rules in its app. The Delta Sky Club only works when flying Delta: 10 visits a year, guests $50.</li>
+              <li><b style="color:var(--label)">SFO Centurion:</b> A temporary lounge in Terminal 2 near D12, open 5 AM–11 PM, with no full kitchen. You can enter within 3 hours of departure, on departures only, so plan it for Jan 3. Your partner pays $50 unless you spend $75k a year.</li>
+            </ul>
+          </div>
+          <div class="plan">
+            <h3>NYE, dinner &amp; walks</h3>
+            <ul class="tight muted">
+              <li><b style="color:var(--label)">Fireworks:</b> Midnight over the water by the Ferry Building, about 15 minutes, free. The Embarcadero between Mission and Folsom is the spot, so arrive by 11:30 PM. They go off rain or shine.</li>
+              <li><b style="color:var(--label)">Resy dinners</b> (check for the Amex badge): Rich Table (Hayes Valley), State Bird Provisions (Fillmore), Ernest (Mission), Kin Khao (Union Square). <a href="https://resy.com/cities/san-francisco-ca" target="_blank" rel="noopener">Resy SF</a></li>
+              <li><b style="color:var(--label)">Walks:</b> Lands End Trail from Sutro Baths to Eagle's Point (Muni 38 to 48th Ave). Golden Gate Bridge from the Welcome Center (Muni 28). Both are free.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- LA + THEME PARKS -->
+      <section class="card stack" data-tabs="all la" aria-labelledby="la-h">
+        <div class="section-head">
+          <span class="eyebrow">C · Los Angeles &amp; theme parks</span>
+          <h2 id="la-h">LA Weekend + the Disneyland / Legoland reality check</h2>
+        </div>
+        <div class="grid-3" id="la-plans"></div>
+
+        <h3>Getting there</h3>
+        <div class="tablewrap">
+          <table>
+            <thead><tr><th>Option</th><th class="n">For 2 (est.)</th><th>Time</th><th>Notes</th></tr></thead>
+            <tbody>
+              <tr><td><b>Amtrak Pacific Surfliner</b><br><span class="muted small">Santa Fe Depot → Union Station</span></td><td class="n">~$160 RT</td><td>~2h50</td><td class="small">13 daily round trips since early 2026. I estimate ~$40 per person each way; check <a href="https://www.pacificsurfliner.com/" target="_blank" rel="noopener">pacificsurfliner.com</a>. <b style="color:var(--orange)">San Clemente warning:</b> the coastal track closed again in Sept 2026 and OCTA declared an emergency on Sept 28, so watch <a href="https://blog.pacificsurfliner.com/plan-your-trip/alerts/travel-advisories" target="_blank" rel="noopener">travel advisories</a>.</td></tr>
+              <tr><td><b>LA Metro</b></td><td class="n">~$30</td><td>—</td><td class="small">TAP fares are $1.75 and cap at $5 a day. The D Line runs from Union Station to Koreatown (Wilshire/Normandie).</td></tr>
+              <tr><td><b>Drive</b></td><td class="n">~$55 gas<br>+$105–$195 parking</td><td>2–3.5 h</td><td class="small">I-5 traffic on Jan 3 is bad. Getty parking is $25.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Hotels</h3>
+        <div class="tablewrap">
+          <table>
+            <thead><tr><th>Area</th><th>Pick</th><th>Amex program</th><th>Notes</th></tr></thead>
+            <tbody>
+              <tr><td>Downtown (Grand Ave)</td><td>Conrad Los Angeles</td><td><span class="pill plat">FHR</span></td><td class="small">A short walk to Grand Park's NYELA. It works for the split-stay trick.</td></tr>
+              <tr><td>Santa Monica</td><td>Fairmont Miramar, Regent Santa Monica Beach (new Aug 2026)</td><td><span class="pill plat">FHR</span></td><td class="small">Beach base. NYE rates run high.</td></tr>
+              <tr><td>Beverly Hills</td><td>Four Seasons LA at Beverly Hills, Beverly Wilshire, L'Ermitage · SIXTY Beverly Hills</td><td><span class="pill plat">FHR</span> · <span class="pill blue">THC</span></td><td class="small">The FHR names here blow the cap. SIXTY is the THC value pick.</td></tr>
+              <tr><td>Koreatown</td><td>Hotel Normandie (boutique)</td><td>none</td><td class="small">The cheapest walkable base, on the D Line, with great late-night food.</td></tr>
+              <tr><td>West Hollywood · Long Beach</td><td>Kimpton La Peer · Hotel Maya</td><td>check</td><td class="small">WeHo is lively on NYE. Long Beach is calmer, cheaper and on the A Line.</td></tr>
+              <tr><td><b style="color:var(--red)">Pasadena</b></td><td>Avoid</td><td>—</td><td class="small">The Rose Parade is Fri Jan 1, 2027 at 8 AM, and the Rose Bowl hosts a CFP quarterfinal the same day. Streets start closing around 10 PM Dec 31, and hotel packages are selling for about $4,985 per person.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="grid-2">
+          <div class="plan">
+            <h3>NYE &amp; sights</h3>
+            <ul class="tight muted">
+              <li><b style="color:var(--label)">Gloria Molina Grand Park NYELA:</b> Last year it was free, 8 PM–12:30 AM, with two stages, a City Hall projection countdown and about 25,000 people. <b style="color:var(--orange)">It's not a fireworks show.</b> The 2026 lineup is TBA at <a href="https://grandparkla.org/nyela/" target="_blank" rel="noopener">grandparkla.org</a>. For fireworks, go to Marina del Rey's Burton Chace Park.</li>
+              <li><b style="color:var(--label)">Griffith Observatory:</b> Open Tue–Fri noon–10 PM and weekends 10 AM–10 PM, closed Mondays. Dec 31 (Thu) and Jan 1 (Fri) should follow the noon–10 PM schedule, but confirm. Admission is free.</li>
+              <li><b style="color:var(--label)">The Getty Center:</b> Free with a timed reservation; parking is $25. It's normally <b style="color:var(--label)">closed Jan 1</b>, and in past years it closed early (5:30 PM) on Dec 31, so go Sat Jan 2. It closes for renovation from Mar 15, 2027 to spring 2028.</li>
+            </ul>
+          </div>
+          <div class="plan">
+            <h3>Resy dinners (check for the Amex badge)</h3>
+            <ul class="tight muted">
+              <li><b style="color:var(--label)">Horses</b> (Hollywood): Tables release on Resy 4 weeks ahead at midnight, so Dec 31 opens around 12:00 AM Dec 3. That's per a May 2025 guide, so verify.</li>
+              <li><b style="color:var(--label)">Inn of the Seventh Ray</b> (Topanga): A creekside room that's the classic anniversary pick. It's on Resy's Aug 2026 Hit List.</li>
+              <li><b style="color:var(--label)">Josephine</b> (Silver Lake), <b style="color:var(--label)">Jacaranda</b>, <b style="color:var(--label)">Mitsi</b>: All on Resy's 2026 Hit Lists. <a href="https://resy.com/cities/los-angeles-ca" target="_blank" rel="noopener">Resy LA</a></li>
+              <li><b style="color:var(--orange)">Bestia and Bavel</b> show up on OpenTable, so don't count on the Resy credit there.</li>
+            </ul>
+          </div>
+        </div>
+
+        <h3>Theme park reality check</h3>
+        <div class="grid-2">
+          <div class="plan">
+            <div class="top"><h4>Disneyland on NYE</h4><span class="score">3/10</span></div>
+            <ul class="tight muted">
+              <li>A 1-day, 1-park ticket costs <b style="color:var(--label)">$224 at the top tier</b> (unchanged in the Oct 6, 2026 price change), so $448 for two. A Park Hopper adds $75+ each.</li>
+              <li>Parking is $40 standard or $60 preferred. Dec 31 is usually one of the year's most crowded days.</li>
+              <li>No Amex credit applies except Uber Cash. Park food isn't on Resy, and Disney hotels aren't FHR.</li>
+              <li>Matching charm: Fantasyland Castle Dangle, $135.</li>
+            </ul>
+          </div>
+          <div class="plan">
+            <div class="top"><h4>Legoland California</h4><span class="score">1/10</span></div>
+            <ul class="tight muted">
+              <li>Dated tickets run about $64–$69 online when bought ahead and more at the gate. Parking is $40.</li>
+              <li>Its NYE event is a <b style="color:var(--label)">Kids' New Year's Eve</b> with early fireworks so children are in bed by midnight.</li>
+              <li>It's built for ages 2–12. It's cheap, but it's not an anniversary.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="tablewrap">
+          <table>
+            <thead><tr><th>Plan</th><th class="n">Days</th><th class="n">Gross</th><th class="n">Net</th><th class="n">Net / day</th><th>vs $1,500</th></tr></thead>
+            <tbody id="reality-body"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- RINGS -->
+      <section class="card stack" data-tabs="all rings" aria-labelledby="ring-h">
+        <div class="section-head">
+          <span class="eyebrow gold-text">A · Gold ring-making workshops</span>
+          <h2 id="ring-h">Gold-filled or solid 14k, for two</h2>
+        </div>
+        <div class="grid-2">
+          <div class="plan">
+            <div class="top"><h3>14k Gold-Filled</h3><span class="pill gold">$90–$178 / person</span></div>
+            <p class="small muted">A thick layer of 14k gold bonded to a brass core, at least 5% gold by weight. It holds its color for years with care, but it isn't solid gold and can't really be resized.</p>
+            <p class="num"><b>For two: ~$180–$356</b> <span class="muted small">· I use $150/pp</span></p>
+          </div>
+          <div class="plan">
+            <div class="top"><h3>Solid 14k Yellow Gold</h3><span class="pill gold">$350–$650+ / person</span></div>
+            <p class="small muted">58.5% gold all the way through, so it can be resized and passed down. Spot gold was about <b style="color:var(--label)">$4,050/oz</b> in early November 2026, down from its $5,608 peak in January. That puts 14k at about <b style="color:var(--label)">$76/g</b> at melt, and a 2 mm band uses 2.5–4 g, so metal alone is $190–$300 per ring before the studio's markup.</p>
+            <p class="num"><b>For two: ~$700–$1,300</b> <span class="muted small">· I use $500/pp · ask for per-gram pricing</span></p>
+          </div>
+        </div>
+        <div class="grid-3">
+          <div class="plan">
+            <div class="top"><h3>San Diego Jewelry Academy / Whaley Studios</h3></div>
+            <span class="pill gold">Best SD pick for solid gold</span>
+            <ul class="tight muted">
+              <li>3848 Fifth Ave, Hillcrest. Directory listings put the Academy at the same address as Jay Whaley, a former head of jewelry at UCSD.</li>
+              <li>Private one-day couples workshops for wedding or commitment bands in gold, silver or platinum, including 14K/18K/22K gold.</li>
+              <li><b style="color:var(--label)">Price isn't published</b>, so call for a quote for two. Ask about the metal lead time.</li>
+              <li>NYE week: not listed online, so ask for Sat Dec 19 or Sun Dec 20 so the rings are finished before Dec 31.</li>
+            </ul>
+            <a href="https://coursehorse.com/san-diego/schools/art/whaley-studios" target="_blank" rel="noopener">Whaley Studios listing →</a>
+          </div>
+          <div class="plan">
+            <div class="top"><h3>ember&amp;onyx</h3></div>
+            <span class="pill gold">14k gold-filled</span>
+            <ul class="tight muted">
+              <li>Run by Point Loma metalsmith Sangeeta Nair-Williams: hand-stamped and stacking rings in 14k gold-filled wire.</li>
+              <li>$90–$125 per person, and private bookings need <b style="color:var(--label)">8 or more people</b>. Public pop-ups at Pure Project breweries have run $110–$125.</li>
+              <li>I couldn't verify any Pigment (Point Loma or Del Mar) or La Mesa Wine Works dates, or a NYE-week event.</li>
+            </ul>
+            <a href="https://shopemberandonyx.com/workshops" target="_blank" rel="noopener">ember&amp;onyx workshops →</a>
+          </div>
+          <div class="plan">
+            <div class="top"><h3>Ing Art Studio</h3></div>
+            <span class="pill orange">Fremont, CA, not San Diego</span>
+            <ul class="tight muted">
+              <li>1205 Fulton Pl, Fremont. Most ring classes are $138–$178 per person plus a $20 online deposit each, in 925 silver or gold.</li>
+              <li>Solid 14K/18K is an upgrade that needs an advance metal order (your brief says 3+ days; confirm).</li>
+              <li>It only fits the SF trip, about 45–60 minutes from downtown by BART plus a short ride.</li>
+            </ul>
+            <a href="https://www.theingartstudio.com/" target="_blank" rel="noopener">theingartstudio.com →</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- SD STAYCATION -->
+      <section class="card stack" data-tabs="all sd" aria-labelledby="sd-h">
+        <div class="section-head">
+          <span class="eyebrow">D · Luxury on a budget</span>
+          <h2 id="sd-h">San Diego staycation combo</h2>
+          <p class="small muted">The one plan where solid 14k gold rings for two fit, using every credit.</p>
+        </div>
+        <div class="grid-2">
+          <div class="plan">
+            <div class="top"><h3>The combo, priced live</h3><button class="btn primary" type="button" id="load-combo">Load in calculator</button></div>
+            <p class="small muted">US Grant (FHR) for Dec 31 · solid 14k rings for two at $500/pp · NYE dinner on Resy (Date Night) · heart dangle charm · January Uber Cash turned on.</p>
+            <div class="list" id="combo-receipt"></div>
+            <p class="small muted" id="combo-verdict"></p>
+          </div>
+          <div class="plan">
+            <h3>How the credits stack</h3>
+            <ul class="tight muted">
+              <li><b style="color:var(--label)">$300 hotel credit:</b> covers most of one prepaid US Grant FHR night. It must be booked and charged in 2026, which is also the only way a 1-night FHR stay still qualifies.</li>
+              <li><b style="color:var(--label)">$100 FHR credit:</b> spend it on NYE cocktails or room service. You also get breakfast on Jan 1 and checkout at 4 PM.</li>
+              <li><b style="color:var(--label)">$150 Resy:</b> pay $100 on Platinum and the rest on Gold, and ask the restaurant to close the check before midnight.</li>
+              <li><b style="color:var(--label)">$45 + $25 Uber:</b> December's credit gets you there and to dinner. January's loads at midnight for the ride home.</li>
+              <li><b style="color:var(--label)">The ring quote decides it.</b> At $500/pp you're right at the cap; at $450/pp you're about $100 under.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="grid-3" id="sd-plans"></div>
+        <ul class="tight muted">
+          <li><b style="color:var(--label)">FHR in SD:</b> Hotel del Coronado (plus Beach Village and Shore House at The Del), The US Grant (downtown, a walk to Little Italy), Estancia La Jolla (FHR special offer). <b style="color:var(--label)">THC:</b> Loews Coronado Bay, InterContinental San Diego, Kona Kai (Shelter Island). Check the badge on Amex Travel for your dates.</li>
+          <li><b style="color:var(--label)">Dinner warning:</b> Callie, Cesarina, Cowboy Star, LEILA and Lilo were OpenTable's 2026 Top 100 picks, so they likely won't trigger Resy credits. Addison (Del Mar) is on Tock, and some Tock restaurants became credit-eligible on Sept 15, 2026; check the badge. Last year's NYE menus included Allegro (Little Italy), The Marine Room (La Jolla) and Lionfish at Pendry. <a href="https://resy.com/cities/san-diego-ca" target="_blank" rel="noopener">Resy SD</a></li>
+        </ul>
+      </section>
+
+      <!-- CHARMS -->
+      <section class="card stack" data-tabs="all charms" aria-labelledby="ch-h">
+        <div class="section-head">
+          <span class="eyebrow gold-text">E · Gold-toned Pandora charms</span>
+          <h2 id="ch-h">Charms that match each plan</h2>
+          <p class="small muted">US prices; 7.75% San Diego sales tax is added in the calculator. Engrave "12.31.25" on one side and "1 YR" on the other.</p>
+        </div>
+        <div class="grid-3" id="charm-cards"></div>
+        <div class="grid-2">
+          <div class="plan">
+            <h3>Buying in San Diego</h3>
+            <ul class="tight muted">
+              <li><b style="color:var(--label)">Pandora Fashion Valley:</b> 7007 Friars Rd, Suite 543B · (619) 202-1704. Pandora's store locator lists engraving here; call to confirm engraving hours.</li>
+              <li>US pages advertise <b style="color:var(--label)">free in-store pickup, ready in about 2 hours</b>. Engraved online orders may not qualify for pickup (Pandora Canada says they don't), so for engraving, buy in store or ship early.</li>
+              <li>Engraved items are <b style="color:var(--label)">final sale</b>. US pages mention an engraving fee, and I couldn't verify a free engraving perk.</li>
+            </ul>
+          </div>
+          <div class="plan">
+            <h3>Before you buy</h3>
+            <ul class="tight muted">
+              <li><b style="color:var(--label)">Moments or ME?</b> Moments bracelets don't take Pandora ME charms or clips. All six charms here are Moments-style dangles, so check which bracelet your partner wears.</li>
+              <li><b style="color:var(--label)">Amex Offers:</b> A third-party tracker shows 4% back at us.pandora.net through Dec 1, 2026 (max $250). Check the Offers tab on <i>both</i> cards and add the offer before you pay.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- WALLET -->
+      <section class="card stack" data-tabs="all wallet" aria-labelledby="w-h">
+        <div class="section-head">
+          <span class="eyebrow">Amex Perks Wallet</span>
+          <h2 id="w-h">Every credit that touches this trip</h2>
+        </div>
+        <div class="grid-2" id="wallet-cards"></div>
+        <div class="plan">
+          <div class="top"><h3>The Jan 1 reset play</h3><span class="score">8/10</span></div>
+          <p class="small muted">Your trip crosses into a new credit period. Book Dec 31 now as its own 1-night FHR stay, which uses the H2 2026 $300. Then, on the morning of Jan 1, book Jan 1–3 as a separate 2-night FHR stay, which uses the H1 2027 $300. That's two $100 property credits and breakfast both days. Platinum Resy ($100 for Q1), Gold Resy ($50 for H1) and January Uber Cash ($25) also reset at midnight for your Jan 1 or 2 dinner.</p>
+          <ul class="tight muted">
+            <li><b style="color:var(--orange)">Risks:</b> rates and availability on Jan 1, a possible room change (ask the hotel to link the stays), and Amex reading the charge date (book the second stay after midnight Eastern to be safe).</li>
+            <li>Protect yourself by holding a refundable direct booking for Jan 1–3 as a backup, then cancelling it once the FHR booking goes through.</li>
+            <li>Using the January credits now means they won't cover a meal later in Q1. The calculator keeps them off by default for that reason.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- CHECKLIST (always visible) -->
+      <section class="card stack" aria-labelledby="ck-h" id="checklist">
+        <div class="spread">
+          <div class="section-head">
+            <span class="eyebrow">Saved on this device</span>
+            <h2 id="ck-h">7-week prep &amp; Amex deadline checklist</h2>
+          </div>
+          <div class="row">
+            <span class="pill num" id="ck-count">0 / 0</span>
+            <button class="btn ghost" type="button" id="ck-reset">Reset</button>
+            <button class="btn" type="button" id="ck-reset-confirm" hidden>Clear all checks</button>
+          </div>
+        </div>
+        <div class="progress" aria-hidden="true"><div id="ck-bar" style="width:0"></div></div>
+        <div class="list" id="ck-list"></div>
+        <p class="tiny faint">Checks are stored in this browser's localStorage, so they won't sync to other devices or your partner's.</p>
+      </section>
+    </main>
+  </div>
+
+  <footer class="card">
+    <details>
+      <summary class="eyebrow" style="cursor:pointer">Sources &amp; method</summary>
+      <p class="small muted" style="margin-top:10px">Prices come from November 2026 web research. Hotel, fare and dinner figures are my estimates (typical rate plus the NYE premium); swap in real quotes in the calculator. Verify each Amex credit on its card's Benefits page before relying on it.</p>
+      <ul class="sources">
+        <li><a href="https://viewfromthewing.com/amex-confirms-platinums-300-hotel-credit-will-require-2-nights-starting-january-1-adds-airbnb-luxe-option/" target="_blank" rel="noopener">View from the Wing: FHR 2-night rule from Jan 1, 2027</a></li>
+        <li><a href="https://thriftytraveler.com/news/credit-card/amex-platinum-hotel-credit-two-night-minimum/" target="_blank" rel="noopener">Thrifty Traveler: credit follows the processing date</a></li>
+        <li><a href="https://upgradedpoints.com/credit-cards/reviews/american-express-platinum-card/benefits/" target="_blank" rel="noopener">Upgraded Points: Platinum benefits ($300 hotel, $100/qtr Resy)</a></li>
+        <li><a href="https://www.nerdwallet.com/travel/news/amex-platinum-saks-credit" target="_blank" rel="noopener">NerdWallet: Saks credit ends June 30, 2026</a></li>
+        <li><a href="https://thepointsguy.com/credit-cards/saks-bankruptcy-amex-platinum-credits/" target="_blank" rel="noopener">The Points Guy: Saks bankruptcy &amp; Amex credits</a></li>
+        <li><a href="https://frequentmiler.com/changes-coming-to-resy-credit-eligible-restaurants/" target="_blank" rel="noopener">Frequent Miler: Resy badge rule (Aug 1, 2026)</a></li>
+        <li><a href="https://www.insideflyer.com/posts/amex-resy-credit-rules-change-august-2026" target="_blank" rel="noopener">InsideFlyer: Resy rule change &amp; Tock</a></li>
+        <li><a href="https://www.uber.com/us/en/u/amex/" target="_blank" rel="noopener">Uber: Amex Uber Cash terms</a></li>
+        <li><a href="https://thepointsguy.com/news/amex-credit-uber-cash/" target="_blank" rel="noopener">The Points Guy: Gold + Platinum Uber Cash combine</a></li>
+        <li><a href="https://awardwallet.com/blog/amex-platinum-airline-fee-credit" target="_blank" rel="noopener">AwardWallet: eligible airlines, 2026</a></li>
+        <li><a href="https://www.goodmorningamerica.com/travel/story/american-airlines-alaska-airlines-join-carriers-raising-bag-131890702" target="_blank" rel="noopener">ABC: Alaska bag fee $45 (Apr 2026)</a></li>
+        <li><a href="https://upgradedpoints.com/news/southwest-airlines-increasing-checked-bag-fees-2026/" target="_blank" rel="noopener">Upgraded Points: Southwest bags $45/$55</a></li>
+        <li><a href="https://www.nerdwallet.com/travel/learn/temporary-amex-lounge-sfo" target="_blank" rel="noopener">NerdWallet: temporary SFO Centurion</a></li>
+        <li><a href="https://www.insideflyer.com/posts/temporary-centurion-lounge-opens-at-sfo/" target="_blank" rel="noopener">InsideFlyer: SFO interim lounge hours</a></li>
+        <li><a href="https://www.nerdwallet.com/travel/learn/san-diego-airport-lounges" target="_blank" rel="noopener">NerdWallet: San Diego airport lounges</a></li>
+        <li><a href="https://upgradedpoints.com/news/amex-adds-350-fine-hotels-resorts/" target="_blank" rel="noopener">Upgraded Points: FHR/THC Aug 2026 additions</a></li>
+        <li><a href="https://awardtravelfinder.com/amex-fine-hotels-and-resorts/san-francisco" target="_blank" rel="noopener">Award Travel Finder: SF FHR/THC list</a></li>
+        <li><a href="https://www.traveldailynews.com/hotels-lodging/hotels-in-san-francisco-rise-strongly-for-new-years-eve/" target="_blank" rel="noopener">Travel Daily News: SF NYE hotel premiums</a></li>
+        <li><a href="https://upgradedpoints.com/travel/hotels/hotel-kabuki-review/" target="_blank" rel="noopener">Upgraded Points: Hotel Kabuki</a></li>
+        <li><a href="https://www.inyourpocket.com/united-states/san-francisco/events/san-francisco-new-years-eve-fireworks" target="_blank" rel="noopener">In Your Pocket: SF NYE fireworks 2026</a></li>
+        <li><a href="https://www.sfmta.com/es/node/44854" target="_blank" rel="noopener">SFMTA: free Muni NYE 2025</a></li>
+        <li><a href="https://www.inyourpocket.com/united-states/san-francisco/articles/getting-around-san-francisco-muni-bart-cable-cars" target="_blank" rel="noopener">In Your Pocket: Muni Visitor Passport prices</a></li>
+        <li><a href="https://www.kayak.com/flight-routes/San-Diego-SAN/San-Francisco-SFO" target="_blank" rel="noopener">KAYAK: SAN–SFO fares</a></li>
+        <li><a href="https://www.pacificsurfliner.com/press-releases/2026-01-13-amtrak-pacific-surfliner/" target="_blank" rel="noopener">Pacific Surfliner: 13th daily round trip</a></li>
+        <li><a href="https://voiceofoc.org/2026/09/san-clemente-rail-line-closed-after-rainfall-high-surf-hit-orange-county-coast/" target="_blank" rel="noopener">Voice of OC: San Clemente closure (Sept 2026)</a></li>
+        <li><a href="https://upgradedpoints.com/news/disney-ticket-price-increases-october-2026/" target="_blank" rel="noopener">Upgraded Points: Disney prices (Oct 2026)</a></li>
+        <li><a href="https://wdwnt.com/2025/10/disneyland-resort-parking-price-increases/" target="_blank" rel="noopener">WDWNT: Disneyland parking $40</a></li>
+        <li><a href="https://www.legoland.com/california/" target="_blank" rel="noopener">Legoland California</a></li>
+        <li><a href="https://www.broadwayworld.com/article/Gloria-Molina-Grand-Park-to-Present-NYELA-2026-Celebration-Featuring-Ruby-Ibarra-BARDO-and-Ceci-Bastida-20251117" target="_blank" rel="noopener">BroadwayWorld: Grand Park NYELA format</a></li>
+        <li><a href="https://griffithobservatory.lacity.gov/visit/" target="_blank" rel="noopener">Griffith Observatory: hours</a></li>
+        <li><a href="https://www.theartnewspaper.com/2026/04/10/getty-center-to-undergo-major-renovations-close-for-a-year-beginning-march-2027" target="_blank" rel="noopener">The Art Newspaper: Getty closure 2027</a></li>
+        <li><a href="https://www.visitpasadena.com/events/annual-events/rose-parade-guide/" target="_blank" rel="noopener">Visit Pasadena: Rose Parade</a></li>
+        <li><a href="https://blog.resy.com/the-hit-list/la-restaurants-oct-2026/" target="_blank" rel="noopener">Resy: LA Hit List Oct 2026</a></li>
+        <li><a href="https://blog.resy.com/the-hit-list/la-restaurants-aug-2026/" target="_blank" rel="noopener">Resy: LA Hit List Aug 2026</a></li>
+        <li><a href="https://resident.com/food-and-drink/2025/05/01/10-most-exclusive-restaurant-reservations-in-los-angeles-and-how-to-get-in" target="_blank" rel="noopener">Resident: Horses booking window</a></li>
+        <li><a href="https://www.10news.com/lifestyle/exploring-san-diego/5-san-diego-county-restaurants-make-opentables-top-100-list-for-2026" target="_blank" rel="noopener">10News: SD OpenTable Top 100</a></li>
+        <li><a href="https://www.theingartstudio.com/" target="_blank" rel="noopener">Ing Art Studio (Fremont)</a></li>
+        <li><a href="https://shopemberandonyx.com/workshops" target="_blank" rel="noopener">ember&amp;onyx workshops</a></li>
+        <li><a href="https://coursehorse.com/san-diego/schools/art/whaley-studios" target="_blank" rel="noopener">CourseHorse: Whaley Studios</a></li>
+        <li><a href="https://pricegold.net/2026/november/6/" target="_blank" rel="noopener">Gold price, Nov 6, 2026</a></li>
+        <li><a href="https://us.pandora.net/en/charms/two-tone-happy-anniversary-dangle-charm/799322C01.html" target="_blank" rel="noopener">Pandora US: Happy Anniversary charm</a></li>
+        <li><a href="https://ca.pandora.net/en/jewellery/rose-gold-plated/airplane--globe-suitcase-triple-dangle-charm/789435C01.html" target="_blank" rel="noopener">Pandora: Airplane, Globe &amp; Suitcase (rose gold)</a></li>
+        <li><a href="https://us.pandora.net/en/charms/sparkling-clear-hot-air-balloon-dangle-charm/769434C01.html" target="_blank" rel="noopener">Pandora US: Hot Air Balloon charm</a></li>
+        <li><a href="https://disneystore.com/fantasyland-castle-dangle-charm-by-pandora-443003287199.html" target="_blank" rel="noopener">Disney Store: Fantasyland Castle charm</a></li>
+        <li><a href="https://www.benbridge.com/jewelry/pandora-engravable-love-heart-dangle-charm-60122016.html" target="_blank" rel="noopener">Ben Bridge: Engravable Love Heart Dangle</a></li>
+        <li><a href="https://www.benbridge.com/jewelry/pandora-engravable-round-tag-dangle-charm-60013956.html" target="_blank" rel="noopener">Ben Bridge: Engravable Round Tag Dangle</a></li>
+        <li><a href="https://au.pandora.net/en/inspiration/bracelet-guide/moments-bracelets/" target="_blank" rel="noopener">Pandora: Moments vs ME compatibility</a></li>
+        <li><a href="https://www.nextcard.com/tools/card-linked-offers/merchants/pandora-2" target="_blank" rel="noopener">NextCard: Pandora card-linked offers</a></li>
+        <li><a href="https://www.mallsinamerica.com/california/fashion-valley-mall/pandora" target="_blank" rel="noopener">Pandora Fashion Valley</a></li>
+      </ul>
+    </details>
+  </footer>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+/* ---------- helpers ---------- */
+var CAP = 1500, SALES_TAX = 0.0775, DAY = 86400000;
+function fmt(n){ var r = Math.round(Math.abs(n)); return (n < -0.5 ? '−' : '') + '$' + r.toLocaleString('en-US'); }
+function credFmt(n){ return n >= 0.5 ? '−' + fmt(n) : '$0'; }
+function sum(a){ return a.reduce(function(x,y){ return x + y; }, 0); }
+function $(s, el){ return (el || document).querySelector(s); }
+function $$(s, el){ return Array.prototype.slice.call((el || document).querySelectorAll(s)); }
+function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+function clone(o){ return JSON.parse(JSON.stringify(o)); }
+var store = {
+  get: function(k, d){ try { var v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch(e){ return d; } },
+  set: function(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} }
+};
+
+/* ---------- data ---------- */
+var DINING = {
+  casual:  { label:'Casual',     nye:180, jan:120, perDay:70,  park:140, note:'NYE dinner ≈ $180 for two incl. tax + tip; other meals ≈ $70/day.' },
+  date:    { label:'Date Night', nye:320, jan:180, perDay:90,  park:220, note:'NYE prix fixe ≈ $320 for two incl. tax + tip; Jan dinner ≈ $180; other meals ≈ $90/day.' },
+  splurge: { label:'Splurge',    nye:550, jan:260, perDay:115, park:320, note:'Tasting menu ≈ $550 for two incl. tax + tip; Jan dinner ≈ $260; other meals ≈ $115/day.' }
+};
+var RINGS = {
+  none:   { label:'No ring', pp:0 },
+  filled: { label:'14k gold-filled', pp:150, note:'ember&onyx $90–$125 · Ing Art $138–$178 (Fremont)' },
+  solid:  { label:'Solid 14k gold', pp:500, note:'Est. $350–$650+/pp at ~$4,050/oz spot · get a quote' }
+};
+var CHARMS = [
+  { id:'none',    short:'No charm', name:'No charm', price:0 },
+  { id:'heart',   short:'Engravable Love Heart Dangle', name:'Engravable Love Heart Dangle', price:75, finish:'14k gold-plated', match:'Any plan · SD staycation', tag:'gold',
+    note:'The closest verified US match to the "Heart Tag Dangle" (~$68 in your brief): $75 regular at Ben Bridge, seen on sale for $37.50. Engravable.', link:'https://www.benbridge.com/jewelry/pandora-engravable-love-heart-dangle-charm-60122016.html' },
+  { id:'round',   short:'Engravable Round Tag Dangle', name:'Engravable Round Tag Dangle', price:80, finish:'14k gold-plated', match:'Any plan', tag:'gold',
+    note:'Your ~$80 matches overseas prices (A$99, £55). Confirm the US price; I couldn\'t find it on us.pandora.net.', link:'https://www.benbridge.com/jewelry/pandora-engravable-round-tag-dangle-charm-60013956.html' },
+  { id:'balloon', short:'Hot Air Balloon Dangle', name:'Sparkling Clear Hot Air Balloon Dangle', price:100, finish:'14k gold-plated', match:'SF / LA trips', tag:'gold',
+    note:'The yellow-gold travel charm: $100 on us.pandora.net, with Murano glass and CZ.', link:'https://us.pandora.net/en/charms/sparkling-clear-hot-air-balloon-dangle-charm/769434C01.html' },
+  { id:'plane',   short:'Airplane, Globe & Suitcase Triple Dangle', name:'Airplane, Globe & Suitcase Triple Dangle', price:90, finish:'14k ROSE gold-plated', match:'SF / LA, if rose gold is OK', tag:'orange',
+    note:'Style 789435C01 is rose gold-plated. US retailers sell it for $68–$90, not $115.', link:'https://ca.pandora.net/en/jewellery/rose-gold-plated/airplane--globe-suitcase-triple-dangle-charm/789435C01.html' },
+  { id:'castle',  short:'Disney Fantasyland Castle Dangle', name:'Disney Fantasyland Castle Dangle', price:135, finish:'Gold-plated (listings conflict)', match:'Disneyland', tag:'gold',
+    note:'$135. One listing says 14k gold-plated and Disney Store says 14k rose gold-plated, so check the finish in person.', link:'https://disneystore.com/fantasyland-castle-dangle-charm-by-pandora-443003287199.html' },
+  { id:'anniv',   short:'Two-tone Happy Anniversary Dangle', name:'Two-tone Happy Anniversary Dangle', price:135, finish:'Sterling silver + solid 14k gold', match:'Any plan', tag:'gold',
+    note:'Style 799322C01 is $135 in the US, not $118. It has real 14k gold, not plating.', link:'https://us.pandora.net/en/charms/two-tone-happy-anniversary-dangle-charm/799322C01.html' }
+];
+var CHARM = {}; CHARMS.forEach(function(c){ CHARM[c.id] = c; });
+
+/* Transport sets: lines(n nights, hotel) */
+var TRANSPORT = {
+  sf: [
+    { id:'fly-sfo', label:'Fly SAN ⇄ SFO + BART + Muni pass', fly:true, lines:function(){ return [
+      { key:'fare', label:'Flights SAN ⇄ SFO, 2 travelers (est. $220/pp)', amt:440, cat:'air' },
+      { label:'1 checked bag each, both ways ($45 × 4)', amt:180, cat:'airfees' },
+      { label:'BART SFO ⇄ downtown, 2 travelers (~$11.15 each way)', amt:45, cat:'transit' },
+      { label:'Muni 3-day Visitor Passport × 2 (cable cars incl.)', amt:70, cat:'transit' },
+      { label:'Uber: home → SAN + NYE ride (Dec 31)', amt:55, cat:'uber-dec' },
+      { label:'Uber: SAN → home + extras (Jan)', amt:50, cat:'uber-jan' } ]; } },
+    { id:'fly-oak', label:'Fly SAN ⇄ OAK (Southwest) + BART', fly:false, lines:function(){ return [
+      { key:'fare', label:'Flights SAN ⇄ OAK, 2 travelers (est. $190/pp)', amt:380, cat:'air' },
+      { label:'1 checked bag each, both ways ($45 × 4)', amt:180, cat:'airfees' },
+      { label:'BART OAK ⇄ SF, 2 travelers (est.)', amt:45, cat:'transit' },
+      { label:'Muni 3-day Visitor Passport × 2', amt:70, cat:'transit' },
+      { label:'Uber: home → SAN + NYE ride (Dec 31)', amt:55, cat:'uber-dec' },
+      { label:'Uber: SAN → home + extras (Jan)', amt:50, cat:'uber-jan' } ]; } },
+    { id:'drive-sf', label:'Drive (~500 mi each way)', lines:function(n, h){ return [
+      { key:'fare', label:'Gas, ~1,050 mi round trip', amt:190, cat:'gas' },
+      { label:'Hotel parking × ' + n + ' nights', amt:(h ? h.parking : 60) * n, cat:'parking' },
+      { label:'Muni 3-day Visitor Passport × 2', amt:70, cat:'transit' },
+      { label:'Uber: NYE ride (Dec 31)', amt:25, cat:'uber-dec' },
+      { label:'Uber: extras (Jan)', amt:20, cat:'uber-jan' } ]; } }
+  ],
+  la: [
+    { id:'train', label:'Amtrak Pacific Surfliner + LA Metro', lines:function(){ return [
+      { key:'fare', label:'Surfliner SD ⇄ LA, 2 travelers (est. $40/pp each way)', amt:160, cat:'rail' },
+      { label:'LA Metro TAP × 2 ($5/day cap, 3 days)', amt:30, cat:'transit' },
+      { label:'Uber: to Santa Fe Depot + NYE ride (Dec 31)', amt:50, cat:'uber-dec' },
+      { label:'Uber: Getty round trip, Griffith, depot → home (Jan)', amt:110, cat:'uber-jan' } ]; } },
+    { id:'drive-la', label:'Drive (~120 mi each way)', lines:function(n, h){ return [
+      { key:'fare', label:'Gas, ~300 mi total', amt:55, cat:'gas' },
+      { label:'Hotel parking × ' + n + ' nights', amt:(h ? h.parking : 40) * n, cat:'parking' },
+      { label:'Getty parking + Griffith meters', amt:45, cat:'parking' },
+      { label:'Uber: NYE ride (Dec 31)', amt:25, cat:'uber-dec' } ]; } }
+  ],
+  disney: [
+    { id:'disney-hotel', label:'Drive + walkable Anaheim hotel Dec 31', lines:function(){ return [
+      { label:'Anaheim hotel near the gate, NYE (est., not FHR)', amt:340, cat:'hotel' },
+      { label:'Hotel parking', amt:30, cat:'parking' },
+      { key:'fare', label:'Gas, ~190 mi round trip', amt:35, cat:'gas' } ]; } },
+    { id:'disney-day', label:'Day trip · drive home after midnight', lines:function(){ return [
+      { label:'Disneyland parking (standard)', amt:40, cat:'parking' },
+      { key:'fare', label:'Gas, ~190 mi round trip', amt:35, cat:'gas' } ]; } }
+  ],
+  lego: [
+    { id:'lego-drive', label:'Drive to Carlsbad + Uber to dinner', lines:function(){ return [
+      { key:'fare', label:'Gas, Carlsbad round trip', amt:15, cat:'gas' },
+      { label:'Legoland parking (regular)', amt:40, cat:'parking' },
+      { label:'Uber: NYE dinner ride (Dec 31)', amt:30, cat:'uber-dec' } ]; } }
+  ],
+  sdUber: [
+    { id:'sd-uber', label:'Uber to the hotel (no car)', lines:function(){ return [
+      { label:'Uber: home → hotel + to dinner (Dec 31)', amt:35, cat:'uber-dec' },
+      { label:'Uber: hotel → home (Jan)', amt:25, cat:'uber-jan' } ]; } },
+    { id:'sd-drive', label:'Drive and self-park', lines:function(n, h){ return [
+      { key:'fare', label:'Gas', amt:10, cat:'gas' },
+      { label:'Hotel parking × ' + n + ' night' + (n > 1 ? 's' : ''), amt:(h ? h.parking : 45) * n, cat:'parking' },
+      { label:'Uber: NYE dinner ride (Dec 31)', amt:25, cat:'uber-dec' } ]; } }
+  ],
+  sdDrive: [
+    { id:'sd-drive', label:'Drive and self-park', lines:function(n, h){ return [
+      { key:'fare', label:'Gas', amt:10, cat:'gas' },
+      { label:'Hotel parking × ' + n + ' night' + (n > 1 ? 's' : ''), amt:(h ? h.parking : 45) * n, cat:'parking' },
+      { label:'Uber: NYE dinner ride (Dec 31)', amt:25, cat:'uber-dec' } ]; } },
+    { id:'sd-uber', label:'Uber to the hotel (no car)', lines:function(){ return [
+      { label:'Uber: home → hotel + to dinner (Dec 31)', amt:35, cat:'uber-dec' },
+      { label:'Uber: hotel → home (Jan)', amt:25, cat:'uber-jan' } ]; } }
+  ],
+  none: [
+    { id:'home', label:'Stay home · Uber to dinner', lines:function(){ return [
+      { label:'Uber to and from NYE dinner (Dec 31)', amt:30, cat:'uber-dec' } ]; } }
+  ]
+};
+
+/* Plans. Hotel rates are per-night estimates before tax; fee = per-night resort/destination fee. */
+var PLANS = [
+  { id:'sf-fhr', tab:'sf', group:'San Francisco · 3 nights', name:'SF · Palace Hotel or The Jay (FHR)', short:'SF · FHR hotel', days:4,
+    hotel:{ name:'Palace Hotel / The Jay (FHR)', program:'FHR', rates:[420,300,270], tax:0.16, fee:0, parking:70 },
+    transport:'sf', resy:true, janDinner:true, mealDays:3,
+    extras:[{ label:'Lands End, Golden Gate walk, cable cars, coffee', amt:40, cat:'activities' }],
+    score:7, take:'The credits hit a real ~$1,150 hotel bill, but it only gets near the cap with no ring, casual dining and the Jan 1 split stay. Score 8 if you split the stay.' },
+  { id:'sf-thc', tab:'sf', group:'San Francisco · 3 nights', name:'SF · Argonaut, Fisherman\'s Wharf (THC)', short:'SF · THC hotel', days:4,
+    hotel:{ name:'Argonaut (THC)', program:'THC', rates:[340,230,210], tax:0.16, fee:30, parking:65 },
+    transport:'sf', resy:true, janDinner:true, mealDays:3,
+    extras:[{ label:'Lands End, Golden Gate walk, cable cars, coffee', amt:40, cat:'activities' }],
+    score:6, take:'You get the $300 + $100 credits but no breakfast and no guaranteed 4 PM checkout. The Wharf is touristy, though the waterfront walks are good.' },
+  { id:'sf-boutique', tab:'sf', group:'San Francisco · 3 nights', name:'SF · Hotel Kabuki, Japantown (boutique)', short:'SF · boutique', days:4,
+    hotel:{ name:'Hotel Kabuki (JdV by Hyatt)', program:'none', rates:[320,230,210], tax:0.16, fee:35, parking:60 },
+    transport:'sf', resy:true, janDinner:true, mealDays:3,
+    extras:[{ label:'Lands End, Golden Gate walk, cable cars, coffee', amt:40, cat:'activities' }],
+    score:4, take:'Full NYE prices with no hotel credit. The $300 Platinum credit goes unused unless you book some other FHR/THC stay by Dec 31.' },
+  { id:'la-fhr', tab:'la', group:'Los Angeles · 3 nights', name:'LA · Conrad Los Angeles, DTLA (FHR)', short:'LA · FHR hotel', days:4,
+    hotel:{ name:'Conrad Los Angeles (FHR)', program:'FHR', rates:[480,360,330], tax:0.157, fee:0, parking:65 },
+    transport:'la', resy:true, janDinner:true, mealDays:3,
+    extras:[{ label:'Grand Park NYELA, Griffith, Getty (free entry)', amt:0, cat:'activities' }],
+    score:7, take:'A walk to Grand Park and Disney Hall, with breakfast every day. It works for the split stay. The Surfliner keeps the transport cost down.' },
+  { id:'la-thc', tab:'la', group:'Los Angeles · 3 nights', name:'LA · SIXTY Beverly Hills (THC)', short:'LA · THC hotel', days:4,
+    hotel:{ name:'SIXTY Beverly Hills (THC)', program:'THC', rates:[330,240,220], tax:0.15, fee:0, parking:50 },
+    transport:'la', resy:true, janDinner:true, mealDays:3,
+    extras:[{ label:'Grand Park NYELA, Griffith, Getty (free entry)', amt:0, cat:'activities' }],
+    score:6, take:'The cheapest way to use the $300 in LA. Beverly Hills is far from Union Station, so you\'ll spend more on Uber.' },
+  { id:'la-boutique', tab:'la', group:'Los Angeles · 3 nights', name:'LA · Hotel Normandie, Koreatown (boutique)', short:'LA · boutique', days:4,
+    hotel:{ name:'Hotel Normandie (boutique)', program:'none', rates:[240,170,160], tax:0.157, fee:0, parking:35 },
+    transport:'la', resy:true, janDinner:true, mealDays:3,
+    extras:[{ label:'Grand Park NYELA, Griffith, Getty (free entry)', amt:0, cat:'activities' }],
+    score:6, take:'The cheapest real 3-night trip. It fits the cap with casual dining and no ring, but the $300 hotel credit goes unused.' },
+  { id:'disneyland', tab:'la', group:'Theme parks', name:'Disneyland NYE (1 day, 1 park)', short:'Disneyland NYE', days:2, nightsLabel:1,
+    hotel:null, transport:'disney', resy:false, park:true, janDinner:false, mealDays:1,
+    extras:[{ label:'Disneyland 1-day 1-park tickets × 2 (top tier $224)', amt:448, cat:'tickets' }],
+    score:3, take:'$448 just to get in on the year\'s most crowded day, and only Uber Cash applies. One day costs nearly as much as an LA weekend.' },
+  { id:'legoland', tab:'la', group:'Theme parks', name:'Legoland NYE + Resy dinner', short:'Legoland NYE', days:1, nightsLabel:0,
+    hotel:null, transport:'lego', resy:true, janDinner:false, mealDays:0,
+    extras:[{ label:'Legoland 1-day tickets × 2 (dated, est.)', amt:190, cat:'tickets' }, { label:'Park lunch & snacks', amt:60, cat:'dining' }],
+    score:1, take:'It\'s cheap, but it\'s a kids\' park with kids\' early fireworks. Skip it for an anniversary.' },
+  { id:'sd-grant-1n', tab:'sd', group:'San Diego staycation', name:'SD · The US Grant, 1 night (FHR)', short:'SD · US Grant 1 night', days:2,
+    hotel:{ name:'The US Grant (FHR)', program:'FHR', rates:[420], tax:0.13, fee:0, parking:60 },
+    transport:'sdUber', resy:true, janDinner:false, mealDays:1,
+    score:8, take:'The best use of the credits per dollar. It\'s the only plan where solid 14k rings for two fit, and only barely.' },
+  { id:'sd-grant-2n', tab:'sd', group:'San Diego staycation', name:'SD · The US Grant, 2 nights (FHR)', short:'SD · US Grant 2 nights', days:3,
+    hotel:{ name:'The US Grant (FHR)', program:'FHR', rates:[420,280], tax:0.13, fee:0, parking:60 },
+    transport:'sdUber', resy:true, janDinner:true, mealDays:2,
+    score:7, take:'A second night with breakfast. It fits with gold-filled rings, but solid gold pushes it about $500 over.' },
+  { id:'sd-del-1n', tab:'sd', group:'San Diego staycation', name:'SD · Hotel del Coronado, 1 night (FHR)', short:'SD · Hotel del 1 night', days:2,
+    hotel:{ name:'Hotel del Coronado (FHR)', program:'FHR', rates:[780], tax:0.12, fee:50, parking:50 },
+    transport:'sdDrive', resy:true, janDinner:false, mealDays:1,
+    score:5, take:'Iconic, but the NYE rate swallows the $300 credit and most of the budget. Fine with gold-filled rings.' },
+  { id:'sd-loews-2n', tab:'sd', group:'San Diego staycation', name:'SD · Loews Coronado Bay, 2 nights (THC)', short:'SD · Loews 2 nights', days:3,
+    hotel:{ name:'Loews Coronado Bay (THC)', program:'THC', rates:[360,240], tax:0.12, fee:40, parking:40 },
+    transport:'sdDrive', resy:true, janDinner:true, mealDays:2,
+    score:6, take:'Bay views and two nights for the THC credit, but no breakfast and it\'s a drive from everything.' },
+  { id:'sd-estancia-1n', tab:'sd', group:'San Diego staycation', name:'SD · Estancia La Jolla, 1 night (FHR)', short:'SD · Estancia 1 night', days:2,
+    hotel:{ name:'Estancia La Jolla (FHR)', program:'FHR', rates:[480], tax:0.13, fee:35, parking:40 },
+    transport:'sdDrive', resy:true, janDinner:false, mealDays:1,
+    score:6, take:'Quiet La Jolla resort with an FHR special offer. A good middle ground between the US Grant and The Del.' },
+  { id:'none', tab:'sd', group:'No trip', name:'No trip · NYE dinner + ring only', short:'Dinner + ring only', days:1, nightsLabel:0,
+    hotel:null, transport:'none', resy:true, janDinner:false, mealDays:0,
+    score:6, take:'The simplest option, and solid gold fits easily. The $300 hotel credit goes unused unless you prepay a future FHR/THC trip by Dec 31.' }
+];
+var PLAN = {}; PLANS.forEach(function(p){ PLAN[p.id] = p; });
+var GROUP_ORDER = ['San Diego staycation','No trip','San Francisco · 3 nights','Los Angeles · 3 nights','Theme parks'];
+
+var DEFAULT_STATE = {
+  plan:'sd-grant-1n', transport:'sd-uber', ring:'solid', ringPP:500, charm:'heart', dining:'date', lounge:false, airRemain:200,
+  cr:{ hotel:true, property:true, resyGold:true, resyPlat:true, uber:true, airline:true, jan27:false, split:false },
+  ovr:{}
+};
+
+/* ---------- engine ---------- */
+function nightsOf(p){ return p.hotel ? p.hotel.rates.length : (p.nightsLabel || 0); }
+function canSplit(p){ return !!(p.hotel && p.hotel.program === 'FHR' && p.hotel.rates.length >= 3); }
+function transportFor(p, id){ var list = TRANSPORT[p.transport]; for (var i = 0; i < list.length; i++){ if (list[i].id === id) return list[i]; } return list[0]; }
+
+function build(s){
+  var p = PLAN[s.plan] || PLANS[0], t = transportFor(p, s.transport), d = DINING[s.dining] || DINING.date;
+  var h = p.hotel, n = nightsOf(p), ov = s.ovr[p.id] || {}, tov = s.ovr[p.id + '|' + t.id] || {};
+  var lines = [], hotelNights = null, split = s.cr.split && canSplit(p);
+  if (h){
+    var est = h.rates.map(function(r){ return r * (1 + h.tax) + (h.fee || 0); });
+    var estTotal = Math.round(sum(est));
+    var total = (typeof ov.hotel === 'number') ? ov.hotel : estTotal;
+    hotelNights = est.map(function(x){ return x / sum(est) * total; });
+    lines.push({ key:'hotel', label:h.name + ' · ' + n + ' night' + (n > 1 ? 's' : '') + (typeof ov.hotel === 'number' ? ' (your quote)' : ' (est. incl. tax/fees)'), amt:total, est:estTotal, cat: h.program === 'none' ? 'hotel' : 'hotel-amex' });
+    if (h.program !== 'none' && s.cr.property && (h.program === 'FHR' || n >= 2)){
+      var stays = split ? 2 : 1;
+      lines.push({ key:'onprop', label:'On-property spend that uses the $100 credit' + (stays > 1 ? ' (2 stays)' : ''), amt:100 * stays, cat:'property' });
+    }
+  }
+  var tl = t.lines(n, h).map(function(l){ return Object.assign({}, l); });
+  tl.forEach(function(l){ if (l.key === 'fare'){ l.est = l.amt; if (typeof tov.fare === 'number'){ l.amt = tov.fare; l.label += ' (your quote)'; } } });
+  lines = lines.concat(tl);
+  if (p.park) lines.push({ key:'nye', label:'Food in the park all day (not on Resy)', amt:d.park, cat:'dining' });
+  else lines.push({ key:'nye', label:'NYE dinner for 2 on Resy (tax + tip)', amt:d.nye, cat:'resy-dec' });
+  if (p.janDinner) lines.push({ key:'jan', label:'Jan 1 or 2 dinner for 2 on Resy', amt:d.jan, cat:'resy-jan' });
+  var bf = (h && h.program === 'FHR') ? n : 0;
+  if (p.mealDays > 0){
+    var m = Math.max(0, d.perDay * p.mealDays - 35 * bf);
+    lines.push({ key:'meals', label:'Other meals & coffee, ' + p.mealDays + ' day' + (p.mealDays > 1 ? 's' : '') + (bf ? ' (FHR breakfast saves ' + fmt(35 * bf) + ')' : ''), amt:m, cat:'dining' });
+  }
+  (p.extras || []).forEach(function(x){ lines.push(Object.assign({}, x)); });
+  if (s.ring !== 'none') lines.push({ key:'ring', label:RINGS[s.ring].label + ' ring workshop for 2 (' + fmt(s.ringPP) + '/person)', amt:s.ringPP * 2, cat:'ring' });
+  var c = CHARM[s.charm];
+  if (c && c.price) lines.push({ key:'charm', label:c.short + ' + 7.75% tax', amt:Math.round(c.price * (1 + SALES_TAX)), cat:'charm' });
+  if (t.fly && s.lounge) lines.push({ key:'lounge', label:'SFO Centurion guest fee (Jan 3)', amt:50, cat:'lounge' });
+  return { p:p, t:t, lines:lines, hotelNights:hotelNights, n:n, split:split };
+}
+
+function computeCredits(s, b){
+  var p = b.p, lines = b.lines, n = b.n, cr = s.cr, prog = p.hotel ? p.hotel.program : 'none', split = b.split;
+  function tot(cat){ return sum(lines.filter(function(l){ return l.cat === cat; }).map(function(l){ return l.amt; })); }
+  var out = [], a, note;
+
+  a = 0;
+  if (!cr.hotel) note = 'Switched off.';
+  else if (prog === 'none') note = 'This plan has no prepaid FHR/THC stay. The $300 expires Dec 31; any FHR/THC booking charged by then uses it, even for later travel.';
+  else if (prog === 'THC' && n < 2) note = 'The Hotel Collection requires 2+ nights.';
+  else { a = Math.min(300, split ? b.hotelNights[0] : tot('hotel-amex')); note = split ? 'Dec 31 booked now as its own 1-night FHR stay.' : 'Prepay on Amex Travel; the charge must process by Dec 31.'; }
+  out.push({ id:'hotel', card:'plat', label:'Platinum hotel credit · Jul–Dec 2026', max:300, amt:a, note:note });
+
+  a = 0;
+  if (!cr.property) note = 'Switched off.';
+  else if (prog === 'none') note = 'Only FHR and THC stays include the $100 property credit.';
+  else if (prog === 'THC' && n < 2) note = 'THC requires 2+ nights.';
+  else { a = Math.min(split ? 200 : 100, tot('property')); note = prog === 'FHR' ? 'Spend it at the hotel (bar, restaurant or spa). FHR also adds daily breakfast and a 4 PM checkout.' : 'THC: $100 credit + upgrade if available. No breakfast, no guaranteed 4 PM checkout.'; }
+  out.push({ id:'property', card:'plat', label:'FHR/THC $100 property credit' + (split ? ' × 2 stays' : ''), max:split ? 200 : 100, amt:a, note:note });
+
+  var nye = tot('resy-dec');
+  var g = cr.resyGold ? Math.min(50, nye) : 0;
+  var pl = cr.resyPlat ? Math.min(100, Math.max(0, nye - g)) : 0;
+  out.push({ id:'resyGold', card:'gold', label:'Gold Resy credit · Jul–Dec', max:50, amt:g,
+    note: !cr.resyGold ? 'Switched off.' : (nye ? 'Put $50+ of the NYE bill on Gold. The restaurant needs the Amex badge on Resy.' : 'No Resy dinner in this plan (theme-park food doesn\'t count).') });
+  out.push({ id:'resyPlat', card:'plat', label:'Platinum Resy credit · Oct–Dec', max:100, amt:pl,
+    note: !cr.resyPlat ? 'Switched off.' : (nye ? 'Put $100 on Platinum. Enroll first.' : 'No Resy dinner in this plan.') });
+
+  var ud = tot('uber-dec'), u = cr.uber ? Math.min(45, ud) : 0;
+  out.push({ id:'uber', card:'both', label:'December Uber Cash ($35 Plat + $10 Gold)', max:45, amt:u,
+    note: !cr.uber ? 'Switched off.' : (ud >= 45 ? 'Pay with an Amex card. It expires 11:59 PM Hawaii time on Dec 31.' : 'This plan only has ' + fmt(ud) + ' of December rides. Spend the rest on Uber Eats.') });
+
+  var fees = tot('airfees'), rem = Math.max(0, Math.min(200, Number(s.airRemain) || 0));
+  var a26 = cr.airline ? Math.min(rem, fees) : 0;
+  out.push({ id:'airline', card:'plat', label:'Platinum airline fee credit · 2026', max:rem, amt:a26,
+    note: !cr.airline ? 'Switched off.' : (fees ? 'Bags and seats on your selected airline only. Prepay both directions now so they post in 2026.' : 'No airline fees in this plan, and fares themselves never qualify.') });
+
+  out.push({ id:'saks', card:'plat', label:'Platinum $50 Saks credit', max:0, amt:0, ended:true, note:'Ended June 30, 2026. Nothing to apply.' });
+
+  if (cr.jan27){
+    var jan = tot('resy-jan'), pq = Math.min(100, jan), gh = Math.min(50, Math.max(0, jan - pq));
+    out.push({ id:'resyPlat27', card:'plat', label:'Platinum Resy · Jan–Mar 2027', max:100, amt:pq, note: jan ? 'Resets Jan 1 and applies to your Jan 1/2 dinner.' : 'No Jan dinner in this plan.' });
+    out.push({ id:'resyGold27', card:'gold', label:'Gold Resy · Jan–Jun 2027', max:50, amt:gh, note: jan ? 'Resets Jan 1.' : 'No Jan dinner in this plan.' });
+    var uj = Math.min(25, tot('uber-jan'));
+    out.push({ id:'uber27', card:'both', label:'January Uber Cash ($15 Plat + $10 Gold)', max:25, amt:uj, note: uj ? 'Loads Jan 1 automatically.' : 'No January rides in this plan.' });
+    var a27 = Math.min(200, Math.max(0, fees - a26));
+    if (fees) out.push({ id:'airline27', card:'plat', label:'Platinum airline fee credit · 2027', max:200, amt:a27, note: a27 ? 'Covers the return-leg fees charged on Jan 3.' : 'The 2026 credit already covers all fees.' });
+  }
+  if (cr.split){
+    if (split){ a = Math.min(300, sum(b.hotelNights.slice(1))); note = 'Book Jan 1–3 as a separate 2-night FHR stay on or after Jan 1, 2027.'; }
+    else { a = 0; note = 'Needs a 3-night FHR plan (1 night + 2 nights).'; }
+    out.push({ id:'hotel27', card:'plat', label:'Platinum hotel credit · Jan–Jun 2027 (split stay)', max:300, amt:a, note:note });
+  }
+  return out;
+}
+
+function evaluate(s){
+  var b = build(s), credits = computeCredits(s, b);
+  var gross = Math.round(sum(b.lines.map(function(l){ return l.amt; })));
+  var cred = Math.round(sum(credits.map(function(c){ return c.amt; })));
+  return { b:b, credits:credits, gross:gross, cred:cred, net:gross - cred };
+}
+function stateFor(planId, base){
+  var s = clone(base || state); s.plan = planId; var p = PLAN[planId];
+  s.transport = TRANSPORT[p.transport][0].id; s.lounge = false; return s;
+}
+
+/* ---------- state ---------- */
+var state = (function(){
+  var saved = store.get('anniv.calc.v1', null), s = clone(DEFAULT_STATE);
+  if (saved && typeof saved === 'object'){
+    ['plan','transport','ring','ringPP','charm','dining','lounge','airRemain'].forEach(function(k){ if (saved[k] !== undefined) s[k] = saved[k]; });
+    if (saved.cr) Object.keys(s.cr).forEach(function(k){ if (typeof saved.cr[k] === 'boolean') s.cr[k] = saved.cr[k]; });
+    if (saved.ovr && typeof saved.ovr === 'object') s.ovr = saved.ovr;
+  }
+  if (!PLAN[s.plan]) s.plan = DEFAULT_STATE.plan;
+  if (!RINGS[s.ring]) s.ring = 'solid';
+  if (!CHARM[s.charm]) s.charm = 'heart';
+  if (!DINING[s.dining]) s.dining = 'date';
+  return s;
+})();
+function save(){ store.set('anniv.calc.v1', state); }
+
+/* ---------- calculator UI ---------- */
+var TOGGLES = [
+  { id:'hotel',    card:'plat', title:'Platinum Hotel Credit', sub:'$300 · Jul–Dec 2026 · prepaid FHR/THC via Amex Travel' },
+  { id:'property', card:'plat', title:'Platinum $100 Property Credit', sub:'FHR (any stay) or THC (2+ nights) · spend it on-site' },
+  { id:'resyGold', card:'gold', title:'Gold $50 Resy Credit', sub:'Jul–Dec · enroll first · restaurant needs the Amex badge' },
+  { id:'resyPlat', card:'plat', title:'Platinum $100 Resy Credit', sub:'Oct–Dec quarter · missing from your brief' },
+  { id:'uber',     card:'both', title:'Dec $45 Uber Cash', sub:'$35 Plat + $10 Gold · expires Dec 31' },
+  { id:'airline',  card:'plat', title:'Platinum $200 Airline Credit', sub:'Bags/seats on your selected airline', remain:true },
+  { id:'saks',     card:'plat', title:'Platinum $50 Saks Credit', sub:'Ended June 30, 2026', disabled:true }
+];
+var TOGGLES_27 = [
+  { id:'jan27', card:'both', title:'Count January 2027 resets', sub:'Q1 Plat Resy $100 · H1 Gold Resy $50 · Jan Uber $25 · 2027 airline $200' },
+  { id:'split', card:'plat', title:'Split stay: rebook Jan 1–3 as FHR', sub:'Uses the Jan–Jun 2027 $300 + a 2nd $100 credit (3-night FHR plans)' }
+];
+function badge(card){ return card === 'both' ? '<span class="cardbadge both">Gold+Plat</span>' : card === 'gold' ? '<span class="cardbadge gold">Gold</span>' : '<span class="cardbadge plat">Platinum</span>'; }
+function toggleRow(t){
+  var checked = t.disabled ? false : !!state.cr[t.id];
+  return '<div class="li' + (t.disabled ? ' disabled' : '') + '">' +
+    '<div class="txt"><b>' + esc(t.title) + ' ' + badge(t.card) + (t.disabled ? ' <span class="pill red">Ended</span>' : '') + '</b><span>' + esc(t.sub) + '</span>' +
+    (t.remain ? '<span class="inline-num" style="margin-top:4px"><input type="number" id="f-airremain" min="0" max="200" step="5" value="' + esc(state.airRemain) + '" aria-label="Airline credit left for 2026"><span>left for 2026</span></span>' : '') +
+    '</div><div class="switch"><input type="checkbox" role="switch" id="t-' + t.id + '" data-cr="' + t.id + '"' + (checked ? ' checked' : '') + (t.disabled ? ' disabled' : '') + ' aria-label="' + esc(t.title) + '"><span class="track"></span><span class="knob"></span></div></div>';
+}
+function buildStaticCalc(){
+  var sel = $('#f-plan'), html = '';
+  GROUP_ORDER.forEach(function(g){
+    var ps = PLANS.filter(function(p){ return p.group === g; });
+    if (!ps.length) return;
+    html += '<optgroup label="' + esc(g) + '">' + ps.map(function(p){ return '<option value="' + p.id + '">' + esc(p.name) + '</option>'; }).join('') + '</optgroup>';
+  });
+  sel.innerHTML = html;
+  $('#f-charm').innerHTML = CHARMS.map(function(c){ return '<option value="' + c.id + '">' + esc(c.price ? c.short + ' · ' + fmt(c.price) : c.name) + '</option>'; }).join('');
+  $('#credit-toggles').innerHTML = TOGGLES.map(toggleRow).join('');
+  $('#credit-toggles-27').innerHTML = TOGGLES_27.map(toggleRow).join('');
+}
+function syncControls(){
+  var p = PLAN[state.plan];
+  $('#f-plan').value = state.plan;
+  var list = TRANSPORT[p.transport];
+  if (!list.some(function(t){ return t.id === state.transport; })) state.transport = list[0].id;
+  $('#f-transport').innerHTML = list.map(function(t){ return '<option value="' + t.id + '">' + esc(t.label) + '</option>'; }).join('');
+  $('#f-transport').value = state.transport;
+  $('#f-transport').disabled = list.length < 2;
+  var t = transportFor(p, state.transport);
+  $('#lounge-row').hidden = !t.fly;
+  $('#f-lounge').checked = !!state.lounge;
+  $$('#f-ring button').forEach(function(bt){ bt.setAttribute('aria-selected', String(bt.dataset.v === state.ring)); });
+  $('#ringpp-row').hidden = state.ring === 'none';
+  $('#f-ringpp').value = state.ringPP;
+  $('#ringpp-note').textContent = 'per person · ' + (RINGS[state.ring].note || '');
+  $('#f-charm').value = state.charm;
+  $$('#f-dining button').forEach(function(bt){ bt.setAttribute('aria-selected', String(bt.dataset.v === state.dining)); });
+  $('#dine-note').textContent = DINING[state.dining].note;
+  $$('[data-cr]').forEach(function(inp){ if (!inp.disabled) inp.checked = !!state.cr[inp.dataset.cr]; });
+  var r = evaluate(state), hl = r.b.lines.filter(function(l){ return l.key === 'hotel'; })[0], fl = r.b.lines.filter(function(l){ return l.key === 'fare'; })[0];
+  $('#hotel-field').hidden = !hl; if (hl) { $('#f-hotel').value = Math.round(hl.amt); $('#f-hotel').placeholder = hl.est; }
+  $('#fare-field').hidden = !fl; if (fl) { $('#f-fare').value = Math.round(fl.amt); $('#f-fare').placeholder = fl.est; }
+}
+
+var CATLABEL = { 'hotel':'Hotel', 'hotel-amex':'Hotel · Amex Travel', 'property':'On-property', 'air':'Airfare', 'airfees':'Airline fees', 'rail':'Rail', 'transit':'Transit', 'parking':'Parking', 'gas':'Gas', 'uber-dec':'Uber · Dec', 'uber-jan':'Uber · Jan', 'resy-dec':'Resy · Dec 31', 'resy-jan':'Resy · Jan', 'dining':'Dining', 'activities':'Activities', 'tickets':'Tickets', 'ring':'Ring', 'charm':'Charm', 'lounge':'Lounge' };
+
+function renderCalc(){
+  var r = evaluate(state), over = r.net > CAP;
+  $('#r-gross').textContent = fmt(r.gross);
+  $('#r-credits').textContent = credFmt(r.cred);
+  $('#r-net').textContent = fmt(r.net);
+  $('#r-net').style.color = over ? 'var(--red)' : 'var(--green)';
+  var st = $('#r-status'); st.className = 'status ' + (over ? 'bad' : 'ok');
+  $('#r-status-txt').textContent = over ? 'Over Budget' : 'Under $1,500 Net';
+  $('#r-status-amt').textContent = over ? 'by ' + fmt(r.net - CAP) : fmt(CAP - r.net) + ' to spare';
+  $('#r-lines-count').textContent = r.b.lines.length + ' items';
+  $('#r-lines').innerHTML = r.b.lines.map(function(l){
+    return '<div class="li"><div class="txt"><b>' + esc(l.label) + '</b><span class="catchip">' + esc(CATLABEL[l.cat] || l.cat) + '</span></div><span class="val">' + fmt(l.amt) + '</span></div>';
+  }).join('') + '<div class="li"><div class="txt"><b>Gross sticker price</b></div><span class="val">' + fmt(r.gross) + '</span></div>';
+  var used = r.credits.filter(function(c){ return c.amt > 0; }).length;
+  $('#r-credits-count').textContent = used + ' of ' + r.credits.length + ' applied';
+  $('#r-credit-list').innerHTML = r.credits.map(function(c){
+    return '<div class="li' + (c.ended ? ' disabled' : '') + '"><div class="txt"><b>' + esc(c.label) + ' ' + badge(c.card) + '</b><span>' + esc(c.note) + '</span></div><span class="val ' + (c.amt > 0 ? 'credit-amt' : 'faint') + '">' + (c.amt > 0 ? '−' + fmt(c.amt) : '$0') + '</span></div>';
+  }).join('');
+
+  // hints
+  var hints = [];
+  if (!state.cr.jan27){ var s2 = clone(state); s2.cr.jan27 = true; var d2 = r.net - evaluate(s2).net; if (d2 >= 1) hints.push('Turning on <b>January 2027 resets</b> saves another ' + fmt(d2) + ' (net ' + fmt(r.net - d2) + ').'); }
+  if (!state.cr.split && canSplit(r.b.p)){ var s3 = clone(state); s3.cr.split = true; var d3 = r.net - evaluate(s3).net; if (d3 >= 1) hints.push('The <b>split stay</b> saves ' + fmt(d3) + ' more on this FHR plan.'); }
+  if (r.b.p.hotel && r.b.p.hotel.program === 'none' && state.cr.hotel) hints.push('This plan leaves the <b>$300 hotel credit unused</b>. Compare the FHR/THC version.');
+  var hint = $('#r-hint'); hint.hidden = !hints.length; hint.innerHTML = hints.join('<br>');
+
+  renderHero(r);
+  renderComparisons();
+}
+
+function renderHero(r){
+  var over = r.net > CAP, max = Math.max(CAP * 1.25, r.gross * 1.04);
+  $('#hero-net').textContent = fmt(r.net);
+  $('#hero-net').style.color = over ? 'var(--red)' : 'var(--green)';
+  $('#hero-gross').textContent = fmt(r.gross);
+  $('#hero-credits').textContent = credFmt(r.cred);
+  $('#hero-gross-bar').style.width = Math.min(100, r.gross / max * 100) + '%';
+  var nb = $('#hero-net-bar'); nb.style.width = Math.max(0, Math.min(100, r.net / max * 100)) + '%'; nb.style.background = over ? 'var(--red)' : 'var(--green)';
+  $('#hero-cap').style.left = 'calc(' + (CAP / max * 100) + '% - 1px)';
+  var hb = $('#hero-badge'); hb.className = 'pill ' + (over ? 'red' : 'green'); hb.textContent = over ? 'Over Budget by ' + fmt(r.net - CAP) : 'Under $1,500 Net';
+  var rn = RINGS[state.ring], ch = CHARM[state.charm];
+  $('#hero-bundle').textContent = r.b.p.short + ' · ' + (state.ring === 'none' ? 'no ring' : rn.label + ' rings') + ' · ' + (ch.price ? ch.short : 'no charm') + ' · ' + DINING[state.dining].label;
+  $('#hero-meter-aria').setAttribute('aria-label', 'Net ' + fmt(r.net) + ' against a $1,500 cap; gross ' + fmt(r.gross) + ', credits ' + fmt(r.cred));
+}
+
+function statusPill(net){ return net > CAP ? '<span class="pill red">Over by ' + fmt(net - CAP) + '</span>' : '<span class="pill green">Under $1,500 Net</span>'; }
+
+function planCard(p){
+  var r = evaluate(stateFor(p.id)), prog = p.hotel ? p.hotel.program : null;
+  return '<div class="plan"><div class="top"><h3>' + esc(p.name) + '</h3><span class="score" title="My score out of 10">' + p.score + '/10</span></div>' +
+    '<div class="row">' + (prog && prog !== 'none' ? '<span class="pill ' + (prog === 'FHR' ? 'plat' : 'blue') + '">' + prog + '</span>' : '<span class="pill">No Amex hotel program</span>') + statusPill(r.net) + '</div>' +
+    '<div class="nums"><div><span>Gross</span><b>' + fmt(r.gross) + '</b></div><div><span>Credits</span><b class="credit-amt">' + credFmt(r.cred) + '</b></div><div><span>Net</span><b style="color:' + (r.net > CAP ? 'var(--red)' : 'var(--green)') + '">' + fmt(r.net) + '</b></div></div>' +
+    '<p class="small muted">' + esc(p.take) + '</p>' +
+    '<div><button class="btn" type="button" data-load="' + p.id + '">Load in calculator</button></div></div>';
+}
+
+function renderComparisons(){
+  // comparison table
+  var order = ['sd-grant-1n','sd-grant-2n','sd-estancia-1n','sd-loews-2n','sd-del-1n','none','sf-fhr','sf-thc','sf-boutique','la-fhr','la-thc','la-boutique','disneyland','legoland'];
+  $('#cmp-body').innerHTML = order.map(function(id){
+    var p = PLAN[id], r = evaluate(stateFor(id));
+    return '<tr class="clickable' + (id === state.plan ? ' current' : '') + '" data-load="' + id + '" tabindex="0"><td><b>' + esc(p.name) + '</b><br><span class="small muted">' + esc(TRANSPORT[p.transport][0].label) + '</span></td><td class="n">' + nightsOf(p) + '</td><td class="n">' + fmt(r.gross) + '</td><td class="n credit-amt">' + credFmt(r.cred) + '</td><td class="n"><b style="color:' + (r.net > CAP ? 'var(--red)' : 'var(--green)') + '">' + fmt(r.net) + '</b></td><td>' + statusPill(r.net) + '</td><td class="n">' + p.score + '/10</td></tr>';
+  }).join('');
+  // plan cards per tab
+  $('#sf-plans').innerHTML = PLANS.filter(function(p){ return p.tab === 'sf'; }).map(planCard).join('');
+  $('#la-plans').innerHTML = ['la-fhr','la-thc','la-boutique'].map(function(id){ return planCard(PLAN[id]); }).join('');
+  $('#sd-plans').innerHTML = ['sd-grant-2n','sd-estancia-1n','sd-loews-2n','sd-del-1n','none'].map(function(id){ return planCard(PLAN[id]); }).join('');
+  // reality check
+  $('#reality-body').innerHTML = ['disneyland','legoland','la-boutique','sf-fhr','sd-grant-1n'].map(function(id){
+    var p = PLAN[id], r = evaluate(stateFor(id));
+    return '<tr class="clickable" data-load="' + id + '" tabindex="0"><td><b>' + esc(p.short) + '</b></td><td class="n">' + p.days + '</td><td class="n">' + fmt(r.gross) + '</td><td class="n"><b>' + fmt(r.net) + '</b></td><td class="n">' + fmt(r.net / p.days) + '</td><td>' + statusPill(r.net) + '</td></tr>';
+  }).join('');
+  // SD combo receipt
+  var cs = comboState(), cr = evaluate(cs);
+  var rows = cr.b.lines.map(function(l){ return '<div class="li"><div class="txt"><b>' + esc(l.label) + '</b></div><span class="val">' + fmt(l.amt) + '</span></div>'; });
+  cr.credits.filter(function(c){ return c.amt > 0; }).forEach(function(c){ rows.push('<div class="li"><div class="txt"><b>' + esc(c.label) + ' ' + badge(c.card) + '</b></div><span class="val credit-amt">−' + fmt(c.amt) + '</span></div>'); });
+  rows.push('<div class="li"><div class="txt"><b>Net out-of-pocket</b></div><span class="val" style="color:' + (cr.net > CAP ? 'var(--red)' : 'var(--green)') + '">' + fmt(cr.net) + '</span></div>');
+  $('#combo-receipt').innerHTML = rows.join('');
+  $('#combo-verdict').innerHTML = (cr.net > CAP ? 'Over by ' + fmt(cr.net - CAP) + ' at these estimates.' : fmt(CAP - cr.net) + ' under the cap at these estimates.') + ' Gross ' + fmt(cr.gross) + ', credits ' + credFmt(cr.cred) + '. Prices follow your charm and quote edits.';
+}
+function comboState(){
+  var s = clone(DEFAULT_STATE); s.plan = 'sd-grant-1n'; s.transport = 'sd-uber'; s.ring = 'solid'; s.ringPP = 500; s.charm = 'heart'; s.dining = 'date'; s.cr.jan27 = true;
+  s.ovr = clone(state.ovr); s.airRemain = state.airRemain; return s;
+}
+
+/* ---------- static cards: charms + wallet ---------- */
+function renderCharms(){
+  $('#charm-cards').innerHTML = CHARMS.filter(function(c){ return c.price; }).map(function(c){
+    return '<div class="plan"><div class="top"><h3>' + esc(c.name) + '</h3><b class="num gold-text">' + fmt(c.price) + '</b></div>' +
+      '<div class="row"><span class="pill ' + c.tag + '">' + esc(c.finish) + '</span><span class="pill">' + esc(c.match) + '</span></div>' +
+      '<p class="small muted">' + esc(c.note) + '</p>' +
+      '<div class="row"><a href="' + c.link + '" target="_blank" rel="noopener">View listing →</a><button class="linkbtn" type="button" data-charm="' + c.id + '">Use in calculator</button></div></div>';
+  }).join('');
+}
+var WALLET = [
+  { card:'plat', title:'Platinum Hotel Credit', amt:'$300', when:'Jul–Dec 2026 · then $300 Jan–Jun 2027', status:['green','Active'],
+    body:'Applies to prepaid Fine Hotels + Resorts or Hotel Collection bookings on Amex Travel; enrollment is required. The credit follows the date the charge processes, not your stay date. A 1-night FHR stay works only if it\'s charged by Dec 31. From Jan 1, 2027 FHR needs 2 nights, and THC always needs 2.' },
+  { card:'plat', title:'FHR vs THC benefits', amt:'$100', when:'Per stay', status:['orange','THC is weaker'],
+    body:'FHR gives daily breakfast for two, a $100 property credit, a guaranteed 4 PM checkout, and noon check-in plus an upgrade when available. THC gives a $100 credit and an upgrade when available, with a 2-night minimum, but no breakfast and no guaranteed late checkout.' },
+  { card:'gold', title:'Gold Resy Credit', amt:'$50', when:'Jul–Dec 2026 · then $50 Jan–Jun', status:['green','Active'],
+    body:'Requires enrollment, at US Resy restaurants that show the Amex badge (since Aug 1, 2026). Some Tock restaurants count from Sept 15, 2026. The charge must post by Dec 31, so ask the restaurant to close the check before midnight or prepay a ticketed NYE menu now.' },
+  { card:'plat', title:'Platinum Resy Credit', amt:'$100', when:'Oct–Dec 2026 · then $100 Jan–Mar', status:['blue','Missing from your brief'],
+    body:'$100 every quarter, with enrollment and the same badge rule. Split the NYE bill: $100 on Platinum and $50+ on Gold makes $150 off one dinner.' },
+  { card:'both', title:'December Uber Cash', amt:'$45', when:'Expires 11:59 PM HST, Dec 31', status:['green','Active'],
+    body:'Platinum gives $15 a month plus a $20 December bonus ($35), and Gold gives $10. Both land in one Uber balance if both cards are on the account, and you must pay with an Amex. It works on rides and Uber Eats in the US. January\'s $25 loads Jan 1.' },
+  { card:'plat', title:'Airline Fee Credit', amt:'$200', when:'Calendar 2026 · resets Jan 1', status:['green','Active'],
+    body:'Covers incidentals on one selected airline: checked bags, seat selection and inflight purchases. Fares never count. Eligible airlines are Alaska, American, Delta, JetBlue, Southwest and United; Frontier isn\'t on the list. Check your 2026 selection and how much you\'ve used.' },
+  { card:'plat', title:'Lounge Access', amt:'Guest $50', when:'Within 3 hrs of departure', status:['orange','Changed'],
+    body:'SFO: a temporary Centurion in Terminal 2 near D12, open 5 AM–11 PM. SAN: lounges are only in Terminal 2, with Priority Pass through Platinum (enroll and check guest rules in the app). The Delta Sky Club only works when flying Delta, 10 visits a year. An additional Platinum card for your partner gives them their own access but has its own annual fee.' },
+  { card:'plat', title:'Saks Fifth Avenue Credit', amt:'$0', when:'Ended Jun 30, 2026', status:['red','Discontinued'],
+    body:'Amex dropped it after Saks Global\'s January 2026 bankruptcy. For a gift credit, check your Benefits tab for any other Q4 retail credit on Platinum, and check Gold\'s monthly $10 dining credit (Wine.com could cover anniversary wine).' },
+  { card:'both', title:'Amex Offers check', amt:'Varies', when:'Before every purchase', status:['blue','Do it today'],
+    body:'Open the Offers tab on both cards and add any Pandora, Marriott/Hilton or airline offers before paying. One tracker shows 4% back at us.pandora.net through Dec 1, 2026 (max $250), but it\'s unconfirmed, so look in your app.' }
+];
+function renderWallet(){
+  $('#wallet-cards').innerHTML = WALLET.map(function(w){
+    return '<div class="plan"><div class="top"><div class="stack-sm"><div class="row" style="gap:8px">' + badge(w.card) + '<span class="pill ' + w.status[0] + '">' + esc(w.status[1]) + '</span></div><h3>' + esc(w.title) + '</h3></div><b class="num" style="font-size:20px;color:' + (w.card === 'gold' ? 'var(--gold)' : 'var(--plat)') + '">' + esc(w.amt) + '</b></div>' +
+      '<span class="small faint">' + esc(w.when) + '</span><p class="small muted">' + esc(w.body) + '</p></div>';
+  }).join('');
+}
+
+/* ---------- checklist ---------- */
+var TASKS = [
+  { id:'offers',   due:'2026-11-15', t:'Check Amex Offers on both cards', d:'Look for Pandora, Marriott/Hilton and airline offers. A Pandora online offer (4%, max $250) reportedly ends Dec 1.', tags:['both'] },
+  { id:'enroll',   due:'2026-11-15', t:'Enroll in the Gold Resy credit before dining', d:'Also enroll the Platinum Resy credit ($100 for Oct–Dec) on its Benefits tab. Both need enrollment before you pay.', tags:['gold','plat'] },
+  { id:'airsel',   due:'2026-11-15', t:'Confirm your Platinum airline selection', d:'Choose from Alaska, American, Delta, JetBlue, Southwest or United (not Frontier), and check how much of the $200 is left. You can only change the airline in January.', tags:['plat'] },
+  { id:'resy',     due:'2026-11-20', t:'Book the NYE dinner on Resy (with the Amex badge)', d:'A prepaid or ticketed NYE menu charges now, which locks the 2026 credits.', tags:['gold','plat'] },
+  { id:'studio',   due:'2026-11-20', t:'Call ring studios for dates and a solid-gold quote', d:'Try SD Jewelry Academy / Whaley Studios (Hillcrest), ember&onyx (public pop-ups only) and Ing Art (Fremont, SF trip only). Ask for Dec 19 or 20 so the rings are ready by NYE.', tags:['ring'] },
+  { id:'hotel',    due:'2026-11-25', t:'Book the FHR/THC stay before Dec 31 to trigger the 2026 credit', d:'Prepay through Amex Travel. Book in November so the charge can\'t slip into 2027, especially for a 1-night FHR stay.', tags:['plat'] },
+  { id:'fares',    due:'2026-11-25', t:'Book flights (SF) or Surfliner seats (LA)', d:'Sunday Jan 3 is a peak return day. Prepay checked bags now so the 2026 airline credit covers them.', tags:['plat'] },
+  { id:'bracelet', due:'2026-11-30', t:'Confirm Pandora Moments vs. ME bracelet', d:'Moments bracelets don\'t take ME charms. Check your partner\'s bracelet before buying.', tags:['charm'] },
+  { id:'charm',    due:'2026-12-01', t:'Buy the charm (online offer ends Dec 1)', d:'Use the Amex Offer if it\'s on your card. Engraved items are final sale.', tags:['charm'] },
+  { id:'horses',   due:'2026-12-03', t:'LA only: Horses releases Dec 31 tables', d:'Reservations open 4 weeks ahead at midnight on Resy. Verify the current window.', tags:['gold','plat'] },
+  { id:'engrave',  due:'2026-12-12', t:'Lock in engraving "12.31.25 · 1 YR"', d:'Online engraving adds a processing day plus shipping. Or call Pandora Fashion Valley, (619) 202-1704, about engraving in store.', tags:['charm'] },
+  { id:'credit',   due:'2026-12-15', t:'Confirm the $300 hotel credit posted', d:'Check your Platinum statement, and call Amex before year-end if it\'s missing.', tags:['plat'] },
+  { id:'metal',    due:'2026-12-16', t:'Pre-order solid gold metal 3+ days before the workshop', d:'Ing Art needs an advance order for 14K/18K. This date assumes a Dec 19 workshop; confirm your studio\'s lead time.', tags:['ring'] },
+  { id:'alerts',   due:'2026-12-28', t:'Check service alerts', d:'Surfliner (San Clemente), SFMTA\'s free NYE Muni announcement, and Rose Parade closures in Pasadena on Jan 1.', tags:[] },
+  { id:'ubercard', due:'2026-12-30', t:'Add both Amex cards to Uber', d:'The Uber Cash only applies when you pay with an Amex card.', tags:['both'] },
+  { id:'uber',     due:'2026-12-31', t:'Use the $45 Dec Uber Cash before 11:59 PM on Dec 31', d:'Uber\'s cutoff is 11:59 PM Hawaii time (1:59 AM PT), but don\'t cut it close.', tags:['both'] },
+  { id:'split',    due:'2026-12-31', t:'Pay NYE dinner across both cards', d:'Put $100 on Platinum and $50+ on Gold, and ask them to close the check before midnight.', tags:['gold','plat'] },
+  { id:'jan1',     due:'2027-01-01', t:'Split stay only: book Jan 1–3 as a new 2-night FHR stay', d:'This uses the Jan–Jun 2027 $300 credit. Ask the hotel to keep you in the same room.', tags:['plat'] },
+  { id:'jan2',     due:'2027-01-02', t:'Use the January resets at dinner', d:'Platinum Resy $100 (Q1) and Gold Resy $50 (H1) reset Jan 1, and $25 of Uber Cash loads. In LA, the Getty is open Saturday.', tags:['gold','plat'] },
+  { id:'lounge',   due:'2027-01-03', t:'SF return: Centurion Lounge, T2 near D12', d:'Entry is within 3 hours of departure, and your partner\'s guest fee is $50.', tags:['plat'] }
+];
+var TAGCHIP = { gold:'<span class="cardbadge gold">Gold</span>', plat:'<span class="cardbadge plat">Platinum</span>', both:'<span class="cardbadge both">Gold+Plat</span>', ring:'<span class="pill gold">Ring</span>', charm:'<span class="pill gold">Charm</span>' };
+var done = store.get('anniv.tasks.v1', {});
+if (!done || typeof done !== 'object') done = {};
+function dueEnd(iso){ var p = iso.split('-').map(Number); return Date.UTC(p[0], p[1] - 1, p[2] + 1, 8) - 1; } /* end of day, Pacific (PST, UTC−8) */
+function daysLeft(iso){ return Math.ceil((dueEnd(iso) - Date.now()) / DAY) - 1; }
+function duePill(iso){
+  var n = daysLeft(iso);
+  if (dueEnd(iso) < Date.now()) return '<span class="pill red">Overdue</span>';
+  if (n <= 0) return '<span class="pill red">Today</span>';
+  if (n <= 3) return '<span class="pill red">' + n + ' day' + (n > 1 ? 's' : '') + ' left</span>';
+  if (n <= 10) return '<span class="pill orange">' + n + ' days left</span>';
+  return '<span class="pill">' + n + ' days left</span>';
+}
+function fmtDate(iso){ var p = iso.split('-').map(Number); return new Date(Date.UTC(p[0], p[1] - 1, p[2], 12)).toLocaleDateString('en-US', { weekday:'short', month:'short', day:'numeric', timeZone:'UTC' }); }
+function renderChecklist(){
+  var sorted = TASKS.slice().sort(function(a, b){ return a.due < b.due ? -1 : a.due > b.due ? 1 : 0; });
+  $('#ck-list').innerHTML = sorted.map(function(k){
+    var isDone = !!done[k.id];
+    return '<div class="task' + (isDone ? ' done' : '') + '"><input type="checkbox" id="ck-' + k.id + '" data-task="' + k.id + '"' + (isDone ? ' checked' : '') + ' aria-label="' + esc(k.t) + '">' +
+      '<label class="tt" for="ck-' + k.id + '"><b>' + esc(k.t) + '</b><p>' + esc(k.d) + '</p><span class="row" style="gap:6px;margin-top:6px">' + k.tags.map(function(t){ return TAGCHIP[t] || ''; }).join('') + '</span></label>' +
+      '<div class="due"><span class="date">' + fmtDate(k.due) + '</span>' + (isDone ? '<span class="pill green">Done</span>' : duePill(k.due)) + '</div></div>';
+  }).join('');
+  var n = TASKS.filter(function(k){ return done[k.id]; }).length;
+  $('#ck-count').textContent = n + ' / ' + TASKS.length + ' done';
+  $('#ck-bar').style.width = (n / TASKS.length * 100) + '%';
+  var next = sorted.filter(function(k){ return !done[k.id]; }).slice(0, 4);
+  $('#next-deadlines').innerHTML = next.length ? next.map(function(k){
+    var n2 = daysLeft(k.due), over = dueEnd(k.due) < Date.now();
+    var col = over || n2 <= 3 ? 'var(--red)' : n2 <= 10 ? 'var(--orange)' : 'var(--label-2)';
+    return '<div class="dl"><span class="when" style="color:' + col + '">' + fmtDate(k.due) + ' · ' + (over ? 'overdue' : n2 <= 0 ? 'today' : n2 + 'd') + '</span><b style="font-size:14px;font-weight:600">' + esc(k.t) + '</b></div>';
+  }).join('') : '<div class="dl"><b>Everything is checked off.</b></div>';
+}
+
+/* ---------- countdown ---------- */
+var TARGET = Date.UTC(2026, 11, 31, 8, 0, 0); /* 12:00 AM PST Dec 31, 2026 */
+var TRIP_END = Date.UTC(2027, 0, 4, 8, 0, 0);
+function pad(n){ return (n < 10 ? '0' : '') + n; }
+function tick(){
+  var now = Date.now(), diff = TARGET - now;
+  if (diff <= 0){
+    var nyeMid = Date.UTC(2027, 0, 1, 8, 0, 0);
+    if (now < nyeMid){ diff = nyeMid - now; $('#cd-note').textContent = 'Happy anniversary. Counting down to midnight.'; }
+    else if (now < TRIP_END){ diff = 0; $('#cd-note').textContent = 'Anniversary weekend is underway.'; }
+    else { diff = 0; $('#cd-note').textContent = 'The anniversary weekend has passed.'; }
+  }
+  var s = Math.max(0, Math.floor(diff / 1000));
+  $('#cd-d').textContent = Math.floor(s / 86400);
+  $('#cd-h').textContent = pad(Math.floor(s % 86400 / 3600));
+  $('#cd-m').textContent = pad(Math.floor(s % 3600 / 60));
+  $('#cd-s').textContent = pad(s % 60);
+}
+
+/* ---------- tabs ---------- */
+function setTab(tab){
+  $$('#tabs button').forEach(function(b){ b.setAttribute('aria-selected', String(b.dataset.tab === tab)); });
+  $$('[data-tabs]').forEach(function(sec){ sec.hidden = sec.dataset.tabs.split(' ').indexOf(tab) === -1 && tab !== 'all'; });
+  store.set('anniv.tab', tab);
+}
+
+/* ---------- events ---------- */
+function loadPlan(id){
+  if (!PLAN[id]) return;
+  state.plan = id; state.transport = TRANSPORT[PLAN[id].transport][0].id; state.lounge = false;
+  save(); syncControls(); renderCalc();
+  if (window.matchMedia('(max-width:1099px)').matches){ $('#calc').scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block:'start' }); }
+}
+function wire(){
+  $('#f-plan').addEventListener('change', function(e){ loadPlan(e.target.value); });
+  $('#f-transport').addEventListener('change', function(e){ state.transport = e.target.value; save(); syncControls(); renderCalc(); });
+  $('#f-lounge').addEventListener('change', function(e){ state.lounge = e.target.checked; save(); renderCalc(); });
+  $('#f-ring').addEventListener('click', function(e){ var b = e.target.closest('button'); if (!b) return; state.ring = b.dataset.v; state.ringPP = RINGS[state.ring].pp; save(); syncControls(); renderCalc(); });
+  $('#f-ringpp').addEventListener('input', function(e){ var v = Number(e.target.value); if (isFinite(v) && v >= 0){ state.ringPP = v; save(); renderCalc(); } });
+  $('#f-charm').addEventListener('change', function(e){ state.charm = e.target.value; save(); renderCalc(); });
+  $('#f-dining').addEventListener('click', function(e){ var b = e.target.closest('button'); if (!b) return; state.dining = b.dataset.v; save(); syncControls(); renderCalc(); });
+  $('#f-hotel').addEventListener('input', function(e){ var v = Number(e.target.value); if (e.target.value !== '' && isFinite(v) && v >= 0){ state.ovr[state.plan] = Object.assign({}, state.ovr[state.plan], { hotel:v }); save(); renderCalc(); } });
+  $('#f-fare').addEventListener('input', function(e){ var v = Number(e.target.value), k = state.plan + '|' + state.transport; if (e.target.value !== '' && isFinite(v) && v >= 0){ state.ovr[k] = Object.assign({}, state.ovr[k], { fare:v }); save(); renderCalc(); } });
+  $('#f-reset-est').addEventListener('click', function(){ state.ovr = {}; state.ringPP = RINGS[state.ring].pp; save(); syncControls(); renderCalc(); });
+  document.addEventListener('change', function(e){
+    var t = e.target;
+    if (t.dataset && t.dataset.cr){ state.cr[t.dataset.cr] = t.checked; save(); renderCalc(); }
+    if (t.id === 'f-airremain'){ var v = Math.max(0, Math.min(200, Number(t.value) || 0)); state.airRemain = v; t.value = v; save(); renderCalc(); }
+    if (t.dataset && t.dataset.task){ if (t.checked) done[t.dataset.task] = true; else delete done[t.dataset.task]; store.set('anniv.tasks.v1', done); renderChecklist(); }
+  });
+  document.addEventListener('input', function(e){ if (e.target.id === 'f-airremain'){ var v = Number(e.target.value); if (isFinite(v)){ state.airRemain = Math.max(0, Math.min(200, v)); save(); renderCalc(); } } });
+  document.addEventListener('click', function(e){
+    var l = e.target.closest('[data-load]'); if (l){ loadPlan(l.dataset.load); return; }
+    var c = e.target.closest('[data-charm]'); if (c){ state.charm = c.dataset.charm; save(); syncControls(); renderCalc(); return; }
+  });
+  document.addEventListener('keydown', function(e){ if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('tr[data-load]')){ e.preventDefault(); loadPlan(e.target.dataset.load); } });
+  $('#tabs').addEventListener('click', function(e){ var b = e.target.closest('button'); if (b) setTab(b.dataset.tab); });
+  $('#load-combo').addEventListener('click', function(){ var s = comboState(); state.plan = s.plan; state.transport = s.transport; state.ring = s.ring; state.ringPP = s.ringPP; state.charm = s.charm; state.dining = s.dining; state.cr.jan27 = true; save(); syncControls(); renderCalc(); if (window.matchMedia('(max-width:1099px)').matches) $('#calc').scrollIntoView({ block:'start' }); });
+  $('#ck-reset').addEventListener('click', function(){ $('#ck-reset-confirm').hidden = false; $('#ck-reset').hidden = true; });
+  $('#ck-reset-confirm').addEventListener('click', function(){ done = {}; store.set('anniv.tasks.v1', done); $('#ck-reset-confirm').hidden = true; $('#ck-reset').hidden = false; renderChecklist(); });
+}
+
+/* ---------- boot ---------- */
+buildStaticCalc();
+renderCharms();
+renderWallet();
+syncControls();
+renderCalc();
+renderChecklist();
+wire();
+setTab(store.get('anniv.tab', 'all'));
+tick(); setInterval(tick, 1000);
+setInterval(renderChecklist, 60000);
+})();
+</script>
+</body>
+</html>
