@@ -215,7 +215,7 @@ p{margin:0}
 .setting .t b{display:block;font-weight:500;font-size:13.5px}
 .setting .t span{font-size:12px;color:var(--stone)}
 .setting.dis{opacity:.45}
-.sw{position:relative;flex:0 0 auto;width:44px;height:24px}
+.sw{position:relative;display:inline-block;vertical-align:middle;flex:0 0 auto;width:44px;height:24px}
 .sw input{position:absolute;inset:0;opacity:0;margin:0;cursor:pointer;z-index:2}
 .sw .tr{position:absolute;inset:0;border:1px solid var(--gold-line);border-radius:12px;transition:background .25s}
 .sw .kn{position:absolute;top:4px;left:4px;width:16px;height:16px;border-radius:50%;background:var(--stone);transition:transform .25s,background .25s}
@@ -260,6 +260,30 @@ p{margin:0}
 .progress{height:2px;background:var(--hair);margin-top:6px}
 .progress div{height:100%;background:var(--gold);transition:width .4s}
 
+/* Date season + rings */
+.dwin{font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+.dwin.end{color:var(--over)}
+.when{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.when select{appearance:none;-webkit-appearance:none;max-width:100%;background-color:var(--ink-3);color:var(--ivory);border:1px solid var(--gold-line);border-radius:0;font:500 13px/1.2 var(--sans);padding:9px 32px 9px 11px;cursor:pointer;background-image:linear-gradient(45deg,transparent 50%,var(--gold) 50%),linear-gradient(135deg,var(--gold) 50%,transparent 50%);background-position:calc(100% - 16px) 52%,calc(100% - 11px) 52%;background-size:5px 5px;background-repeat:no-repeat}
+.when select:focus-visible{outline:1px solid var(--gold);outline-offset:2px}
+.ringspec{display:grid;grid-template-columns:auto minmax(0,1fr);gap:5px 14px;font-size:13px;margin:0}
+.ringspec dt{color:var(--ash);font-size:10.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;padding-top:2px}
+.ringspec dd{margin:0;color:var(--ivory)}
+.cal{border-top:1px solid var(--gold-line)}
+.cal .wk{display:grid;grid-template-columns:128px minmax(0,1fr);gap:8px 18px;padding:13px 0;border-bottom:1px solid var(--hair);align-items:start}
+.cal .wk.past{opacity:.5}
+.cal .wl{font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--stone);padding-top:7px}
+.cal .wk.now .wl{color:var(--gold)}
+.cal .ents{display:flex;flex-wrap:wrap;gap:8px;align-items:center;min-width:0}
+.cal .ent{display:inline-flex;flex-wrap:wrap;gap:4px 8px;align-items:baseline;max-width:100%;padding:6px 10px;border:1px solid var(--gold-line);font-size:13px;color:var(--ivory)}
+.cal .ent i{font-style:normal;font-size:10.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--gold)}
+.cal .ent.done{opacity:.6}
+.cal .ent.done i::after{content:" ✓"}
+.cal .ent.ring{border-color:var(--gold)}
+.cal .ent.trip{border-color:var(--gold);background:var(--gold-soft)}
+.cal .empty{font-size:13px;color:var(--ash);margin-right:4px}
+@media (max-width:520px){ .cal .wk{grid-template-columns:minmax(0,1fr);gap:6px} .cal .wl{padding-top:0} }
+
 /* Footer */
 .notes{border-top:1px solid var(--gold-line);padding-top:24px}
 .notes summary{cursor:pointer;list-style:none}
@@ -288,7 +312,7 @@ p{margin:0}
   <div class="wrap">
     <span class="mark">One Year, <i>Two Cities</i></span>
     <div class="navlinks">
-      <a href="#concierge">Concierge</a><a href="#route">Route</a><a href="#stay">Stay</a><a href="#table">Table</a><a href="#experiences">Experiences</a><a href="#gifts">Gifts</a><a href="#itinerary">Itinerary</a><a href="#reservations">Reservations</a>
+      <a href="#dates">Dates</a><a href="#rings">Rings</a><a href="#concierge">Concierge</a><a href="#route">Route</a><a href="#stay">Stay</a><a href="#table">Table</a><a href="#experiences">Experiences</a><a href="#gifts">Gifts</a><a href="#itinerary">Itinerary</a><a href="#reservations">Reservations</a>
     </div>
     <a class="netchip" href="#folio" aria-label="Net out-of-pocket"><b class="num" id="chip-net">$0</b><span>of <span class="captxt">$2,000</span></span></a>
   </div>
@@ -301,7 +325,7 @@ p{margin:0}
       <p class="kicker">The Anniversary Edit · San Diego &amp; Los Angeles</p>
       <h1><span>One year,</span><em>two cities.</em></h1>
       <p class="dateline">Thursday 31 December 2026 — Sunday 3 January 2027</p>
-      <p class="lede">Tamar grew up in San Diego and you live downtown by Petco Park, so this weekend is built to get you both out of the neighborhood: New Year's Eve somewhere new, the coast by train, and the things locals never get around to doing. Choose each piece below. The folio keeps the whole weekend under <span class="captxt">$2,000</span> after your Amex credits and military discounts.</p>
+      <p class="lede">Tamar grew up in San Diego and you live downtown by Petco Park, so this weekend is built to get you both out of the neighborhood: New Year's Eve somewhere new, the coast by train, and the things locals never get around to doing. Choose each piece below. The folio keeps the whole weekend under <span class="captxt">$2,000</span> after your Amex credits and military discounts. Around it: nine weeks of cute San Diego dates, and rings you make together before midnight.</p>
       <div class="count" aria-live="polite" aria-label="Countdown to December 31, 2026">
         <div><b id="cd-d">--</b><span>Days</span></div>
         <div><b id="cd-h">--</b><span>Hours</span></div>
@@ -309,7 +333,8 @@ p{margin:0}
         <div><b id="cd-s">--</b><span>Seconds</span></div>
       </div>
       <div class="cta">
-        <a class="btn solid" href="#route">Begin curating</a>
+        <a class="btn solid" href="#dates">Plan our dates</a>
+        <a class="btn" href="#rings">Make your rings</a>
         <a class="btn" href="#itinerary">See the itinerary</a>
       </div>
     </div>
@@ -346,6 +371,30 @@ p{margin:0}
   <div class="atelier">
     <div class="chapters">
 
+      <section class="chapter" id="dates" aria-labelledby="dates-h">
+        <div class="chead"><span class="roman">✧</span><h2 id="dates-h">The date season</h2><p>Cute San Diego dates from now to January 18: holiday lights, things to make together, the water at sunset, a few shows. Add one, pick the night, and it lands on your calendar. Prices are tickets for two after your military discounts; food and drinks are extra. I've penciled in a starter season; change anything.</p></div>
+        <div class="filters" role="group" aria-label="Filter dates" id="d-filters">
+          <button class="chip" data-dfilter="all" aria-pressed="true">All</button>
+          <button class="chip" data-dfilter="lights" aria-pressed="false">Holiday lights</button>
+          <button class="chip" data-dfilter="make" aria-pressed="false">Make or learn</button>
+          <button class="chip" data-dfilter="water" aria-pressed="false">By the water</button>
+          <button class="chip" data-dfilter="show" aria-pressed="false">Shows</button>
+          <button class="chip" data-dfilter="free" aria-pressed="false">Free</button>
+          <button class="chip" data-dfilter="splurge" aria-pressed="false">Splurge</button>
+          <button class="chip" data-dfilter="picked" aria-pressed="false">Our dates</button>
+        </div>
+        <div class="grid" id="d-cards"></div>
+        <div class="sub-head"><h3>Our <i>calendar</i></h3><span class="label" id="d-sum"></span></div>
+        <div class="setting" style="border-top:0;padding-top:0"><div class="t"><b>Count these dates inside my cap</b><span>Off: the cap covers only the anniversary weekend. On: the concierge plans the weekend with whatever the dates leave.</span></div><span id="d-incap" style="display:flex;flex:0 0 auto"></span></div>
+        <div class="cal" id="d-cal"></div>
+      </section>
+
+      <section class="chapter" id="rings" aria-labelledby="rings-h">
+        <div class="chead"><span class="roman">◎</span><h2 id="rings-h">Make your rings</h2><p>Five ways to make them together in San Diego, from a 20-minute welded chain to solid gold bands you make in a day. Do it before New Year's Eve so you're both wearing them at midnight. Pick one and choose the day; it counts as a gift against your cap.</p></div>
+        <div class="grid" id="ring-cards"></div>
+        <p class="hint" id="ring-hint"><b>Which metal?</b> Sterling silver darkens over time and polishes back in a minute. Gold-filled is a thick layer of real gold bonded over brass; with care it lasts years, but it can't be refinished like solid gold. Solid gold is forever and can be resized later. A permanent chain isn't a ring at all: it's welded on, and you snip it off if you ever need to.</p>
+      </section>
+
       <section class="chapter" id="concierge" aria-labelledby="cg-h">
         <div class="chead"><span class="roman">✦</span><h2 id="cg-h">The concierge</h2><p>I priced every combination of route, hotel pair, dinner level, New Year's Eve format and spa, kept your must-haves, then spent what was left on the most romantic extras. These are the most luxurious weekends <span class="captxt">$2,000</span> buys after every credit and discount.</p></div>
         <div class="sub-head"><span class="label">Must-haves</span><span class="tiny muted" id="cg-status"></span></div>
@@ -354,11 +403,12 @@ p{margin:0}
           <button class="chip" data-must="moi" aria-pressed="true">Museum of Illusions</button>
           <button class="chip" data-must="fof" aria-pressed="true">Friends of Friends</button>
           <button class="chip" data-must="charm" aria-pressed="true">Gold charm</button>
+          <button class="chip" data-must="rings" aria-pressed="true">Make rings</button>
           <button class="chip" data-must="california" aria-pressed="true">Stay in California</button>
         </div>
         <div class="grid" id="cg-plans"></div>
         <details class="fgroup"><summary>How I score luxury</summary>
-          <p class="small muted" style="padding:8px 0 4px">Points are my judgment, added up: the New Year's Eve hotel (×1.5) and the Jan 1–3 hotel (×2.5) on a 1–10 scale (Four Seasons and Shore House 10, the Del 9, Estancia and the Miramar 8.5, the Conrad 8, the US Grant 3.5 because you can walk home from it); dinners (New Year's Eve is the anniversary dinner, so 1/7/11; the other two nights 2/4/6.5 each); the spa (day spa 5, Estancia bungalow 8, the Del's Ocean Wave 9); +1 for NYE somewhere new; each experience by its romance rating, each extra one counting a little less than the last; minus 4 for every activity past three in a day, because rushing isn't luxury; gifts from 2 (a trip charm) to 9 (solid gold rings). A plan only counts if it stays under your cap with no schedule clashes.</p>
+          <p class="small muted" style="padding:8px 0 4px">Points are my judgment, added up: the New Year's Eve hotel (×1.5) and the Jan 1–3 hotel (×2.5) on a 1–10 scale (Four Seasons and Shore House 10, the Del 9, Estancia and the Miramar 8.5, the Conrad 8, the US Grant 3.5 because you can walk home from it); dinners (New Year's Eve is the anniversary dinner, so 1/7/11; the other two nights 2/4/6.5 each); the spa (day spa 5, Estancia bungalow 8, the Del's Ocean Wave 9); +1 for NYE somewhere new; each experience by its romance rating, each extra one counting a little less than the last; minus 4 for every activity past three in a day, because rushing isn't luxury; gifts from 2 (a trip charm) to 9 (solid gold rings; the other rings score 4 to 6). If you've picked a ring, the concierge keeps it; if not and "Make rings" is on, it tries all five. A plan only counts if it stays under your cap with no schedule clashes.</p>
         </details>
       </section>
 
@@ -404,7 +454,7 @@ p{margin:0}
       </section>
 
       <section class="chapter" id="gifts" aria-labelledby="gifts-h">
-        <div class="chead"><span class="roman">V</span><h2 id="gifts-h">Anniversary gifts</h2><p>Paper is the traditional first-anniversary material, so a few of these lean that way. Gifts count against the same cap.</p></div>
+        <div class="chead"><span class="roman">V</span><h2 id="gifts-h">Anniversary gifts</h2><p>Paper is the traditional first-anniversary material, so a few of these lean that way. Gifts count against the same cap. The rings have their own chapter.</p></div>
         <div class="grid" id="gift-cards"></div>
       </section>
 
@@ -466,6 +516,8 @@ p{margin:0}
         <p>Hotel rates, dinner costs and a few ticket prices are my estimates (typical rate plus the holiday premium, with tax). Check live prices before booking. Every Amex credit needs enrollment, and the restaurant must show the Amex badge on Resy.</p>
         <p>Credit rules used: Platinum hotel credit $300 Jul–Dec 2026 and $300 Jan–Jun 2027, for prepaid FHR or THC (THC needs 2 nights; from Jan 1, 2027 FHR also needs 2 nights). Each hotel earns its own $100 property credit; back-to-back bookings at the same hotel would count as one. Resy: Gold $50 per half-year, Platinum $100 per quarter. Uber Cash: $35 Platinum + $10 Gold in December, $25 in January. The Saks credit ended June 30, 2026, and the airline credit doesn't apply because this weekend has no flights.</p>
         <p>Military: Surfliner 15% (code V780, active duty and spouses; veterans also 15% in California), $5 off Skating by the Sea, USS Midway free for active duty, Pandora 10% via ID.me (not 14k gold). "Tamar's own Platinum" assumes Amex waives her fee under the Military Lending Act, which covers active-duty members and their dependents; confirm with Amex.</p>
+        <p>Date season: dates, hours and prices come from organizers' pages and event listings checked Nov 12–13, 2026; anything marked "estimate" is mine. Lightscape runs nightly Nov 20–Jan 3 (from $28 each). Jungle Bells (from Dec 19, closed Dec 24) is included with zoo admission, which is free for active duty with ID. Skating by the Sea runs Nov 20–Jan 3 at $35–$45 a person with $5 off for military. The Grinch runs through Dec 31, The Nutcracker Dec 17–23 and Elf Dec 29–Jan 4. December Nights is Dec 4–5, the Little Italy tree lighting Dec 5 and the Bay Parade of Lights Dec 13 and 20. Days during your trip are left out of the pickers.</p>
+        <p>Rings: METHRA lists $120–$125 a seat; ember&amp;onyx's past North Park sessions were $110 a person with supplies for two rings each; Whaley Studios has a $1,000 workshop minimum; San Diego Jewelry Academy quotes by email; $180 for two permanent gold-filled chains is my estimate. Check each studio's calendar; I couldn't confirm every date.</p>
         <p>Home base: Park 12 in East Village, by Petco Park. Rides from home use about $10 to Santa Fe Depot; the trolley from 12th &amp; Imperial also reaches the depot and Old Town.</p>
         <p>Massages: resort couples treatments run about $500–$620 for two with service charges (Estancia's last published menu: $440 for 50 minutes; the Del's Ocean Wave from $620 on ResortPass). A day-spa couples massage in San Diego lists at about $190–$230 before tip. Wi Spa body scrubs start around $90 each.</p>
         <p>Left out on purpose: Disneyland (the most crowded weekend of the year) and Pasadena hotels (Rose Parade prices).</p>
@@ -692,27 +744,88 @@ var GIFTS = [
     desc:'A local photographer meets you at sunset in Coronado or La Jolla. The splurge that lasts.' },
   { id:'roses', name:'Roses and champagne in the room', maker:'Arranged through the hotel concierge', price:150, retail:false, link:null, by:'2026-12-20',
     desc:'Waiting when she walks into the New Year\'s Eve room. Estimate; ask the hotel.' },
-  { id:'ringgf', name:'Make your rings together', maker:'14k gold-filled · ember&onyx pop-up', price:300, retail:false, link:'https://shopemberandonyx.com/workshops', by:'2026-11-20',
-    desc:'A pre-trip date on Sat Dec 19, so you\'re wearing them on New Year\'s Eve. About $150 each.' },
-  { id:'ringsolid', name:'Solid 14k gold rings, made together', maker:'Private couples workshop · San Diego Jewelry Academy', price:1000, retail:false, link:'https://coursehorse.com/san-diego/schools/art/whaley-studios', by:'2026-11-20',
-    desc:'Heirloom gold you made yourselves. My estimate is about $500 each; the studio quotes per gram.' }
+  { id:'ringperm', ring:true, name:'Matching permanent gold chains', maker:'SoCo Gold · welded on, mobile or by appointment', metal:'14k gold-filled chain', time:'About 20 minutes', where:'They come to you, or a studio near you', keeps:'Welded shut; snip it if you ever must', price:180, est:true, retail:false, link:'https://socogold.setmore.com', by:'2026-12-15', bookNote:'Book a time for two and ask for a quote on gold-filled bracelets.',
+    desc:'Not ring making: a jeweler welds a fine chain closed around each wrist (or finger). The cheapest real gold you\'ll both wear every day. Appointments book from $25; the chain is extra.' },
+  { id:'ringgf', ring:true, name:'Stacking rings in 14k gold-filled', maker:'ember&onyx · pop-ups at Pure Project, North Park', metal:'14k gold-filled', time:'About 3 hours', where:'North Park · 10 minutes by Uber', keeps:'Years, with care', price:220, retail:false, link:'https://shopemberandonyx.com/workshops', by:'2026-12-01', bookNote:'Check her pop-up dates and buy two tickets.',
+    desc:'Sangeeta walks you through cutting, soldering and hand-stamping. Past sessions were $110 each, with supplies for two rings apiece, a ring box and a beer. She posts dates as pop-ups; pick one before New Year\'s Eve.' },
+  { id:'ringsilver', ring:true, name:'Forge sterling silver rings', maker:'METHRA · bench studio, 710 13th St, East Village', metal:'925 sterling silver', time:'2 to 2½ hours', where:'East Village · about a 12-minute walk from Park 12', keeps:'Forever; polish the tarnish off', price:250, retail:false, link:'https://methrashop.co/pages/ring-crafting-workshop-san-diego', by:'2026-12-01', bookNote:'Buy two seats, then confirm the date with the studio.',
+    desc:'Saw, hammer, file and polish a silver bar into a ring at the jeweler\'s bench, and wear it home. Listed at $120–$125 a seat and sold per seat, so book two. Its listings disagree on dates, so confirm yours.' },
+  { id:'ringsolid', ring:true, name:'Solid gold bands with a master goldsmith', maker:'Whaley Studios · 3848 Fifth Ave, Hillcrest', metal:'Gold, silver or platinum', time:'One day', where:'Hillcrest · 10 minutes by Uber', keeps:'Heirloom; can be resized', price:1000, est:true, retail:false, link:'https://whaleystudios.com/workshops/make-your-wedding-ring/', by:'2026-11-25', bookNote:'Book the free consultation first: 619-299-9619.',
+    desc:'Jay Whaley, who taught jewelry at UC San Diego for 24 years, guides you through designing and making each other\'s bands in a day. $1,000 workshop minimum; ask whether the gold is extra.' },
+  { id:'ringsdja', ring:true, name:'Wedding-band workshop in 14k–22k gold', maker:'San Diego Jewelry Academy · weekends', metal:'14k, 18k or 22k gold, or sterling', time:'One day', where:'San Diego · ask for the address when you book', keeps:'Heirloom; can be resized', price:1300, est:true, retail:false, link:'https://www.sandiegojewelryacademy.com/wedding-ring-workshop', by:'2026-11-25', bookNote:'Email info@sandiegojewelryacademy.com for a quote and a weekend date.',
+    desc:'A one-day weekend workshop in yellow or rose gold. They quote by email because the price moves with gold; $1,300 for two 14k bands is my guess. Ask about sterling if the quote is too high.' }
 ];
 var GIFTBY = {}; GIFTS.forEach(function(g){ GIFTBY[g.id] = g; });
+var RINGIDS = GIFTS.filter(function(g){ return g.ring; }).map(function(g){ return g.id; });
+
+/* Date season: cute San Diego dates, Nov 12 2026 to Jan 18 2027. price = tickets or booking for two, before food. */
+var SEASON = { start:'2026-11-12', end:'2027-01-18' };
+var TRIP = ['2026-12-31','2027-01-01','2027-01-02','2027-01-03'];
+var DTAG = { lights:'Holiday lights', make:'Make or learn', water:'By the water', show:'Show', food:'Food', free:'Free', splurge:'Splurge' };
+var DATES = [
+  { id:'lightscape', short:'Lightscape', tags:['lights'], name:'Lightscape at the Botanic Garden', where:'San Diego Botanic Garden, Encinitas · 30 minutes up the 5', win:['2026-11-20','2027-01-03'], time:'Nightly from 5 PM', price:72, note:'From $28 each plus a $3 fee, and $10 parking (last year\'s terms)', book:true, bookNote:'Timed tickets are nonrefundable; pick the night first.', link:'https://sdbg.org/lightscape/',
+    desc:'A mile-long trail through the garden lit by more than 20 light installations. Go early in the season or on a weeknight for room to wander.' },
+  { id:'decnights', short:'December Nights', tags:['lights','free'], name:'December Nights in Balboa Park', where:'Balboa Park · 10 minutes by Uber; skip the parking', days:['2026-12-04','2026-12-05'], time:'Evening', price:0, note:'Free; bring cash for the food stalls', link:'https://www.balboapark.org/',
+    desc:'The city\'s biggest free holiday festival: lights, music and food along El Prado. On Saturday, start at the Little Italy tree lighting and come here after.' },
+  { id:'littleitaly', short:'Little Italy tree lighting', tags:['lights','free','food'], name:'Little Italy tree lighting and Christmas Village', where:'Piazza della Famiglia · 10 minutes by trolley', days:['2026-12-05'], time:'4–8 PM · tree at 6:30', price:0, note:'Free', link:'https://www.sandiego.org/events-festivals/little-italy-tree-lighting-christmas-village/bb2e93f5c93311f1a7f2',
+    desc:'A Christmas village along India Street and the tree lighting at 6:30. Get cannoli, watch the lights come on, then go on to December Nights.' },
+  { id:'parade', short:'Parade of Lights', tags:['lights','water','free'], name:'Bay Parade of Lights from the waterfront', where:'Embarcadero · about a 20-minute walk from Park 12', days:['2026-12-13','2026-12-20'], time:'From 5:30 PM', price:0, note:'Free', link:'https://www.sandiego.org/plan-your-trip/plan-by-season/holidays/holiday-lights-festivals-parades',
+    desc:'About 80 boats lit for the holidays, sailing past the skyline. Bring a blanket and hot chocolate and be at Seaport Village by 5.' },
+  { id:'mbparade', short:'Mission Bay parade', tags:['lights','water','free'], name:'Mission Bay Parade of Lights and fireworks', where:'Mission Bay · 15 minutes by Uber', days:['2026-12-12'], time:'5:30–7:30 PM', price:0, note:'Free; one listing says Dec 13, so confirm', link:'https://www.sandiego.org/events-festivals/mission-bay-parade-of-lights/4c417a48bf5611f0b563',
+    desc:'Smaller and quieter than the bay parade, and it opens with SeaWorld fireworks over the water.' },
+  { id:'cardlane', short:'Christmas Card Lane', tags:['lights','free'], name:'Christmas Card Lane', where:'Rancho Peñasquitos · 25 minutes up the 15', win:['2026-12-12','2026-12-27'], time:'After dark', price:0, note:'Free; the dates are my estimate', link:'https://lajollamom.com/san-diego-holiday-events-christmas/',
+    desc:'A whole street hangs giant hand-painted holiday cards on the houses. Free, walkable in half an hour, and very sweet.' },
+  { id:'junglebells', short:'Jungle Bells', tags:['lights'], name:'Jungle Bells at the San Diego Zoo', where:'Balboa Park · 10 minutes by Uber', win:['2026-12-19','2027-01-03'], closed:['2026-12-24'], time:'Lights until about 8 PM', calc:function(s){ return (s.mil === 'active' ? 0 : 78) + (s.tamarMil ? 0 : 78); }, noteFn:function(s){ return s.mil === 'active' ? (s.tamarMil ? 'Free for both of you with active-duty ID' : 'Free for you with active-duty ID; about $78 for Tamar') : 'About $78 each'; }, link:'https://zoo.sandiegozoo.org/',
+    desc:'The zoo lit up for the holidays, included with admission. Arrive just before sunset to see it in daylight and in lights.' },
+  { id:'skate', short:'Skating at the Del', tags:['lights','water'], name:'Skating by the Sea at the Del', where:'Hotel del Coronado · 15 minutes over the bridge', win:['2026-11-20','2027-01-03'], time:'90-minute sessions', calc:function(s){ return 80 - (s.mil !== 'none' ? 5 : 0) - (s.tamarMil ? 5 : 0); }, note:'$35–$45 each with skates; $5 off with military ID', book:true, bookNote:'Book a sunset session; weekend evenings sell out.', trip:'skate', link:'https://hoteldel.com/events/skating',
+    desc:'An ice rink on the sand in front of the Del. Book the session that starts just before sunset.' },
+  { id:'grinch', short:'The Grinch', tags:['show'], name:'How the Grinch Stole Christmas! at the Old Globe', where:'Balboa Park', win:['2026-11-13','2026-12-31'], dow:[0,2,3,4,5,6], time:'Tuesday–Sunday', price:120, est:true, note:'My estimate; prices vary by seat and night', book:true, link:'https://www.theoldglobe.org/',
+    desc:'The Globe\'s 29th year of Whoville. Book an evening show; the matinees are full of kids.' },
+  { id:'nutcracker', short:'The Nutcracker', tags:['show'], name:'The Nutcracker, with the Symphony live', where:'San Diego Civic Theatre · 15 minutes by trolley', win:['2026-12-17','2026-12-23'], time:'Evenings and matinees', price:180, est:true, note:'$39–$143 a seat; $180 buys two good ones', book:true, bookNote:'Check the theatre calendar for that day\'s show times.', link:'https://www.sandiegotheatres.org/events/detail/golden-state-ballet-the-nutcracker-2026',
+    desc:'Golden State Ballet with the San Diego Symphony in the pit. Dress up, then get dessert in the Gaslamp after.' },
+  { id:'elf', short:'Elf', tags:['show'], name:'Elf the Musical', where:'San Diego Civic Theatre · 15 minutes by trolley', days:['2026-12-29','2026-12-30','2027-01-04'], time:'7 PM (6:30 on Jan 4)', price:130, est:true, note:'From $52.75 a seat', book:true, link:'https://www.sandiegotheatres.org/events/detail/elf-the-musical-2026',
+    desc:'The touring Broadway show, playing the two nights before your trip and the night after it. Funny and sweet.' },
+  { id:'whales', short:'Whale watching', tags:['water'], name:'Gray whale watching', where:'Broadway Pier · about a 20-minute walk', win:['2026-12-15','2027-01-18'], time:'About 3 hours', price:110, note:'About $54–$57 each at the gate, less online', book:true, trip:'whale', link:'https://www.flagshipsd.com/cruises/whale-watching',
+    desc:'Gray whales start passing in mid-December and peak in January. Flagship offers a sighting guarantee; read its terms.' },
+  { id:'sail', short:'Sunset sail', tags:['water'], name:'Sunset sail on the bay', where:'Downtown marinas', time:'Leaves mid-afternoon in winter', price:230, est:true, note:'Small-group sails run about $109–$125 each; private for two from about $630', book:true, link:'https://www.aaa.com/tripcanvas/thing-to-do/small-group-sunset-sail-in-san-diego-public-sail-up-to-6-guests-391230P8',
+    desc:'Two hours under sail while the skyline turns gold. The sun sets around 4:45, so bring jackets.' },
+  { id:'gondola', short:'Gondola', tags:['water','splurge'], name:'Gondola through the Coronado Cays', where:'Coronado Cays · 30 minutes by Uber', time:'Book the sunset slot', price:160, note:'From about $139 for two, plus tip', book:true, trip:'gondola', link:'https://gondolacompany.com/',
+    desc:'A private 50-minute Venetian gondola at sunset, with blankets. Bring your own bottle.' },
+  { id:'balloon', short:'Balloon ride', tags:['splurge'], name:'Hot-air balloon over Del Mar at sunset', where:'Del Mar · 25 minutes up the 5', time:'Launches mid-afternoon', price:450, est:true, note:'About $225 each on an undated listing; private for two runs $800 or more', book:true, bookNote:'Wind cancels flights; ask about rebooking.', link:'https://www.govisitsandiego.com/things-to-do/activities/hot-air-balloon-rides-in-san-diego',
+    desc:'The most tourist-in-her-own-state thing on this list: drifting over the coast at sunset, with champagne when you land.' },
+  { id:'pottery', short:'Pottery wheel', tags:['make'], name:'Pottery wheel date night', where:'Pinch Pottery, downtown', time:'About 2 hours, BYOB', price:150, est:true, note:'Pinch lists a couples night at $150; Shoulder Cat Studio\'s is $175', book:true, link:'https://bucketlisters.com/experience/pottery-wheel-throwing-date-night',
+    desc:'Clay on the wheel and a lot of laughing. Studios usually fire your pieces and call you to collect them a few weeks later.' },
+  { id:'candle', short:'Candle making', tags:['make'], name:'Make candles together', where:'Bankers Hill or a local brewery', time:'About 2 hours', price:110, est:true, note:'About $55 each', book:true, link:'https://www.eventbrite.com/e/make-cozy-candles-candle-making-class-in-san-diego-classpoptm-tickets-1835888374549',
+    desc:'Blend a scent for each other and pour it. You usually take the candles home the same night.' },
+  { id:'salsa', short:'Salsa lesson', tags:['make'], name:'Your first salsa lesson together', where:'Marriott Mission Valley · 15 minutes by trolley', win:['2027-01-15','2027-01-18'], time:'Afternoons', price:100, est:true, note:'My guess; check the festival passes', book:true, link:'https://www.eventbrite.com/e/big-salsa-bachata-festival-san-diego-2027-tickets-1980840366860',
+    desc:'The BIG Salsa & Bachata Festival runs beginner classes all weekend. Learn the basic step together, then watch the pros.' },
+  { id:'symphony', short:'Symphony', tags:['show'], name:'San Diego Symphony: Rachmaninoff', where:'Jacobs Music Center · 15 minutes by trolley', days:['2027-01-17'], time:'Evening', price:120, est:true, note:'My estimate; listed for Jan 17, so confirm', book:true, link:'https://www.sandiegosymphony.org/',
+    desc:'A dressed-up end to the season: Rachmaninoff in the city\'s concert hall, then a nightcap.' },
+  { id:'mercato', short:'Mercato flowers', tags:['food','free'], name:'Saturday flowers at the Little Italy Mercato', where:'Little Italy · 10 minutes by trolley', dow:[6], time:'Saturdays 8 AM–2 PM', price:0, note:'Free, apart from the flowers', link:'https://www.littleitalymercato.com/',
+    desc:'Coffee, a pastry and a slow lap of the farmers market. Buy her a bunch of flowers from the stalls.' },
+  { id:'cliffs', short:'Sunset Cliffs', tags:['water','free'], name:'Sunset picnic at Sunset Cliffs', where:'Point Loma · 20 minutes by Uber', time:'Be there by 4:15', price:0, note:'Free; bring the picnic', link:null,
+    desc:'Cheese, a bottle and a blanket while the sun drops into the Pacific at about 4:45. Stay back from the edge; it crumbles.' },
+  { id:'cove', short:'La Jolla Cove', tags:['water','free'], name:'Golden hour at La Jolla Cove', where:'La Jolla · 25 minutes by Uber', time:'An hour before sunset', price:0, note:'Free', link:null,
+    desc:'Sea lions on the rocks, the cove going gold, then gelato on Prospect Street. The tourist half-hour locals skip.' },
+  { id:'ferry', short:'Coronado Ferry', tags:['water'], name:'Coronado Ferry and the Del\'s lobby tree', where:'Convention Center landing · a short walk from Park 12', time:'Late afternoon', price:36, note:'About $9 each way', link:'https://flagshipsd.com/ferry-routes/broadway-pier',
+    desc:'Fifteen minutes across the bay, a walk up Orange Avenue to the Christmas tree in the Del\'s lobby, and back for the skyline at dusk.' }
+];
+var DATEBY = {}; DATES.forEach(function(d){ DATEBY[d.id] = d; });
 
 var DEFAULT = {
   route:'la-first', la:'conrad', sd:'estancia', tier:'casual', tier2:'casual', nye:'restaurant',
   exp:['griffith','nyela','broad','torrey','spa-local','moi-sd','fof'], gifts:['heart','letters'],
   mil:'active', tamarMil:false, tamarCard:false, cap:2000,
-  must:{ spa:true, moi:true, fof:true, charm:true, california:true },
+  must:{ spa:true, moi:true, fof:true, charm:true, california:true, rings:true },
   cr:{ hotel:true, property:true, resyGold:true, resyPlat:true, uber:true, jan27:true, jan1:true },
-  filter:'all'
+  filter:'all', dfilter:'all', dates:{}, datesInCap:false, ringDate:'2026-12-19'
 };
 
 /* ---------- state ---------- */
 var state = (function(){
   var s = clone(DEFAULT), saved = store.get('oyc.state.v2', null);
   if (saved && typeof saved === 'object'){
-    ['route','la','sd','tier','tier2','nye','mil','tamarMil','tamarCard','cap','filter','optimizedV1'].forEach(function(k){ if (saved[k] !== undefined) s[k] = saved[k]; });
+    ['route','la','sd','tier','tier2','nye','mil','tamarMil','tamarCard','cap','filter','optimizedV1','optimizedV2','datesSeeded','datesInCap','dfilter','ringDate'].forEach(function(k){ if (saved[k] !== undefined) s[k] = saved[k]; });
     if (saved.meToo !== undefined && saved.tamarMil === undefined) s.tamarMil = !!saved.meToo;
     if (saved.andrew !== undefined && saved.tamarCard === undefined) s.tamarCard = !!saved.andrew;
     if (saved.must && typeof saved.must === 'object') Object.keys(s.must).forEach(function(k){ if (typeof saved.must[k] === 'boolean') s.must[k] = saved.must[k]; });
@@ -723,7 +836,12 @@ var state = (function(){
     if (!saved.spaAdded){ if (!s.exp.some(function(id){ return EXPBY[id].kind === 'spa'; })) s.exp.push('spa-local'); }
     if (!saved.moiAdded){ if (s.exp.indexOf('moi-sd') === -1 && s.exp.indexOf('moi-sm') === -1) s.exp.push('moi-sd'); }
     if (!saved.fofAdded){ if (s.exp.indexOf('fof') === -1) s.exp.push('fof'); }
+    if (saved.dates && typeof saved.dates === 'object') Object.keys(saved.dates).forEach(function(id){ if (DATEBY[id] && /^\d{4}-\d\d-\d\d$/.test(saved.dates[id])) s.dates[id] = saved.dates[id]; });
   }
+  if (!saved || !saved.datesSeeded) seedDates(s);
+  if (typeof s.ringDate !== 'string' || !/^\d{4}-\d\d-\d\d$/.test(s.ringDate)) s.ringDate = DEFAULT.ringDate;
+  if (!DTAG[s.dfilter] && s.dfilter !== 'all' && s.dfilter !== 'picked') s.dfilter = 'all';
+  s.datesInCap = !!s.datesInCap;
   if (!ROUTES[s.route]) s.route = DEFAULT.route;
   if (!HOTEL.la[s.la]) s.la = DEFAULT.la;
   if (!HOTEL.sd[s.sd]) s.sd = DEFAULT.sd;
@@ -733,7 +851,58 @@ var state = (function(){
   return s;
 })();
 var booked = store.get('oyc.booked.v1', {}); if (!booked || typeof booked !== 'object') booked = {};
-function save(){ state.spaAdded = true; state.moiAdded = true; state.fofAdded = true; store.set('oyc.state.v2', state); }
+function save(){ state.datesSeeded = true; state.spaAdded = true; state.moiAdded = true; state.fofAdded = true; store.set('oyc.state.v2', state); }
+
+/* ---------- date season helpers ---------- */
+var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], DOWN = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+function isoParts(iso){ return iso.split('-').map(Number); }
+function isoAdd(iso, n){ var p = isoParts(iso); return new Date(Date.UTC(p[0], p[1] - 1, p[2] + n)).toISOString().slice(0, 10); }
+function isoDow(iso){ var p = isoParts(iso); return new Date(Date.UTC(p[0], p[1] - 1, p[2])).getUTCDay(); }
+function minIso(a, b){ return a < b ? a : b; }
+function maxIso(a, b){ return a > b ? a : b; }
+function todayISO(){ var d = new Date(); return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
+function shortDate(iso){ var p = isoParts(iso); return MON[p[1] - 1] + ' ' + p[2]; }
+function dLabel(iso){ return DOWN[isoDow(iso)] + ', ' + shortDate(iso); }
+function datePrice(d, s){ return d.calc ? d.calc(s) : d.price; }
+function dateNote(d, s){ return d.noteFn ? d.noteFn(s) : d.note; }
+function validDates(d, today){
+  if (d.days) return d.days.filter(function(x){ return x >= today && x <= SEASON.end && TRIP.indexOf(x) === -1; });
+  var out = [], from = d.win ? d.win[0] : SEASON.start, to = d.win ? d.win[1] : SEASON.end;
+  if (from < today) from = today; if (to > SEASON.end) to = SEASON.end;
+  for (var x = from; x <= to; x = isoAdd(x, 1)){
+    if (TRIP.indexOf(x) !== -1 || (d.closed && d.closed.indexOf(x) !== -1) || (d.dow && d.dow.indexOf(isoDow(x)) === -1)) continue;
+    out.push(x);
+  }
+  return out;
+}
+function winLabel(d, today){
+  if (d.days){
+    var ds = d.days.filter(function(x){ return TRIP.indexOf(x) === -1; });
+    if (ds.length === 1) return dLabel(ds[0]) + ' only';
+    if (ds.length === 2 && isoAdd(ds[0], 1) === ds[1]) return shortDate(ds[0]) + '–' + isoParts(ds[1])[2] + ' only';
+    if (ds.length === 2 && isoDow(ds[0]) === isoDow(ds[1]) && isoParts(ds[0])[1] === isoParts(ds[1])[1]) return DOWN[isoDow(ds[0])] + 's ' + shortDate(ds[0]) + ' & ' + isoParts(ds[1])[2];
+    return ds.map(shortDate).join(', ');
+  }
+  if (d.dow && d.dow.length === 1) return 'Every ' + ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][d.dow[0]];
+  if (!d.win) return 'Any day';
+  return (d.win[0] > today ? 'From ' + shortDate(d.win[0]) + ' to ' : 'Through ') + shortDate(d.win[1]);
+}
+function seasonPicks(s){
+  return Object.keys(s.dates || {}).filter(function(id){ return DATEBY[id]; }).map(function(id){ var d = DATEBY[id]; return { d:d, date:s.dates[id], price:datePrice(d, s) }; })
+    .sort(function(a, b){ return a.date < b.date ? -1 : a.date > b.date ? 1 : 0; });
+}
+function seasonTotal(s){ return sum(seasonPicks(s).map(function(p){ return p.price; })); }
+function ringOf(s){ var r = s.gifts.filter(function(id){ return GIFTBY[id] && GIFTBY[id].ring; }); return r.length ? GIFTBY[r[0]] : null; }
+function seedDates(s){
+  var today = todayISO(), seed = { mercato:'2026-11-14', lightscape:'2026-11-21', littleitaly:'2026-12-05', decnights:'2026-12-05', parade:'2026-12-13', junglebells:'2026-12-27', whales:'2027-01-09' };
+  Object.keys(seed).forEach(function(id){ var v = validDates(DATEBY[id], today); if (!v.length) return; s.dates[id] = v.indexOf(seed[id]) !== -1 ? seed[id] : v[0]; });
+}
+function defaultNight(d, s){
+  var v = validDates(d, todayISO()), taken = {};
+  Object.keys(s.dates).forEach(function(k){ taken[s.dates[k]] = 1; });
+  var free = v.filter(function(x){ return !taken[x]; }), wknd = free.filter(function(x){ var w = isoDow(x); return w === 5 || w === 6 || w === 0; });
+  return wknd[0] || free[0] || v[0] || null;
+}
 
 /* ---------- engine ---------- */
 function tamarEligible(s){ return s.mil === 'active' || !!s.tamarMil; }
@@ -817,6 +986,7 @@ function compute(s){
 
   /* gifts */
   s.gifts.forEach(function(id){ var g = GIFTBY[id]; if (g) add('Gifts', g.name, giftPrice(g, s), 'gift'); });
+  if (s.datesInCap) seasonPicks(s).forEach(function(p){ if (p.price) add('Dates', p.d.short + ', ' + shortDate(p.date), p.price, 'dates'); });
 
   /* credits */
   function tot(cat){ return sum(lines.filter(function(l){ return l.cat === cat; }).map(function(l){ return l.amt; })); }
@@ -965,13 +1135,91 @@ function renderExp(){
 
 /* ---------- render: gifts ---------- */
 function renderGifts(){
-  $('#gift-cards').innerHTML = GIFTS.map(function(g){
+  $('#gift-cards').innerHTML = GIFTS.filter(function(g){ return !g.ring; }).map(function(g){
     var on = state.gifts.indexOf(g.id) !== -1, p = giftPrice(g, state);
     return '<article class="card' + (on ? ' on' : '') + '"><div class="badges">' + (g.paper ? '<span class="badge fhr">Paper · year one</span>' : '') + (g.pandora ? '<span class="badge">Pandora · gold</span>' : '') + '</div>' +
       '<h4>' + esc(g.name) + '</h4><span class="where">' + esc(g.maker) + '</span><p class="desc">' + esc(g.desc) + '</p>' +
       '<div class="top" style="align-items:flex-end"><div><span class="label">' + (g.retail ? 'With tax' : 'Estimate') + (g.pandora && !g.gold14 && state.mil !== 'none' ? ' · 10% military' : '') + '</span><div class="price num">' + fmt(p) + '</div></div>' +
       '<button class="btn sm" type="button" data-gift="' + g.id + '" aria-pressed="' + on + '">' + (on ? 'Added' : 'Add') + '</button></div>' +
       (g.link ? '<div class="actions"><a class="btn quiet sm" href="' + g.link + '" target="_blank" rel="noopener">Shop ↗</a></div>' : '') + '</article>';
+  }).join('');
+}
+
+/* ---------- render: date season ---------- */
+function dateCard(x, today){
+  var d = x.d, on = !!state.dates[d.id], p = datePrice(d, state), over = !x.v.length, soon = !d.days && !over && x.v.length <= 3;
+  var badges = d.tags.filter(function(t){ return t !== 'free'; }).slice(0, 2).map(function(t){ return '<span class="badge' + (t === 'lights' ? ' fhr' : t === 'water' ? ' sd' : t === 'splurge' ? ' thc' : '') + '">' + DTAG[t] + '</span>'; }).join('') +
+    (p === 0 ? '<span class="badge ok">Free</span>' : '') + (d.id === 'junglebells' && state.mil === 'active' ? '<span class="badge mil">Free for you</span>' : '');
+  var opts = x.v.slice(); if (on && opts.indexOf(state.dates[d.id]) === -1) opts.unshift(state.dates[d.id]);
+  var tripDup = d.trip && state.exp.indexOf(d.trip) !== -1;
+  return '<article class="card' + (on ? ' on' : '') + '"><div class="badges">' + badges + '</div>' +
+    '<span class="dwin' + (soon || over ? ' end' : '') + '">' + esc(over ? 'Over for this year' : soon ? 'Last ' + x.v.length + (x.v.length === 1 ? ' night' : ' nights') + ' · ' + winLabel(d, today) : winLabel(d, today)) + ' · ' + esc(d.time) + '</span>' +
+    '<h4>' + esc(d.name) + '</h4><span class="where">' + esc(d.where) + '</span><p class="desc">' + esc(d.desc) + '</p>' +
+    (tripDup ? '<p class="tiny" style="color:var(--gold)">Also in your anniversary weekend. Do it twice, or drop one.</p>' : '') +
+    '<div class="top" style="align-items:flex-end"><div style="min-width:0"><span class="label">' + (d.est ? 'Estimate for two' : 'For two') + '</span><div class="price num">' + (p ? fmt(p) : 'Free') + '</div><span class="tiny muted">' + esc(dateNote(d, state)) + '</span></div>' +
+    '<button class="btn sm" type="button" data-date="' + d.id + '" aria-pressed="' + on + '"' + (over && !on ? ' disabled' : '') + '>' + (on ? 'Added' : 'Add') + '</button></div>' +
+    (on ? '<label class="when"><span class="label">Our night</span><select data-dwhen="' + d.id + '">' + opts.map(function(o){ return '<option value="' + o + '"' + (o === state.dates[d.id] ? ' selected' : '') + '>' + dLabel(o) + (o < today ? ' (done)' : '') + '</option>'; }).join('') + '</select></label>' : '') +
+    (d.link ? '<div class="actions"><a class="btn quiet sm" href="' + d.link + '" target="_blank" rel="noopener">' + (d.book ? 'Tickets' : 'Details') + ' ↗</a></div>' : '') + '</article>';
+}
+function renderDates(){
+  var today = todayISO(), f = state.dfilter;
+  $$('#d-filters .chip').forEach(function(b){ b.setAttribute('aria-pressed', String(b.dataset.dfilter === f)); });
+  var list = DATES.map(function(d, i){ var v = validDates(d, today); return { d:d, v:v, i:i, dated:!!(d.days || d.win) }; }).filter(function(x){
+    var on = !!state.dates[x.d.id]; if (!x.v.length && !on) return false;
+    if (f === 'all') return true; if (f === 'picked') return on; if (f === 'free') return datePrice(x.d, state) === 0;
+    return x.d.tags.indexOf(f) !== -1;
+  });
+  var dated = list.filter(function(x){ return x.dated; }).sort(function(a, b){ var fa = a.v[0] || '9999', fb = b.v[0] || '9999'; return fa < fb ? -1 : fa > fb ? 1 : a.i - b.i; });
+  var any = list.filter(function(x){ return !x.dated; });
+  var head = function(t, n){ return '<div class="sub-head" style="grid-column:1/-1"><h3>' + t + '</h3><span class="label">' + n + '</span></div>'; };
+  $('#d-cards').innerHTML = (dated.length ? head('Only <i>this season</i>', 'Soonest first') + dated.map(function(x){ return dateCard(x, today); }).join('') : '') +
+    (any.length ? head('Any <i>night</i>', 'Whenever you like') + any.map(function(x){ return dateCard(x, today); }).join('') : '') +
+    (!list.length ? '<p class="hint" style="grid-column:1/-1">Nothing here yet. Add a few from All.</p>' : '');
+  renderCalendar(today);
+}
+function renderCalendar(today){
+  var picks = seasonPicks(state), ring = ringOf(state), rows = [];
+  var ws = isoAdd(SEASON.start, -((isoDow(SEASON.start) + 6) % 7));
+  for (; ws <= SEASON.end; ws = isoAdd(ws, 7)){
+    var we = isoAdd(ws, 6), a = maxIso(ws, SEASON.start), z = minIso(we, SEASON.end), ents = [];
+    picks.forEach(function(p){ if (p.date >= ws && p.date <= we) ents.push({ k:p.date, h:'<span class="ent' + (p.date < today ? ' done' : '') + '"><i>' + DOWN[isoDow(p.date)] + ' ' + isoParts(p.date)[2] + '</i>' + esc(p.d.short) + (p.price ? ' · ' + fmt(p.price) : '') + '</span>' }); });
+    if (ring && state.ringDate >= ws && state.ringDate <= we) ents.push({ k:state.ringDate, h:'<a class="ent ring" href="#rings"><i>' + DOWN[isoDow(state.ringDate)] + ' ' + isoParts(state.ringDate)[2] + '</i>Make your rings · ' + fmt(giftPrice(ring, state)) + '</a>' });
+    if (TRIP[0] <= we && TRIP[3] >= ws) ents.push({ k:maxIso(TRIP[0], ws), h:'<a class="ent trip" href="#itinerary"><i>Dec 31 – Jan 3</i>The anniversary weekend</a>' });
+    ents.sort(function(x, y){ return x.k < y.k ? -1 : x.k > y.k ? 1 : 0; });
+    var sug = '';
+    if (!ents.length && z >= today){
+      var cand = DATES.filter(function(d){ return !state.dates[d.id]; }).map(function(d){ var v = validDates(d, today).filter(function(x){ return x >= ws && x <= we; }); return v.length ? { d:d, x:v.filter(function(y){ var w = isoDow(y); return w === 5 || w === 6 || w === 0; })[0] || v[0], dated:!!(d.days || d.win) } : null; }).filter(Boolean);
+      cand.sort(function(p, q){ return (q.dated ? 1 : 0) - (p.dated ? 1 : 0); });
+      if (cand.length) sug = '<button class="btn quiet sm" type="button" data-dsug="' + cand[0].d.id + '|' + cand[0].x + '">Try ' + esc(cand[0].d.short) + ', ' + DOWN[isoDow(cand[0].x)] + ' ' + isoParts(cand[0].x)[2] + '</button>';
+    }
+    var now = today >= ws && today <= we, lab = shortDate(a) + (a === z ? '' : ' – ' + (isoParts(z)[1] === isoParts(a)[1] ? isoParts(z)[2] : shortDate(z)));
+    rows.push('<div class="wk' + (now ? ' now' : '') + (z < today ? ' past' : '') + '"><span class="wl">' + lab + (now ? ' · now' : '') + '</span><div class="ents">' + (ents.length ? ents.map(function(e){ return e.h; }).join('') : '<span class="empty">Nothing yet</span>' + sug) + '</div></div>');
+  }
+  $('#d-cal').innerHTML = rows.join('');
+  var n = picks.length, tot = seasonTotal(state), free = picks.filter(function(p){ return !p.price; }).length;
+  $('#d-sum').textContent = n + (n === 1 ? ' date' : ' dates') + ' · ' + fmt(tot) + ' in tickets' + (free ? ' · ' + free + ' free' : '') + (ring ? ' · rings ' + fmt(giftPrice(ring, state)) : '');
+  $('#d-incap').innerHTML = swHtml('datesInCap', state.datesInCap, false, 'Count these dates inside my cap');
+}
+
+/* ---------- render: rings ---------- */
+function ringDays(today){
+  var out = [], end = '2026-12-30';
+  if (today > end) end = SEASON.end;
+  for (var x = today; x <= end; x = isoAdd(x, 1)) if (TRIP.indexOf(x) === -1) out.push(x);
+  return out;
+}
+function renderRings(){
+  var today = todayISO(), days = ringDays(today);
+  if (days.indexOf(state.ringDate) === -1) days.unshift(state.ringDate);
+  $('#ring-cards').innerHTML = GIFTS.filter(function(g){ return g.ring; }).map(function(g){
+    var on = state.gifts.indexOf(g.id) !== -1, gold = /gold/i.test(g.metal);
+    return '<article class="card' + (on ? ' on' : '') + '"><div class="badges"><span class="badge' + (gold ? ' fhr' : '') + '">' + esc(g.metal) + '</span></div>' +
+      '<h4>' + esc(g.name) + '</h4><span class="where">' + esc(g.maker) + '</span><p class="desc">' + esc(g.desc) + '</p>' +
+      '<dl class="ringspec"><dt>Time</dt><dd>' + esc(g.time) + '</dd><dt>Where</dt><dd>' + esc(g.where) + '</dd><dt>Lasts</dt><dd>' + esc(g.keeps) + '</dd></dl>' +
+      '<div class="top" style="align-items:flex-end"><div><span class="label">' + (g.est ? 'Estimate for two' : 'For two') + '</span><div class="price num">' + fmt(giftPrice(g, state)) + (g.id === 'ringsolid' ? '<small>minimum</small>' : '') + '</div></div>' +
+      '<button class="btn sm" type="button" data-gift="' + g.id + '" aria-pressed="' + on + '">' + (on ? 'Chosen' : 'Choose') + '</button></div>' +
+      (on ? '<label class="when"><span class="label">Our day</span><select id="ring-when" aria-label="Day to make the rings">' + days.map(function(o){ return '<option value="' + o + '"' + (o === state.ringDate ? ' selected' : '') + '>' + dLabel(o) + (o < today ? ' (done)' : '') + '</option>'; }).join('') + '</select></label>' : '') +
+      '<div class="actions"><a class="btn quiet sm" href="' + g.link + '" target="_blank" rel="noopener">Book ↗</a></div></article>';
   }).join('');
 }
 
@@ -1002,7 +1250,7 @@ function renderFolio(c){
   $('#m-g').style.width = Math.min(100, c.gross / max * 100) + '%';
   $('#m-n').style.width = Math.max(0, Math.min(100, c.net / max * 100)) + '%'; $('#m-n').style.background = over ? 'var(--over)' : 'var(--gold)';
   $('#m-cap').style.left = (state.cap / max * 100) + '%';
-  var groups = ['Stay','Travel','Table','Spa','Experiences','Gifts','On the house'], html = '';
+  var groups = ['Stay','Travel','Table','Spa','Experiences','Gifts','Dates','On the house'], html = '';
   groups.forEach(function(g){
     var ls = c.lines.filter(function(l){ return l.group === g; }); if (!ls.length) return;
     html += '<details class="fgroup"><summary>' + g + ' <b>' + fmt(sum(ls.map(function(l){ return l.amt; }))) + '</b></summary>' + ls.map(function(l){ return '<div class="fline"><span>' + esc(l.label) + '</span><b>' + fmt(l.amt) + '</b></div>'; }).join('') + '</details>';
@@ -1017,6 +1265,7 @@ function renderFolio(c){
   $('#f-wallet-list').innerHTML = WALLET.map(function(w){ return '<div class="setting"><div class="t"><b>' + esc(w.t) + '</b><span>' + esc(w.d) + '</span></div>' + swHtml('cr.' + w.k, state.cr[w.k], false, w.t) + '</div>'; }).join('');
   $('#f-wallet-n').textContent = WALLET.filter(function(w){ return state.cr[w.k]; }).length + ' of ' + WALLET.length + ' on';
   var hints = c.warn.map(function(w){ return '<p class="hint" style="border-color:var(--over)">' + esc(w) + '</p>'; });
+  var stot = seasonTotal(state); if (!state.datesInCap && stot > 0) hints.push('<p class="hint">Your date season adds <b>' + fmt(stot) + '</b> in tickets, outside this cap. Turn on <a href="#dates" style="color:var(--gold)">Count these dates inside my cap</a> if the ' + fmt(state.cap) + ' has to cover them too.</p>');
   if (!over && tamarEligible(state) && !state.tamarCard){ var s2 = clone(state); s2.tamarCard = true; var d = c.net - compute(s2).net; if (d >= 1) hints.push('<p class="hint">If Tamar opens <b>her own Platinum</b>, this weekend drops another ' + fmt(d) + '.</p>'); }
   if (HOTEL.sd[state.sd].allInc) hints.push('<p class="hint">On the all-inclusive plan, your Jan–Jun hotel credit and January Resy credits go unused on this trip. They\'re still yours for later in 2027.</p>');
   if (state.sd === 'usgrant'){ var s3 = clone(state); s3.sd = 'estancia'; s3.exp = s3.exp.filter(function(id){ return EXPBY[id] && EXPBY[id].city !== 'sd'; }).concat(['torrey']); var d3 = compute(s3).net - c.net; hints.push('<p class="hint">The US Grant is a 20-minute walk from Park 12. For a San Diego half that feels like a trip, <b>Estancia La Jolla</b> with a Torrey Pines sunset costs ' + (d3 >= 0 ? fmt(d3) + ' more' : fmt(-d3) + ' less') + '.</p>'); }
@@ -1127,7 +1376,8 @@ function renderReservations(c){
     items.push({ id:'jan2', due:'2026-12-15', t:'Jan 2 dinner at ' + B.dine, d:'Ask the hotel to charge it to the room so the $100 credit applies.', link:B.book, lab:'Hotel' });
   } else if (state.mil !== 'none') items.push({ id:'baja', due:'2026-11-20', t:'Check your command\'s rules for travel to Mexico', d:'Ask what you (and Tamar, if she serves) need for leave or liberty in Baja before you book anything there.' });
   c.chosen.forEach(function(e){ if (e.booking) items.push({ id:'x-' + e.id, due:e.by, t:e.name + ' · ' + DAYNAME[slotOf(e, state)[0]] + ', ' + timeLabel(slotOf(e, state)[1]), d:e.id === 'skate' ? 'Choose the ' + timeLabel(slotOf(e, state)[1]) + ' session; it sells out.' : e.kind === 'spa' ? 'Holiday weekends book up early; ask for side-by-side tables.' : 'Reserve your time.', link:e.link, lab:'Book' }); });
-  state.gifts.forEach(function(id){ var g = GIFTBY[id]; if (g) items.push({ id:'g-' + g.id, due:g.by, t:'Gift: ' + g.name, d:g.id === 'heart' ? 'Engraving makes it final sale; leave time for shipping.' : g.link ? 'Order with shipping time to spare.' : 'Your part; no link needed.', link:g.link, lab:'Shop' }); });
+  state.gifts.forEach(function(id){ var g = GIFTBY[id]; if (g && g.ring) items.push({ id:'g-' + g.id, due:minIso(g.by, isoAdd(state.ringDate, -10)), t:'Rings: ' + g.name + ' · ' + dLabel(state.ringDate), d:g.bookNote, link:g.link, lab:'Book' }); else if (g) items.push({ id:'g-' + g.id, due:g.by, t:'Gift: ' + g.name, d:g.id === 'heart' ? 'Engraving makes it final sale; leave time for shipping.' : g.link ? 'Order with shipping time to spare.' : 'Your part; no link needed.', link:g.link, lab:'Shop' }); });
+  var tdy = todayISO(); seasonPicks(state).forEach(function(p){ if (p.d.book && p.date >= tdy) items.push({ id:'d-' + p.d.id + '-' + p.date, due:maxIso(tdy, isoAdd(p.date, -7)), t:p.d.short + ' · ' + dLabel(p.date), d:p.d.bookNote || 'Buy the tickets; the good nights sell out.', link:p.d.link, lab:'Tickets' }); });
   items.push({ id:'uber', due:'2026-12-30', t:'Add both Amex cards to Uber', d:'The Uber Cash only applies when you pay with an Amex card.' });
   items.sort(function(a, b){ return a.due < b.due ? -1 : a.due > b.due ? 1 : 0; });
   var done = items.filter(function(i){ return booked[i.id]; }).length;
@@ -1154,7 +1404,7 @@ var LUX = {
   hotel:{ conrad:8, miramar:8.5, fsla:10, sixty:6.5, normandie:3, usgrant:3.5, del:9, estancia:8.5, shore:10, loews:6.5, navy:1, rosarito:5 },
   nye:{ casual:1, date:7, splurge:11 }, other:{ casual:2, date:4, splurge:6.5 },
   spa:{ 'spa-local':5, 'spa-wi':3, 'spa-estancia':8, 'spa-del':9 },
-  gift:{ heart:3, anniv:4, balloon:2, starmap:3, letters:3, photo:6, roses:4, ringgf:5, ringsolid:9 }
+  gift:{ heart:3, anniv:4, balloon:2, starmap:3, letters:3, photo:6, roses:4, ringperm:4, ringgf:5.5, ringsilver:6, ringsolid:9, ringsdja:9 }
 };
 function luxRaw(s){
   var A = hotelFor(s, nyeCity(s)), B = hotelFor(s, otherCity(s));
@@ -1189,8 +1439,7 @@ function enrich(s, cap){
       if (s.gifts.indexOf(g.id) !== -1) return;
       var s2 = clone(s);
       if (g.pandora){ var had = s.gifts.filter(function(x){ return GIFTBY[x].pandora; }); if (had.length && !(had[0] === 'heart' && g.id === 'anniv')) return; s2.gifts = s2.gifts.filter(function(x){ return !GIFTBY[x].pandora; }); }
-      if (g.id === 'ringgf' && s.gifts.indexOf('ringsolid') !== -1) return;
-      if (g.id === 'ringsolid'){ s2.gifts = s2.gifts.filter(function(x){ return x !== 'ringgf'; }); }
+      if (g.ring){ if (s.ringLocked) return; s2.gifts = s2.gifts.filter(function(x){ return !GIFTBY[x].ring; }); }
       s2.gifts.push(g.id);
       var c2 = compute(s2); if (!planOK(c2, cap)) return;
       var gain = luxRaw(s2) - luxRaw(s), cost = c2.net - c.net; if (gain < 0.5) return;
@@ -1204,9 +1453,10 @@ function enrich(s, cap){
 }
 var CG = { plans:[], running:false, timer:null, saveCard:0 };
 function optimize(base){
-  var cap = base.cap, must = base.must, cores = [];
+  var cap = base.cap, must = base.must, cores = [], minNet = Infinity;
   var spaOpts = must.spa ? ['spa-local','spa-estancia','spa-del','spa-wi'] : [null, 'spa-local', 'spa-estancia', 'spa-del'];
   var moiOpts = must.moi ? ['moi-sd','moi-sm'] : [null];
+  var locked = ringOf(base), ringOpts = locked ? [locked.id] : must.rings ? RINGIDS : [null];
   var tiers = ['casual','date','splurge'];
   Object.keys(ROUTES).forEach(function(route){
     HOTELS.la.forEach(function(la){ HOTELS.sd.forEach(function(sd){
@@ -1214,14 +1464,14 @@ function optimize(base){
       if (sd.allInc && (must.california || route !== 'la-first')) return;
       tiers.forEach(function(tier){ tiers.forEach(function(tier2){
         (route === 'sd-first' ? ['restaurant','cruise'] : ['restaurant']).forEach(function(nye){
-          spaOpts.forEach(function(spa){ moiOpts.forEach(function(moi){
+          spaOpts.forEach(function(spa){ moiOpts.forEach(function(moi){ ringOpts.forEach(function(ring){
             var s = clone(base); s.route = route; s.la = la.id; s.sd = sd.id; s.tier = tier; s.tier2 = tier2; s.nye = nye;
             s.exp = []; if (spa) s.exp.push(spa); if (moi) s.exp.push(moi); if (must.fof) s.exp.push('fof');
             if (route === 'la-first') s.exp.push('nyela');
-            s.gifts = must.charm ? ['heart'] : [];
-            var c = compute(s); if (!planOK(c, cap)) return;
+            s.gifts = must.charm ? ['heart'] : []; if (ring) s.gifts.push(ring); s.ringLocked = !!locked;
+            var c = compute(s); if (planOK(c, Infinity) && c.net < minNet) minNet = c.net; if (!planOK(c, cap)) return;
             cores.push({ s:s, score:luxScore(s), net:c.net });
-          }); });
+          }); }); });
         });
       }); });
     }); });
@@ -1233,7 +1483,7 @@ function optimize(base){
   done.sort(function(a, b){ return b.score - a.score || a.c.net - b.c.net; });
   var pairs = {}, out = [];
   done.forEach(function(d){ var k = d.s.la + '|' + d.s.sd; if (out.length < 3 && !pairs[k]){ pairs[k] = 1; out.push(d); } });
-  return { plans:out, searched:cores.length };
+  return { plans:out, searched:cores.length, minNet:minNet };
 }
 var PLANKEYS = ['route','la','sd','tier','tier2','nye','exp','gifts'];
 function sameAsState(p){ return PLANKEYS.every(function(k){ return JSON.stringify(k === 'exp' || k === 'gifts' ? p.s[k].slice().sort() : p.s[k]) === JSON.stringify(k === 'exp' || k === 'gifts' ? state[k].slice().sort() : state[k]); }); }
@@ -1241,10 +1491,10 @@ function runConcierge(){
   CG.running = true; renderConcierge();
   setTimeout(function(){
     var t0 = Date.now(), base = clone(state), r = optimize(base);
-    CG.plans = r.plans; CG.searched = r.searched; CG.ms = Date.now() - t0; CG.running = false;
+    CG.plans = r.plans; CG.searched = r.searched; CG.minNet = r.minNet; CG.ms = Date.now() - t0; CG.running = false;
     CG.saveCard = 0;
     if (CG.plans[0] && tamarEligible(state) && !state.tamarCard){ var b2 = clone(CG.plans[0].s); b2.tamarCard = true; CG.saveCard = Math.max(0, CG.plans[0].c.net - compute(b2).net); }
-    if (!state.optimizedV1 && CG.plans[0]){ applyPlan(0); state.optimizedV1 = true; save(); }
+    if (!state.optimizedV2 && CG.plans[0]){ applyPlan(0); state.optimizedV2 = true; save(); }
     render();
   }, 30);
 }
@@ -1268,8 +1518,8 @@ function renderConcierge(){
   $$('#cg-must .chip').forEach(function(b){ b.setAttribute('aria-pressed', String(!!state.must[b.dataset.must])); });
   $$('.captxt').forEach(function(el){ el.textContent = fmt(state.cap); });
   if (CG.running){ $('#cg-status').textContent = 'Pricing every combination…'; return; }
-  $('#cg-status').textContent = CG.searched ? CG.searched.toLocaleString('en-US') + ' combinations fit your cap · searched ' + (CG.ms < 1000 ? 'in under a second' : 'in ' + (CG.ms / 1000).toFixed(1) + 's') : '';
-  if (!CG.plans.length){ $('#cg-plans').innerHTML = '<p class="hint" style="border-color:var(--over)">Nothing fits ' + fmt(state.cap) + ' with these must-haves. Raise the cap or drop a must-have.</p>'; return; }
+  $('#cg-status').textContent = CG.ms != null && !CG.searched ? 'Nothing fits your cap' : CG.searched ? CG.searched.toLocaleString('en-US') + ' combinations fit your cap · searched ' + (CG.ms < 1000 ? 'in under a second' : 'in ' + (CG.ms / 1000).toFixed(1) + 's') + (state.datesInCap && seasonTotal(state) ? ' · leaving ' + fmt(seasonTotal(state)) + ' for dates' : '') : '';
+  if (!CG.plans.length){ $('#cg-plans').innerHTML = '<p class="hint" style="border-color:var(--over)">Nothing fits ' + fmt(state.cap) + ' with these must-haves' + (ringOf(state) ? ', ' + esc(ringOf(state).name) + ' (' + fmt(giftPrice(ringOf(state), state)) + ')' : '') + (state.datesInCap && seasonTotal(state) ? ' and ' + fmt(seasonTotal(state)) + ' of dates' : '') + '.' + (isFinite(CG.minNet) ? ' The cheapest version of this weekend costs <b>' + fmt(CG.minNet) + '</b>.' : '') + ' Raise the cap, choose a cheaper ring, count the dates outside the cap, or drop a must-have.</p>'; return; }
   var ranks = ['The concierge\'s pick', 'Runner-up', 'Third'];
   $('#cg-plans').innerHTML = CG.plans.map(function(p, i){
     var loaded = sameAsState(p);
@@ -1284,7 +1534,7 @@ function renderConcierge(){
 /* ---------- master render ---------- */
 function render(){
   var c = compute(state);
-  renderConcierge(); renderRoute(); renderHotels(); renderTable(); renderExp(); renderGifts(); renderFolio(c); renderItinerary(c); renderReservations(c); renderFigure(c);
+  renderDates(); renderRings(); renderConcierge(); renderRoute(); renderHotels(); renderTable(); renderExp(); renderGifts(); renderFolio(c); renderItinerary(c); renderReservations(c); renderFigure(c);
   var ci = $('#f-cap'); if (ci && document.activeElement !== ci) ci.value = state.cap;
 }
 
@@ -1307,7 +1557,10 @@ document.addEventListener('click', function(e){
   else if (d.tier2){ state.tier2 = d.tier2; }
   else if (d.nye){ state.nye = d.nye; }
   else if (d.exp){ var i = state.exp.indexOf(d.exp); if (i === -1){ if (EXPBY[d.exp].kind === 'spa') state.exp = state.exp.filter(function(id){ return !EXPBY[id] || EXPBY[id].kind !== 'spa'; }); state.exp.push(d.exp); } else state.exp.splice(i, 1); }
-  else if (d.gift){ var j = state.gifts.indexOf(d.gift); if (j === -1) state.gifts.push(d.gift); else state.gifts.splice(j, 1); }
+  else if (d.gift){ var j = state.gifts.indexOf(d.gift); if (j === -1){ if (GIFTBY[d.gift].ring) state.gifts = state.gifts.filter(function(x){ return !GIFTBY[x].ring; }); state.gifts.push(d.gift); } else state.gifts.splice(j, 1); save(); render(); scheduleConcierge(); return; }
+  else if (d.date){ if (state.dates[d.date]) delete state.dates[d.date]; else { var nt = defaultNight(DATEBY[d.date], state); if (!nt) return; state.dates[d.date] = nt; } save(); render(); if (state.datesInCap) scheduleConcierge(); return; }
+  else if (d.dsug){ var q = d.dsug.split('|'); if (DATEBY[q[0]]) state.dates[q[0]] = q[1]; save(); render(); if (state.datesInCap) scheduleConcierge(); return; }
+  else if (d.dfilter){ state.dfilter = d.dfilter; }
   else if (d.filter){ state.filter = d.filter; }
   else if (d.mil){ state.mil = d.mil; save(); render(); scheduleConcierge(); return; }
   else if (d.plan){ applyPlan(+d.plan); }
@@ -1321,6 +1574,8 @@ document.addEventListener('click', function(e){
 document.addEventListener('change', function(e){
   var t = e.target, d = t.dataset;
   if (d.set){ if (d.set.indexOf('cr.') === 0) state.cr[d.set.slice(3)] = t.checked; else state[d.set] = t.checked; save(); render(); scheduleConcierge(); }
+  if (d.dwhen && DATEBY[d.dwhen]){ state.dates[d.dwhen] = t.value; save(); render(); if (state.datesInCap) scheduleConcierge(); }
+  if (t.id === 'ring-when'){ state.ringDate = t.value; save(); render(); }
   if (t.id === 'f-cap'){ var v = Math.round(Number(t.value)); if (isFinite(v) && v >= 500){ state.cap = Math.min(20000, v); save(); render(); scheduleConcierge(); } else t.value = state.cap; }
   if (d.booked){ if (t.checked) booked[d.booked] = true; else delete booked[d.booked]; store.set('oyc.booked.v1', booked); render(); }
 });
